@@ -88,6 +88,8 @@ jobs:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
           
         run: |
+          install.packages(devtools)
+          devtools::document()
           options(crayon.enabled = TRUE)
           Sys.setenv(TEXI2DVI = system("which texi2dvi", intern = TRUE), R_TEXI2DVICMD = "emulation")
           rcmdcheck::rcmdcheck(build_args = "--compact-vignettes=both", args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
