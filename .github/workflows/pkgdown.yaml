@@ -51,9 +51,17 @@ jobs:
         run: R CMD INSTALL .
 
       - name: Build and deploy pkgdown site
+        env:
+          _R_CHECK_CRAN_INCOMING_REMOTE_: false
         run: |
-          Rscript -e 'rmarkdown::render("README.Rmd", output_format = "md_document"); pkgdown::build_site()'
-          
+          install.packages('devtools')
+          devtools::document()
+          options(crayon.enabled = TRUE)
+          Sys.setenv(TEXI2DVI = system("which texi2dvi", intern = TRUE), R_TEXI2DVICMD = "emulation")
+          rmarkdown::render("README.Rmd", output_format = "md_document")
+          pkgdown::build_site()
+        shell: Rscript {0}
+
       - name: Sync files
         uses: SamKirkland/FTP-Deploy-Action@4.0.0
         with:
