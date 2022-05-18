@@ -25,7 +25,7 @@ utils::globalVariables("where")
 #' @slot model_type_string Model type string description.
 #' @slot system Model's system of equations.
 #' @name market_models
-#' @seealso initialize_market_model
+#' @seealso \link{initialize_market_model}
 NULL
 
 #' @describeIn market_models Base class for market models
@@ -365,9 +365,9 @@ initialize_from_formula <- function(model_type, specification, data,
   }
   model <- do.call(new, args)
   if (length(estimation_options)) {
-    do.call(diseq::estimate, c(list(model), estimation_options))
+    do.call(markets::estimate, c(list(model), estimation_options))
   } else {
-    diseq::estimate(model)
+    markets::estimate(model)
   }
 }
 
@@ -393,7 +393,7 @@ initialize_from_formula <- function(model_type, specification, data,
 #' @param verbose The verbosity with which operations on the model print
 #' messages. By default the value is set to \code{0}, which prints only errors.
 #' @param estimation_options A list with options to be used in the estimation
-#' call. See \code{\link[diseq]{estimate}} for the available options.
+#' call. See \code{\link[markets]{estimate}} for the available options.
 #' @return The fitted model.
 #' @name single_call_estimation
 NULL
@@ -459,6 +459,7 @@ setMethod(
 #'
 #' Sends basic information about the model to standard output.
 #' @param object A model object.
+#' @return No return value, called for side effects (print basic model information).
 #' @examples
 #' \donttest{
 #' model <- simulate_model(
@@ -514,6 +515,12 @@ setMethod("show", signature(object = "market_model"), function(object) {
 #'
 #' # print model summary
 #' summary(model)
+#'
+#' # estimate
+#' fit <- estimate(model)
+#' 
+#' # print estimation summary
+#' summary(fit)
 #' }
 NULL
 
@@ -648,7 +655,7 @@ validate_standard_error_option <- function(object, option) {
 #' @param max_it Maximum allowed number of iterations.
 #' @return A list with the optimization output.
 #' @rdname maximize_log_likelihood
-#' @seealso estimate
+#' @seealso \code{\link{estimate}}
 #' @examples
 #' \donttest{
 #' model <- simulate_model(
@@ -972,7 +979,7 @@ setMethod(
 #' # get estimated aggregate demand
 #' aggregate_supply(fit)
 #' }
-#' @seealso demanded_quantities, supplied_quantities
+#' @seealso \code{\link{demanded_quantities}}, \code{\link{supplied_quantities}}
 NULL
 
 aggregate_equation <- function(model, parameters, equation) {

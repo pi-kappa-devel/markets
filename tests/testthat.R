@@ -1,4 +1,4 @@
 library(testthat)
-library(diseq)
+library(markets)
 
-test_check("diseq")
+test_check("markets")

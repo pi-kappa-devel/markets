@@ -8,7 +8,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-This short tutorial covers the very basic use cases to get you started with *diseq*. More usage details can be found in the documentation of the package.
+This short tutorial covers the very basic use cases to get you started with *markets*. More usage details can be found in the documentation of the package.
 
 ```{r, include = FALSE}
 if (requireNamespace("knitr", quietly = TRUE)) {
@@ -21,12 +21,12 @@ if (requireNamespace("knitr", quietly = TRUE)) {
 Load the required libraries.
 
 ```{r setup.libraries}
-library(diseq)
+library(markets)
 library(magrittr)
 library(Formula)
 ```
 
-Prepare the data. Normally this step is long and depends on the nature of the data and the considered market. For this example, we will use simulated data. Although we could simulate data independently from the package, we will use the top-level simulation functionality of *diseq* to simplify the process. See the documentation of `simulate_data` for more information on the simulation functionality. Here, we simulate data using a data generating process for a market in disequilibrium with stochastic price dynamics.
+Prepare the data. Normally this step is long and depends on the nature of the data and the considered market. For this example, we will use simulated data. Although we could simulate data independently from the package, we will use the top-level simulation functionality of *markets* to simplify the process. See the documentation of `simulate_data` for more information on the simulation functionality. Here, we simulate data using a data generating process for a market in disequilibrium with stochastic price dynamics.
 
 ```{r setup.data}
 nobs <- 1000
@@ -134,7 +134,7 @@ summary(sa_fit)
 
 ### Marginal effects
 
-Calculate marginal effects on the shortage probabilities. *Diseq* offers two marginal effect calls out of the box. The mean marginal effects and the marginal effects ate the mean. Marginal effects on the shortage probabilities are state-dependent. If the variable is only in the demand equation, the output name of the marginal effect is the variable name prefixed by `D_`. If the variable is only in the supply equation, the name of the marginal effect is the variable name prefixed by `S_`. If the variable is in both equations, then it is prefixed by `B_`.
+Calculate marginal effects on the shortage probabilities. *Markets* offers two marginal effect calls out of the box. The mean marginal effects and the marginal effects ate the mean. Marginal effects on the shortage probabilities are state-dependent. If the variable is only in the demand equation, the output name of the marginal effect is the variable name prefixed by `D_`. If the variable is only in the supply equation, the name of the marginal effect is the variable name prefixed by `S_`. If the variable is in both equations, then it is prefixed by `B_`.
 
 ```{r analysis.effects}
 diseq_abbrs <- c("bs", "dr", "da", "sa")

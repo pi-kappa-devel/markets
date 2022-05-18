@@ -1,19 +1,19 @@
 #include <Rcpp.h>
 
-#ifdef _DISEQ_HAS_GSL_
+#ifdef _MARKETS_HAS_GSL_
 #include "gsl/gsl_errno.h"
 #include "gsl/gsl_multimin.h"
 #include "gsl/gsl_vector.h"
-#endif /* _DISEQ_HAS_GSL_ */
+#endif /* _MARKETS_HAS_GSL_ */
 
-#ifdef _DISEQ_HAS_EXECUTION_POLICIES_
+#ifdef _MARKETS_HAS_EXECUTION_POLICIES_
 #include <execution>
-#endif /* _DISEQ_HAS_EXECUTION_POLICIES_ */
+#endif /* _MARKETS_HAS_EXECUTION_POLICIES_ */
 #include <numeric>
 
-#ifdef _DISEQ_HAS_GSL_
+#ifdef _MARKETS_HAS_GSL_
 static gsl_error_handler_t *defaul_gsl_error_handler = gsl_set_error_handler_off();
-#endif /* _DISEQ_HAS_GSL_ */
+#endif /* _MARKETS_HAS_GSL_ */
 
 class equilibrium_model {
 public:
@@ -106,11 +106,11 @@ public:
   std::vector<size_t> col_indices;
 
   equilibrium_model(Rcpp::S4 system) {
-    Rcpp::Environment diseq = Rcpp::Environment::namespace_env("diseq");
+    Rcpp::Environment markets = Rcpp::Environment::namespace_env("markets");
     Rcpp::S4 demand = system.slot("demand");
     Rcpp::S4 supply = system.slot("supply");
 
-    Rcpp::Function prefixed_independent_variables = diseq["prefixed_independent_variables"];
+    Rcpp::Function prefixed_independent_variables = markets["prefixed_independent_variables"];
     demand_independent_variables = prefixed_independent_variables(demand);
     supply_independent_variables = prefixed_independent_variables(supply);
 
@@ -120,7 +120,7 @@ public:
     alphad_betad.assign(demand_independent_variables_size, 0.0);
     alphas_betas.assign(supply_independent_variables_size, 0.0);
 
-    Rcpp::Function prefixed_price_variable = diseq["prefixed_price_variable"];
+    Rcpp::Function prefixed_price_variable = markets["prefixed_price_variable"];
     demand_price_variable =
         Rcpp::as<Rcpp::String>(prefixed_price_variable(demand)).get_cstring();
     supply_price_variable =
@@ -129,7 +129,7 @@ public:
     demand_price_variable_size = demand_price_variable.empty() ? 0 : 1;
     supply_price_variable_size = supply_price_variable.empty() ? 0 : 1;
 
-    Rcpp::Function prefixed_control_variables = diseq["prefixed_control_variables"];
+    Rcpp::Function prefixed_control_variables = markets["prefixed_control_variables"];
     demand_control_variables = prefixed_control_variables(demand);
     supply_control_variables = prefixed_control_variables(supply);
 
@@ -139,7 +139,7 @@ public:
     betad.assign(demand_control_variables_size, 0.0);
     betas.assign(supply_control_variables_size, 0.0);
 
-    Rcpp::Function prefixed_variance_variable = diseq["prefixed_variance_variable"];
+    Rcpp::Function prefixed_variance_variable = markets["prefixed_variance_variable"];
     demand_variance_variable =
         Rcpp::as<Rcpp::String>(prefixed_variance_variable(demand)).get_cstring();
     supply_variance_variable =
@@ -148,7 +148,7 @@ public:
     demand_variance_variable_size = 1;
     supply_variance_variable_size = 1;
 
-    Rcpp::Function correlation_variable = diseq["correlation_variable"];
+    Rcpp::Function correlation_variable = markets["correlation_variable"];
     this->correlation_variable = Rcpp::as<Rcpp::String>(correlation_variable(system)).get_cstring();
     has_correlated_shocks = Rcpp::as<bool>(system.slot("correlated_shocks"));
 
@@ -300,9 +300,9 @@ public:
     rho2_QP2 = std::pow(rho2_QP, 2);
 
     std::for_each(
-#ifdef _DISEQ_HAS_EXECUTION_POLICIES_
+#ifdef _MARKETS_HAS_EXECUTION_POLICIES_
         std::execution::par_unseq,
-#endif /* _DISEQ_HAS_EXECUTION_POLICIES_ */
+#endif /* _MARKETS_HAS_EXECUTION_POLICIES_ */
         row_indices.begin(), row_indices.end(), [&](size_t r) {
           Xdbetad[r] = 0;
           for (size_t c = 0; c < Xd[r].size(); ++c) {
@@ -336,9 +336,9 @@ public:
 
   void calculate_gradient(double *df) {
     std::for_each(
-#ifdef _DISEQ_HAS_EXECUTION_POLICIES_
+#ifdef _MARKETS_HAS_EXECUTION_POLICIES_
         std::execution::par_unseq,
-#endif /* _DISEQ_HAS_EXECUTION_POLICIES_ */
+#endif /* _MARKETS_HAS_EXECUTION_POLICIES_ */
         row_indices.begin(), row_indices.end(), [&](size_t r) {
           double Xdbetadr = Xdbetad[r];
           double Xsbetasr = Xsbetas[r];
@@ -447,7 +447,7 @@ public:
   }
 };
 
-#ifdef _DISEQ_HAS_GSL_
+#ifdef _MARKETS_HAS_GSL_
 double my_f(const gsl_vector *v, void *params) {
   equilibrium_model *obj = static_cast<equilibrium_model *>(params);
   obj->system_equilibrium_model_set_parameters(v->data);
@@ -492,7 +492,7 @@ std::vector<double> secant_gradient_ratios(const gsl_vector *x, double step, voi
 
   return qs;
 }
-#endif /* _DISEQ_HAS_GSL_ */
+#endif /* _MARKETS_HAS_GSL_ */
 
 Rcpp::List minimize(equilibrium_model *model, Rcpp::NumericVector &start, double step,
                     double objective_tolerance, double gradient_tolerance,
@@ -503,7 +503,7 @@ Rcpp::List minimize(equilibrium_model *model, Rcpp::NumericVector &start, double
   Rcpp::NumericVector gradient(model->gradient_size);
   double log_likelihood = NAN;
 
-#ifdef _DISEQ_HAS_GSL_
+#ifdef _MARKETS_HAS_GSL_
   const gsl_multimin_fdfminimizer_type *T;
   gsl_multimin_fdfminimizer *s;
 
@@ -538,9 +538,9 @@ Rcpp::List minimize(equilibrium_model *model, Rcpp::NumericVector &start, double
   } while (status == GSL_CONTINUE && iter < max_it);
 
   std::for_each(
-#ifdef _DISEQ_HAS_EXECUTION_POLICIES_
+#ifdef _MARKETS_HAS_EXECUTION_POLICIES_
       std::execution::par_unseq,
-#endif /* _DISEQ_HAS_EXECUTION_POLICIES_ */
+#endif /* _MARKETS_HAS_EXECUTION_POLICIES_ */
       model->col_indices.begin(), model->col_indices.end(), [&](size_t c) {
         optimizer[c] = s->x->data[c];
         gradient[c] = s->gradient->data[c];
@@ -548,7 +548,7 @@ Rcpp::List minimize(equilibrium_model *model, Rcpp::NumericVector &start, double
 
   gsl_multimin_fdfminimizer_free(s);
   gsl_vector_free(x);
-#endif /* _DISEQ_HAS_GSL_ */
+#endif /* _MARKETS_HAS_GSL_ */
 
   return Rcpp::List::create(
       Rcpp::_["step"] = step, Rcpp::_["objective_tolerance"] = objective_tolerance,
@@ -557,7 +557,7 @@ Rcpp::List minimize(equilibrium_model *model, Rcpp::NumericVector &start, double
       Rcpp::_["log_likelihood"] = log_likelihood, Rcpp::_["iterations"] = iter);
 }
 
-RCPP_MODULE(diseq_module) {
+RCPP_MODULE(markets_module) {
   Rcpp::class_<equilibrium_model>("cpp_equilibrium_model")
       .constructor<Rcpp::S4>()
       .method("minimize", &minimize);

@@ -1,5 +1,5 @@
 test_calculated_gradient <- function(mdl, params, tolerance) {
-  cg <- as.matrix(diseq:::gradient(mdl, params))
+  cg <- as.matrix(markets:::gradient(mdl, params))
   ng <- as.matrix(numDeriv::grad(
     function(p) minus_log_likelihood(mdl, p), params,
     method = "Richardson"
@@ -35,11 +35,11 @@ test_convergence <- function(est) {
 }
 
 test_calculated_hessian <- function(mdl, params, tolerance) {
-  nh <- as.matrix(numDeriv::jacobian(function(p) diseq:::gradient(mdl, p),
+  nh <- as.matrix(numDeriv::jacobian(function(p) markets:::gradient(mdl, p),
     params,
     method = "Richardson"
   ))
-  ch <- diseq:::hessian(mdl, params)
+  ch <- markets:::hessian(mdl, params)
   pnames <- rownames(ch)
   max_diff <- 0
 
@@ -95,8 +95,8 @@ test_shortages <- function(shortage_function, est) {
 
 test_scores <- function(est) {
   scores <- scores(fit = est)
-  n <- diseq::nobs(est)
-  k <- length(diseq:::likelihood_variables(est@system))
+  n <- markets::nobs(est)
+  k <- length(markets:::likelihood_variables(est@system))
   testthat::expect(any(dim(scores) == c(n, k)), sprintf("Score has wrong dimensions"))
   testthat::expect(
     !any(is.na(scores)),
@@ -161,7 +161,7 @@ load_or_simulate_data <- function(model_string, parameters) {
     load(stored_data_filename)
   } else {
     model_tibble <- do.call(
-      diseq::simulate_data,
+      markets::simulate_data,
       c(model_string, parameters, verbose = verbose, seed = seed)
     )
     if (file.exists("devel-environment")) {

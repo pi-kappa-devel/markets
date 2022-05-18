@@ -4,6 +4,49 @@
 #' @include diseq_deterministic_adjustment.R
 #' @include diseq_stochastic_adjustment.R
 
+
+#' @title Market Model Fit
+#'
+#' @slot fit A list holding estimation outputs.
+#' @examples
+#' # estimate an equilibrium  model using the houses dataset
+#' fit <- equilibrium_model(
+#'   HS | RM | ID | TREND ~
+#'   RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
+#'   RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
+#'   fair_houses(), estimation_options = list(method = "2SLS"))
+#'
+#' # access an inherited method from the underlying model
+#' aggregate_demand(fit)
+#' 
+#' # summary of results
+#' summary(fit)
+#' @name market_fits
+#' @seealso \code{\linkS4class{market_model}}
+NULL
+
+#' @describeIn market_fits Fit class for market models
+#' 
+#' @description
+#' This is the estimation output class for all market models of the package. It couples
+#' a market model object with estimation results. It provides a common user interface
+#' for accessing estimation results, irrespective of the underlying market model used. The estimation
+#' results are intended to be accessed by passing \code{market_fit} objects to methods such as
+#' \code{\link{plot}}, \code{\link{summary}}, and \code{\link{logLik}}.
+#' @details
+#' The \code{market_fit} class derives from the \code{\linkS4class{market_model}}
+#' class. Thus, all the public functionality of the underlying market model is also directly
+#' accessible from the output class.
+#'
+#' Furthermore, the class is responsible for harmonizing the heterogeneous outputs resulting from
+#' different estimation methods of market models. For example, a "2SLS" estimation of the 
+#' \code{\linkS4class{equilibrium_model}} gives a \code{\link[systemfit]{systemfit}} object, while
+#' the maximum likelihood estimation of \code{\linkS4class{diseq_basic}} returns an
+#' \code{\link[bbmle]{mle2}} object. In both cases, the \code{market_fit} stores the
+#' estimation output in the member \code{fit} of type \code{list}. Methods of the class examine
+#' the type of the \code{fit} and direct execution accordingly to different branches to produce
+#' a unified experience for the caller.
+#' @export
 setClass(
   "market_fit",
   contains = "market_model",
@@ -42,10 +85,11 @@ setMethod(
 #' For a linear estimation of the equilibrium system, the function prints the
 #' estimation summary provided by \code{\link[systemfit]{systemfit}} in
 #' addition to the model's \code{summary} output.
+#' @return No return value, called for for side effects (print summary).
 #' @export
 setMethod("summary", signature(object = "market_fit"), function(object) {
   (selectMethod("summary", "market_model"))(object)
-  if (class(object@fit[[1]]) == "mle2") {
+  if (is(object@fit[[1]], "mle2")) {
     summary <- (selectMethod("summary", "mle2"))(object@fit[[1]])
     args <- summary@call[[2]]
 
@@ -69,7 +113,7 @@ setMethod("summary", signature(object = "market_fit"), function(object) {
     print(summary@coef, digits = 4)
     cat(sprintf("\n%s: %g\n", "-2 log L", summary@m2logL))
   } else {
-    summary(object@fit[[1]]$system_model)
+    print(summary(object@fit[[1]]$system_model))
   }
 })
 
@@ -276,7 +320,7 @@ setMethod(
 setMethod(
   "coef", signature(object = "market_fit"),
   function(object) {
-    if (class(object@fit[[1]]) == "mle2") {
+    if (is(object@fit[[1]], "mle2")) {
       object@fit[[1]]@coef
     } else {
       demand <- object@fit[[1]]$system_model$coefficients[
@@ -333,7 +377,7 @@ setMethod(
 setMethod(
   "vcov", signature(object = "market_fit"),
   function(object) {
-    if (class(object@fit[[1]]) == "mle2") {
+    if (is(object@fit[[1]], "mle2")) {
       colnames(object@fit[[1]]@vcov) <- names(coef(object))
       rownames(object@fit[[1]]@vcov) <- names(coef(object))
       object@fit[[1]]@vcov
@@ -371,7 +415,7 @@ setMethod(
   "logLik", signature(object = "market_fit"),
   function(object) {
     ll <- NULL
-    if (class(object@fit[[1]]) == "mle2") {
+    if (is(object@fit[[1]], "mle2")) {
       ll <- structure(-object@fit[[1]]@min,
         df = length(object@fit[[1]]@coef), class = "logLik"
       )
@@ -578,6 +622,7 @@ setMethod(
 #' @param ... Additional parameter to be used for styling the figure.
 #' Specifically \code{xlab}, \code{ylab}, and \code{main} are currently
 #' handled by the function.
+#' @return No return value, called for for side effects (visualization).
 #' @examples
 #' \donttest{
 #' # estimate a model using the houses dataset

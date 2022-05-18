@@ -1,7 +1,7 @@
-Package: diseq
+Package: markets
 Title: Estimation Methods for Markets in Equilibrium and Disequilibrium
-Version: 0.4.3
-Date: 2022-02-16
+Version: 1.0.2
+Date: 2022-05-18
 Authors@R: 
     person(given = "Pantelis",
            family = "Karapanagiotis",
@@ -23,8 +23,8 @@ Description: Provides estimation methods for markets in equilibrium and
     market-clearing condition with a non-linear,
     short-side rule and allow for different specifications of price dynamics. 
 Language: en-US
-URL: https://github.com/pi-kappa-devel/diseq/, https://diseq.pikappa.eu/
-BugReports: https://github.com/pi-kappa-devel/diseq/issues
+URL: https://github.com/pi-kappa-devel/markets/, https://markets.pikappa.eu/
+BugReports: https://github.com/pi-kappa-devel/markets/issues
 Depends:
     R (>= 3.5.0)
 Imports:
@@ -44,7 +44,7 @@ Imports:
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 Suggests:
     ggplot2 (>= 3.0.0),
     knitr (>= 1.20),
@@ -54,7 +54,6 @@ Suggests:
 VignetteBuilder: knitr
 Collate:
     'data.R'
-    'diseq.R'
     'equation_base.R'
     'system_base.R'
     'model_logger.R'
@@ -87,6 +86,7 @@ Collate:
     'likelihood_equilibrium.R'
     'likelihood_stochastic_adjustment.R'
     'market_fit.R'
+    'markets.R'
     'model_simulation.R'
 LinkingTo: 
     Rcpp,

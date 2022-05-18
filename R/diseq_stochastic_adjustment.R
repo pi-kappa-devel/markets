@@ -3,7 +3,7 @@
 #' @describeIn market_models Disequilibrium model with stochastic price dynamics.
 #'
 #' @description
-#' \subsection{diseq_stochastic_adjustment}{
+#' \subsection{\code{diseq_stochastic_adjustment}}{
 #' The disequilibrium model with stochastic price adjustment is described
 #' by a system of four equations. Three of of them form a stochastic linear system of
 #' market equations equations coupled with a stochastic price evolution equation. The

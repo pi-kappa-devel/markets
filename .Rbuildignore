@@ -1,10 +1,9 @@
-^diseq\.Rproj$
+^markets\.Rproj$
 ^\.Rproj\.user$
 ^cran-comments\.md$
 ^rsc$
 ^README\.Rmd$
 ^Meta$
-^CRAN-RELEASE$
 ^.Rhistory
 ^tests/testthat/.+\.rda$
 ^tests/testthat/devel-environment$
@@ -25,3 +24,5 @@
 ^.github$
 ^\.github$
 ^bibliography\.bib$
+^CRAN-SUBMISSION$
+^CRAN-RELEASE$

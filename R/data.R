@@ -90,7 +90,7 @@ NULL
 #' @describeIn houses Generate Fair & Jaffee (1972) dataset
 #' @export
 fair_houses <- function() {
-  houses <- diseq::houses %>%
+  houses <- markets::houses %>%
     dplyr::mutate(
       ID = 1,
       DSF = .data$DSLA + .data$DMSB - dplyr::lag(.data$DSLA + .data$DMSB),

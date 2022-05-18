@@ -1,4 +1,4 @@
-AC_INIT([diseq],[0.4.3])
+AC_INIT([markets],[1.0.2])
 
 # Find the compiler and compiler flags used by R.
 : ${R_HOME=`R RHOME`}
@@ -21,7 +21,7 @@ AS_IF([test "X$GSL_LIBS" != "X"], [
     [AC_LANG_PROGRAM([[#include "gsl/gsl_multimin.h"]],
 		     [[gsl_vector v;]])],
     [AC_MSG_RESULT([yes])
-     PKG_CPPFLAGS="$PKG_CPPFLAGS -D_DISEQ_HAS_GSL_ `gsl-config --cflags`"
+     PKG_CPPFLAGS="$PKG_CPPFLAGS -D_MARKETS_HAS_GSL_ `gsl-config --cflags`"
      PKG_LIBS="$PKG_LIBS `gsl-config --libs`"],
     [AC_MSG_RESULT([no])])
 ])
@@ -34,14 +34,14 @@ AS_IF([test "X$ac_cv_header_execution" = "Xyes"], [
     [AC_LANG_PROGRAM([[#include<execution>]],
     [[const auto& ex = std::execution::par_unseq;]])],
     [AC_MSG_RESULT([yes])
-     PKG_CPPFLAGS="$PKG_CPPFLAGS -D_DISEQ_HAS_EXECUTION_POLICIES_  -std=c++17"
+     PKG_CPPFLAGS="$PKG_CPPFLAGS -D_MARKETS_HAS_EXECUTION_POLICIES_  -std=c++17"
      PKG_LIBS="$PKG_LIBS `pkg-config tbb --libs`"],
     [LIBS="$LIBS -ltbb"
      AC_LINK_IFELSE(
      [AC_LANG_PROGRAM([[#include<execution>]],
      [[const auto& ex = std::execution::par_unseq;]])],
      [AC_MSG_RESULT([yes])
-      PKG_CPPFLAGS="$PKG_CPPFLAGS -D_DISEQ_HAS_EXECUTION_POLICIES_  -std=c++17"
+      PKG_CPPFLAGS="$PKG_CPPFLAGS -D_MARKETS_HAS_EXECUTION_POLICIES_  -std=c++17"
       PKG_LIBS="$PKG_LIBS -ltbb"],
      [AC_MSG_RESULT([no])])
     ])

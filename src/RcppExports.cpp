@@ -12,14 +12,14 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 
-RcppExport SEXP _rcpp_module_boot_diseq_module();
+RcppExport SEXP _rcpp_module_boot_markets_module();
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_rcpp_module_boot_diseq_module", (DL_FUNC) &_rcpp_module_boot_diseq_module, 0},
+    {"_rcpp_module_boot_markets_module", (DL_FUNC) &_rcpp_module_boot_markets_module, 0},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_diseq(DllInfo *dll) {
+RcppExport void R_init_markets(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

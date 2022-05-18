@@ -1,6 +1,6 @@
 #' Estimation of models for markets in equilibrium and disequilibrium
 #'
-#' The \code{diseq} package provides tools to estimate and analyze an equilibrium and
+#' The \code{markets} package provides tools to estimate and analyze an equilibrium and
 #' four disequilibrium models. The equilibrium model can be estimated with either
 #' two-stage least squares or with full information maximum likelihood. The methods are
 #' asymptotically equivalent. The disequilibrium models are estimated using full
@@ -22,9 +22,9 @@
 #'
 #' \describe{
 #'   \item{\href{../doc/basic_usage.html}{basic_usage}}{
-#'     \code{vignette("basic_usage", package = "diseq")}}
+#'     \code{vignette("basic_usage", package = "markets")}}
 #'   \item{\href{../doc/market_clearing_assessment.html}{equilibrium_assessment}}{
-#'     \code{vignette("market_clearing_assessment", package = "diseq")}}
+#'     \code{vignette("market_clearing_assessment", package = "markets")}}
 #' }
 #'
 #' Additionally, one can use the documentation examples. Some of them illustrate the
@@ -55,15 +55,15 @@
 #' }
 #'
 #' @docType package
-#' @name diseq
+#' @name markets
 NULL
 
 ## usethis namespace: start
-#' @useDynLib diseq, .registration = TRUE
+#' @useDynLib markets, .registration = TRUE
 ## usethis namespace: end
 NULL
 
 #' @importFrom Rcpp loadModule
 #' @importFrom RcppGSL LdFlags
 #' @importFrom RcppParallel RcppParallelLibs
-Rcpp::loadModule("diseq_module", TRUE)
+Rcpp::loadModule("markets_module", TRUE)

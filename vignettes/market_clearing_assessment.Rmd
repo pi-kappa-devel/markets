@@ -21,7 +21,7 @@ if (requireNamespace("knitr", quietly = TRUE)) {
 Load the required libraries.
 
 ```{r setup.libraries}
-library(diseq)
+library(markets)
 library(magrittr)
 ```
 

@@ -17,17 +17,20 @@
 README*.html
 vignettes/*.html
 vignettes/*.pdf
-!vignettes/diseq.pdf
+!vignettes/markets.pdf
 vignettes/*.R
 doc*
 docs
 pkgdown/*
 !pkgdown/extra.css
+man/*.Rd
 
 # Development files
 Meta
 tests/testthat/*.rda
 tests/testthat/devel-environment
+CRAN-SUBMISSION
+CRAN-RELEASE
 
 # Compilation files
 src/compile_commands.json

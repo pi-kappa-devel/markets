@@ -4,7 +4,7 @@
 #' separation.
 #'
 #' @description
-#' \subsection{diseq_basic}{
+#' \subsection{\code{diseq_basic}}{
 #' The basic disequilibrium model consists of three equations. Two of them
 #' are the demand and supply equations. In addition, the model replaces the
 #' market clearing condition with the short side rule. The model is estimated

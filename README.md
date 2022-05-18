@@ -1,17 +1,16 @@
 Models For Markets in Equilibrium and Disequilibrium
 ================
 
-<img src='man/figures/logo.png' align="right" height="48"/>
-
+<img src="man/figures/logo.png" align="right" height="48"/>
 <!-- badges: start -->
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-![](https://cranlogs.r-pkg.org/badges/grand-total/diseq)
-![](https://www.r-pkg.org/badges/version/diseq)
-![](https://www.r-pkg.org/badges/last-release/diseq)
+![](https://cranlogs.r-pkg.org/badges/grand-total/markets)
+![](https://www.r-pkg.org/badges/version/markets)
+![](https://www.r-pkg.org/badges/last-release/markets)
 <!-- badges: end -->
 
-The *diseq* package provides tools to estimate and analyze an
+The *markets* package provides tools to estimate and analyze an
 equilibrium and four disequilibrium models. The equilibrium model can be
 estimated with either two-stage least squares or with full information
 maximum likelihood. The two methods are asymptotically equivalent. The
@@ -42,7 +41,28 @@ two-stage least squares (Theil 1953) or full information maximum
 likelihood (Karapanagiotis, n.d.). Asymptotically, these methods are
 equivalent (Balestra and Varadharajan-Krishnakumar 1987).
 
-<img src='https://render.githubusercontent.com/render/math?math=%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20D_%7Bn%20t%7D%20%3D%20S_%7Bn%20t%7D%0A%5Cend%7Baligned%7D%20'/> <img src='man/figures/equilibrium_model.png'/>
+  
+![
+\\begin{align}
+\\begin{aligned}
+D\_{n t} &= X\_{d, n t}'\\beta\_{d} + P\_{n t}\\alpha\_{d} + u\_{d, n t}
+\\\\
+S\_{n t} &= X\_{s, n t}'\\beta\_{s} + P\_{n t}\\alpha\_{s} + u\_{s, n t}
+\\\\
+Q\_{n t} &= D\_{n t} = S\_{n t}
+\\end{aligned}\\tag{EM}\\label{equilibrium}
+\\end{align}
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cbegin%7Balign%7D%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20D_%7Bn%20t%7D%20%3D%20S_%7Bn%20t%7D%0A%5Cend%7Baligned%7D%5Ctag%7BEM%7D%5Clabel%7Bequilibrium%7D%0A%5Cend%7Balign%7D%0A
+"
+\\begin{align}
+\\begin{aligned}
+D_{n t} &= X_{d, n t}'\\beta_{d} + P_{n t}\\alpha_{d} + u_{d, n t} \\\\
+S_{n t} &= X_{s, n t}'\\beta_{s} + P_{n t}\\alpha_{s} + u_{s, n t} \\\\
+Q_{n t} &= D_{n t} = S_{n t}
+\\end{aligned}\\tag{EM}\\label{equilibrium}
+\\end{align}
+")  
+<img src='man/figures/equilibrium_model.png'/>
 
 ## The basic disequilibrium model
 
@@ -57,7 +77,26 @@ to the demand or the supply side since the estimation of the model will
 allocate the observations on the demand or supply side so that the
 likelihood is maximized.
 
-<img src='https://render.githubusercontent.com/render/math?math=%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%0A%5Cend%7Baligned%7D%20'/> <img src='man/figures/diseq_basic.png'/>
+  
+![
+\\begin{align}
+\\begin{aligned}
+D\_{n t} &= X\_{d, n t}'\\beta\_{d} + u\_{d, n t} \\\\
+S\_{n t} &= X\_{s, n t}'\\beta\_{s} + u\_{s, n t} \\\\
+Q\_{n t} &= \\min\\{D\_{n t},S\_{n t}\\}
+\\end{aligned} \\tag{BM} \\label{basic}
+\\end{align}
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cbegin%7Balign%7D%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%0A%5Cend%7Baligned%7D%20%5Ctag%7BBM%7D%20%5Clabel%7Bbasic%7D%0A%5Cend%7Balign%7D%0A
+"
+\\begin{align}
+\\begin{aligned}
+D_{n t} &= X_{d, n t}'\\beta_{d} + u_{d, n t} \\\\
+S_{n t} &= X_{s, n t}'\\beta_{s} + u_{s, n t} \\\\
+Q_{n t} &= \\min\\{D_{n t},S_{n t}\\}
+\\end{aligned} \\tag{BM} \\label{basic}
+\\end{align}
+")  
+<img src='man/figures/diseq_basic.png'/>
 
 ## The directional disequilibrium model
 
@@ -74,7 +113,28 @@ also, when inaccurate, intensifies misspecification problems. Therefore,
 the additional structure of the directional model does not guarantee
 better estimates in comparison with the basic model.
 
-<img src='https://render.githubusercontent.com/render/math?math=%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%20%5C%5C%0A%5CDelta%20P_%7Bn%20t%7D%20%26%5Cge%200%20%5Cimplies%20D_%7Bn%20t%7D%20%5Cge%20S_%7Bn%20t%7D%0A%5Cend%7Baligned%7D%20'/> <img src='man/figures/diseq_directional.png'/>
+  
+![
+\\begin{align}
+\\begin{aligned}
+D\_{n t} &= X\_{d, n t}'\\beta\_{d} + u\_{d, n t} \\\\
+S\_{n t} &= X\_{s, n t}'\\beta\_{s} + u\_{s, n t} \\\\
+Q\_{n t} &= \\min\\{D\_{n t},S\_{n t}\\} \\\\
+\\Delta P\_{n t} &\\ge 0 \\implies D\_{n t} \\ge S\_{n t}
+\\end{aligned} \\tag{DM} \\label{directional}
+\\end{align}
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cbegin%7Balign%7D%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%20%5C%5C%0A%5CDelta%20P_%7Bn%20t%7D%20%26%5Cge%200%20%5Cimplies%20D_%7Bn%20t%7D%20%5Cge%20S_%7Bn%20t%7D%0A%5Cend%7Baligned%7D%20%5Ctag%7BDM%7D%20%5Clabel%7Bdirectional%7D%0A%5Cend%7Balign%7D%0A
+"
+\\begin{align}
+\\begin{aligned}
+D_{n t} &= X_{d, n t}'\\beta_{d} + u_{d, n t} \\\\
+S_{n t} &= X_{s, n t}'\\beta_{s} + u_{s, n t} \\\\
+Q_{n t} &= \\min\\{D_{n t},S_{n t}\\} \\\\
+\\Delta P_{n t} &\\ge 0 \\implies D_{n t} \\ge S_{n t}
+\\end{aligned} \\tag{DM} \\label{directional}
+\\end{align}
+")  
+<img src='man/figures/diseq_directional.png'/>
 
 ## A disequilibrium model with deterministic price dynamics
 
@@ -89,10 +149,36 @@ movements is analogous to the magnitude of deviations from the
 market-clearing condition. This model offers a flexible estimation
 alternative, with one extra degree of freedom in the estimation of price
 dynamics, that accounts for market forces that are in alignment with
-standard economic reasoning. By letting \(\gamma\) approach zero, the
-equilibrium model can be obtained as a limiting case of this model.
+standard economic reasoning. By letting
+![\\gamma](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cgamma
+"\\gamma") approach zero, the equilibrium model can be obtained as a
+limiting case of this model.
 
-<img src='https://render.githubusercontent.com/render/math?math=%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%20%5C%5C%0A%5CDelta%20P_%7Bn%20t%7D%20%26%3D%20%5Cfrac%7B1%7D%7B%5Cgamma%7D%20%5Cleft%28%20D_%7Bn%20t%7D%20-%20S_%7Bn%20t%7D%20%5Cright%29%0A%5Cend%7Baligned%7D%20'/> <img src='man/figures/diseq_deterministic_adjustment.png'/>
+  
+![
+\\begin{align}
+\\begin{aligned}
+D\_{n t} &= X\_{d, n t}'\\beta\_{d} + P\_{n t}\\alpha\_{d} + u\_{d, n t}
+\\\\
+S\_{n t} &= X\_{s, n t}'\\beta\_{s} + P\_{n t}\\alpha\_{s} + u\_{s, n t}
+\\\\
+Q\_{n t} &= \\min\\{D\_{n t},S\_{n t}\\} \\\\
+\\Delta P\_{n t} &= \\frac{1}{\\gamma} \\left( D\_{n t} - S\_{n t}
+\\right)
+\\end{aligned} \\tag{DA} \\label{deterministic\_adjustment}
+\\end{align}
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cbegin%7Balign%7D%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%20%5C%5C%0A%5CDelta%20P_%7Bn%20t%7D%20%26%3D%20%5Cfrac%7B1%7D%7B%5Cgamma%7D%20%5Cleft%28%20D_%7Bn%20t%7D%20-%20S_%7Bn%20t%7D%20%5Cright%29%0A%5Cend%7Baligned%7D%20%5Ctag%7BDA%7D%20%5Clabel%7Bdeterministic_adjustment%7D%0A%5Cend%7Balign%7D%0A
+"
+\\begin{align}
+\\begin{aligned}
+D_{n t} &= X_{d, n t}'\\beta_{d} + P_{n t}\\alpha_{d} + u_{d, n t} \\\\
+S_{n t} &= X_{s, n t}'\\beta_{s} + P_{n t}\\alpha_{s} + u_{s, n t} \\\\
+Q_{n t} &= \\min\\{D_{n t},S_{n t}\\} \\\\
+\\Delta P_{n t} &= \\frac{1}{\\gamma} \\left( D_{n t} - S_{n t} \\right)
+\\end{aligned} \\tag{DA} \\label{deterministic_adjustment}
+\\end{align}
+")  
+<img src='man/figures/diseq_deterministic_adjustment.png'/>
 
 ## A disequilibrium model with stochastic price dynamics
 
@@ -100,27 +186,54 @@ The last model of the package extends the price dynamics of the
 deterministic adjustment model by adding additional explanatory
 variables and a stochastic term. The latter term, in particular, makes
 the price adjustment mechanism stochastic and, deviating from the
-structural assumptions of models \((DA)\) and \((DM)\), abstains from
-imposing any separation assumption on the sample (Maddala and Nelson
-1974; Quandt and Ramsey 1978). The estimation of this model offers the
-highest degree of freedom, accompanied, however, by a significant
-increase in estimation complexity, which can hinder the stability of the
-procedure and the numerical accuracy of the outcomes.
+structural assumptions of models
+![(DA)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%28DA%29
+"(DA)") and
+![(DM)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%28DM%29
+"(DM)"), abstains from imposing any separation assumption on the sample
+(Maddala and Nelson 1974; Quandt and Ramsey 1978). The estimation of
+this model offers the highest degree of freedom, accompanied, however,
+by a significant increase in estimation complexity, which can hinder the
+stability of the procedure and the numerical accuracy of the outcomes.
 
-<img src='https://render.githubusercontent.com/render/math?math=%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%20%5C%5C%0A%5CDelta%20P_%7Bn%20t%7D%20%26%3D%20%5Cfrac%7B1%7D%7B%5Cgamma%7D%20%5Cleft%28%20D_%7Bn%20t%7D%20-%20S_%7Bn%20t%7D%20%5Cright%29%20%2B%20%20X_%7Bp%2C%20n%20t%7D%27%5Cbeta_%7Bp%7D%20%2B%20u_%7Bp%2C%20n%20t%7D%0A%5Cend%7Baligned%7D%20'/> <img src='man/figures/diseq_stochastic_adjustment.png'/>
+  
+![
+\\begin{align}
+\\begin{aligned}
+D\_{n t} &= X\_{d, n t}'\\beta\_{d} + P\_{n t}\\alpha\_{d} + u\_{d, n t}
+\\\\
+S\_{n t} &= X\_{s, n t}'\\beta\_{s} + P\_{n t}\\alpha\_{s} + u\_{s, n t}
+\\\\
+Q\_{n t} &= \\min\\{D\_{n t},S\_{n t}\\} \\\\
+\\Delta P\_{n t} &= \\frac{1}{\\gamma} \\left( D\_{n t} - S\_{n t}
+\\right) + X\_{p, n t}'\\beta\_{p} + u\_{p, n t}
+\\end{aligned} \\tag{SA} \\label{stochastic\_adjustment}
+\\end{align}
+](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cbegin%7Balign%7D%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%20%5C%5C%0A%5CDelta%20P_%7Bn%20t%7D%20%26%3D%20%5Cfrac%7B1%7D%7B%5Cgamma%7D%20%5Cleft%28%20D_%7Bn%20t%7D%20-%20S_%7Bn%20t%7D%20%5Cright%29%20%2B%20%20X_%7Bp%2C%20n%20t%7D%27%5Cbeta_%7Bp%7D%20%2B%20u_%7Bp%2C%20n%20t%7D%0A%5Cend%7Baligned%7D%20%5Ctag%7BSA%7D%20%5Clabel%7Bstochastic_adjustment%7D%0A%5Cend%7Balign%7D%0A
+"
+\\begin{align}
+\\begin{aligned}
+D_{n t} &= X_{d, n t}'\\beta_{d} + P_{n t}\\alpha_{d} + u_{d, n t} \\\\
+S_{n t} &= X_{s, n t}'\\beta_{s} + P_{n t}\\alpha_{s} + u_{s, n t} \\\\
+Q_{n t} &= \\min\\{D_{n t},S_{n t}\\} \\\\
+\\Delta P_{n t} &= \\frac{1}{\\gamma} \\left( D_{n t} - S_{n t} \\right) +  X_{p, n t}'\\beta_{p} + u_{p, n t}
+\\end{aligned} \\tag{SA} \\label{stochastic_adjustment}
+\\end{align}
+")  
+<img src='man/figures/diseq_stochastic_adjustment.png'/>
 
 # Installation and documentation
 
 The released version of
-[*diseq*](https://CRAN.R-project.org/package=diseq) can be installed
+[*markets*](https://CRAN.R-project.org/package=markets) can be installed
 from [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-install.packages("diseq")
+install.packages("markets")
 ```
 
 The source code of the in-development version can be downloaded from
-[GitHub](https://github.com/pi-kappa-devel/diseq).
+[GitHub](https://github.com/pi-kappa-devel/markets).
 
 After installing it, there is a basic-usage example installed with it.
 To see it type the command
@@ -130,12 +243,12 @@ vignette('basic_usage')
 ```
 
 Online documentation is available for both the
-[released](https://www.diseq.pikappa.eu) and
-[in-development](https://www.diseq.pikappa.eu/dev/) versions of the
+[released](https://www.markets.pikappa.eu) and
+[in-development](https://www.markets.pikappa.eu/dev/) versions of the
 package. The documentation files can also be accessed in `R` by typing
 
 ``` r
-?? diseq
+?? markets
 ```
 
 An overview of the package’s functionality was presented in the session
@@ -153,10 +266,10 @@ This is a basic example that illustrates how a model of the package can
 be estimated. The package is loaded in the standard way.
 
 ``` r
-library(diseq)
+library(markets)
 ```
 
-The example uses simulated data. The *diseq* package offers a function
+The example uses simulated data. The *markets* package offers a function
 to simulate data from data generating processes that correspond to the
 models that the package provides.
 
@@ -320,12 +433,12 @@ calculate
 The estimation of the basic model is also supported by the package
 [*Disequilibrium*](https://CRAN.R-project.org/package=Disequilibrium).
 By default, the *Disequilibrium* package numerically approximates the
-gradient when optimizing the likelihood. In contrast, *diseq* uses
+gradient when optimizing the likelihood. In contrast, *markets* uses
 analytically calculated expressions for the likelihood, which can reduce
 the duration of estimating the model. In addition, it allows the user to
 override this behavior and use the numerically approximated gradient.
 There is no alternative package that supports the out-of-the-box
-estimation of the other three disequilibrium models of *diseq*.
+estimation of the other three disequilibrium models of *markets*.
 
 # Planned extensions
 

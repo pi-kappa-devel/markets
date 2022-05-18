@@ -23,10 +23,10 @@ if (requireNamespace("knitr", quietly = TRUE)) {
 Load the required libraries.
 
 ```{r setup.libraries}
-library(diseq)
+library(markets)
 ```
 
-Prepare the data. Normally this step is long and depends on the nature of the data and the considered market. For this example, we will use simulated data. Although we could simulate data independently from the package, we will use the top-level simulation functionality of *diseq* to simplify the process. See the documentation of `simulate_data` for more information on the simulation functionality. Here, we simulate data using a data generating process for a market in disequilibrium with stochastic price dynamics.
+Prepare the data. Normally this step is long and depends on the nature of the data and the considered market. For this example, we will use simulated data. Although we could simulate data independently from the package, we will use the top-level simulation functionality of *markets* to simplify the process. See the documentation of `simulate_data` for more information on the simulation functionality. Here, we simulate data using a data generating process for a market in disequilibrium with stochastic price dynamics.
 
 ```{r setup.data}
 nobs <- 2000
@@ -142,11 +142,11 @@ sa <- new(
 
 ## Estimation 
 
-First, we need to set the estimation parameters and choose an estimation method. The only model that can be estimated by least squares is the `equilibrium_model`. To estimate the model with this methodology call `diseq::estimate` with `method = 2SLS` set. The `equilibrium_model` can also be estimated using full information maximum likelihood, as it is the case for all the disequilibrium models. One may choose an optimization method and the corresponding optimization controls. The available methods are:
+First, we need to set the estimation parameters and choose an estimation method. The only model that can be estimated by least squares is the `equilibrium_model`. To estimate the model with this methodology call `markets::estimate` with `method = 2SLS` set. The `equilibrium_model` can also be estimated using full information maximum likelihood, as it is the case for all the disequilibrium models. One may choose an optimization method and the corresponding optimization controls. The available methods are:
 
  * `"Nelder-Mead"`: Does not require the gradient of the likelihood to be known.
 
- * `"BFGS"`: Uses the analytically calculated gradients. By default, the *diseq* package uses this method. 
+ * `"BFGS"`: Uses the analytically calculated gradients. By default, the *markets* package uses this method. 
 
  * `"L-BFGS-B"`: Constrained optimization.
 

@@ -1,224 +1,191 @@
-# Changes in version 0.4.3
+# Name Change Request 
 
-* Version 0.4.3 patches 0.4.2 unit test failure in M1 machines.
- - All platforms were checked once more.
- - Added an m1 build platform. The new results are in (15).
+This commit exclusively concerns a name change request. Although it is more than understandable that name changes are not desirable, several reasons could justify such a request on this occasion.
 
-# Test environments 
-## Windows
-1. (R-devel win-builder.r-project.org) x86_64-w64-mingw32 (64-bit), R Under development (unstable) (2022-02-13 r81727 ucrt)
-2. (R-oldrelease win-builder.r-project.org) x86_64-w64-mingw32 (64-bit), R version 4.0.5 (2021-03-31)
-3. (R-release win-builder.r-project.org) x86_64-w64-mingw32 (64-bit), R version 4.1.2 (2021-11-01)
-4. (rhub windows-x86_64-devel) Windows Server 2022, R-devel, 64 bit, R Under development (unstable) (2022-02-07 r81667 ucrt)
+The package is named diseq, because the code that led to its conception focused exclusively on estimating two disequilibrium market models. The original code was extended into a package to improve collaboration with colleagues using the code. The name diseq was appropriate for the initial package's scope. 
 
-## Linux
+Despite subsequent extensions and improvements added two more disequilibrium and an equilibrium model in the package, the name did not change to avoid breaking existing code. Nevertheless, the package moved more and more away from focusing on disequilibrium models and shortage estimation to providing a wider range of market model estimates, such as demanded, supplied quantities, and aggregated market quantities. Currently, the package offers various options for estimating markets irrespective of if they are in equilibrium or disequilibrium states. Moreover, it provides a comprehensive set of overloaded standard R model functions such as logLik, plot, and summary.
 
-### GCC
-5. (rhub ubuntu-gcc-release) Ubuntu Linux 20.04.1 LTS, R-release, GCC, R version 4.1.2 (2021-11-01)
-6. (rhub debian-gcc-devel) Debian Linux, R-devel, GCC, R Under development (unstable) (2022-02-06 r81658)
-7. (rhub debian-gcc-devel-nold) Debian Linux, R-devel, GCC, no long double, R Under development (unstable) (2022-02-06 r81658)
-8. (rhub rocker-gcc-san) Debian Linux, R-devel, GCC ASAN/UBSAN 
-9. (local) Ubuntu 20.04.3 LTS (in WSL2 under Windows 11), GCC 9.3.0, R version 3.6.3 (2020-02-29) -- "Holding the Windsock"
+To the best of my knowledge, there is no package focusing on market model estimation in CRAN, and markets can fill this gap. In particular, its new Formula-based interface can fit well with other packages on CRAN. Further, the package's current interface (and any future expansions) does not focus on disequilibrium models but rather on markets in general.
 
-### LLVM
-10. (rhub debian-clang-devel) Debian Linux, R-devel, clang, ISO-8859-15 locale, R Under development (unstable) (2022-02-06 r81658)
-11. (rhub fedora-clang-devel) Fedora Linux, R-devel, clang, gfortran, R Under development (unstable) (2022-02-06 r81658)
+With such functionality provided, the name diseq is not indicative anymore of the package's content. Moreover, if someone searches for market estimation in R, it is more likely to search for markets instead of diseq. So, the name change can significantly improve the chances of the package being found by its intended audience.
 
-## Solaris
-12. (rhub solaris-x86-patched) Oracle Solaris 10, x86, 32 bit, R-release
+Hopefully, these arguments justify the inconvenience of the requested name change.
 
-## Macos
-13. (rhub macos-highsierra-release-cran) macOS 10.13.6 High Sierra, R-release, CRAN's setup, R version 4.1.1 (2021-08-10)
-14. (rhub macos-highsierra-release) macOS 10.13.6 High Sierra, R-release, brew, R version 4.1.1 (2021-08-10)
-15. (https://mac.r-project.org/macbuilder/submit.html) r-release-macosx-arm64|4.1.1|macosx|macOS 11.5.2 (20G95)|Mac mini|Apple M1||en_US.UTF-8
+## Changes compared to diseq version 0.4.3
+* Changed Name in DESCRIPTION file
+* Adjusted gitignore and Rbuildignore
+* Adjusted documentation, vignettes, CITATION, and NEWS.md
+* Adjusted configure.ac and _pakgdown.yml
+* Renamed diseq.R to markets.R
 
-# Check results
-## R CMD check results in (1) -- std=gnu++11, with GSL, no execution header -- 1 Note
-Installation time in seconds: 131
-Check time in seconds: 517
-Status: 1 NOTE
+## Changes compared to markets version 1.0.0 (Thanks for the comments)
+* Corrected date in DESCRIPTION.
 
-* checking CRAN incoming feasibility ... NOTE
-Maintainer: 'Pantelis Karapanagiotis <pikappa.devel@gmail.com>'
-
-Days since last update: 2
-
-Found the following (possibly) invalid URLs:
-  URL: https://doi.org/10.2307/1913181
-    From: man/houses.Rd
-          README.md
-    Status: 403
-    Message: Forbidden
-  URL: https://doi.org/10.2307/1914215
-    From: man/diseq.Rd
-          man/houses.Rd
-          man/minus_log_likelihood.Rd
-          README.md
-    Status: 403
-    Message: Forbidden
-  URL: https://doi.org/10.2307/2526311
-    From: README.md
-    Status: 403
-    Message: Forbidden
-
-Found the following (possibly) invalid DOIs:
-  DOI: 10.2307/1914215
-    From: DESCRIPTION
-    Status: Forbidden
-    Message: 403
-
-Artifacts: https://win-builder.r-project.org/At12xfhZMkIn/
-
-## R CMD check results in (2) -- std=gnu++11, with GSL, no execution header -- 1 Note
-Installation time in seconds: 152
-Check time in seconds: 581
-Status: 1 NOTE
-
-* checking CRAN incoming feasibility ... NOTE
-Maintainer: 'Pantelis Karapanagiotis <pikappa.devel@gmail.com>'
-
-Days since last update: 2
-
-Artifacts: https://win-builder.r-project.org/ehWjs5gl2G6W/
+## Changes compared to markets version 1.0.1 (Thanks for the comments)
+* Documented `market_fit` object.
+* Documented return values of `plot`, `show`, and `summaries`.
+* Updated documentation website.
 
 
-## R CMD check results in (3) -- std=gnu++11, with GSL, no execution header -- 1 Note
-Installation time in seconds: 154
-Check time in seconds: 576
-Status: 1 NOTE
+# Test Environments and Results (version 1.0.1)
+## Rhub checks freeze for the last two days.
 
-* checking CRAN incoming feasibility ... NOTE
-Maintainer: 'Pantelis Karapanagiotis <pikappa.devel@gmail.com>'
-
-Days since last update: 2
-
-Output: https://win-builder.r-project.org/2O3khlQsZtqR/
-
-
-## R CMD check results in (4) -- std=gnu++11, with GSL, no execution header -- OK
-Build time: 12 minutes 36.7 seconds
-Status: OK
-
-Artifacts: https://artifacts.r-hub.io/diseq_0.4.3.tar.gz-1cfd5a641ebf4d48a264e2abede981db/
-
-## R CMD check results in (5) -- std=gnu++11, with GSL, no execution header -- 1 Note
-Build time: 27 minutes 59.9 seconds
-Status: 1 NOTE
-
-* checking installed package size ... NOTE
-  installed size is  6.1Mb
-  sub-directories of 1Mb or more:
-    doc    1.0Mb
-    libs   3.4Mb
-	
-Artifacts: https://artifacts.r-hub.io/diseq_0.4.3.tar.gz-2c533eeb07474a1faa50984733673d08/diseq.Rcheck/
-
-## R CMD check results in (6) -- std=c++17, with GSL, with execution header -- OK
-Build time:	32 minutes 45.3 seconds
-Status: OK
-
-Artifacts: https://artifacts.r-hub.io/diseq_0.4.3.tar.gz-5fd25822a0e84d369082452e187a886a/
-
-## R CMD check results in (7) -- std=c++17, with GSL, with execution header -- OK
-Build time:	32 minutes 28.1 seconds
-Status: OK
-
-Artifacts: https://artifacts.r-hub.io/diseq_0.4.3.tar.gz-6dbf31312b4e4e489d51dcff505fd09d/diseq.Rcheck/
-
-## R CMD check results in (8) -- std=c++17, with GSL, with execution header -- Preperror
-Build time: 36 minutes 42 seconds
-
-There might be an issue with the gcc version. The first error is 
-"""
-* installing *source* package ‘Rcpp’ ...
-** package ‘Rcpp’ successfully unpacked and MD5 sums checked
-** using staged installation
-** libs
-g++ -fsanitize=undefined,bounds-strict -fno-omit-frame-pointer -std=gnu++98 -I"/usr/local/lib/R/include" -DNDEBUG -I../inst/include/  -I/usr/local/include   -fpic  -g -O2 -Wall -pedantic -mtune=native  -c api.cpp -o api.o
-g++ -fsanitize=undefined,bounds-strict -fno-omit-frame-pointer -std=gnu++98 -I"/usr/local/lib/R/include" -DNDEBUG -I../inst/include/  -I/usr/local/include   -fpic  -g -O2 -Wall -pedantic -mtune=native  -c attributes.cpp -o attributes.o
-attributes.cpp: In member function ‘std::string Rcpp::attributes::Attribute::customRSignature() const’:
-attributes.cpp:404:20: error: ‘std::string’ {aka ‘class std::__cxx11::basic_string<char>’} has no member named ‘back’
-  404 |             if(sig.back() == '}')
-      |                    ^~~~
-attributes.cpp:408:20: error: ‘std::string’ {aka ‘class std::__cxx11::basic_string<char>’} has no member named ‘front’
-  408 |             if(sig.front() == '{')
-      |                    ^~~~~
-attributes.cpp: In function ‘bool Rcpp::attributes::checkRSignature(const Rcpp::attributes::Function&, std::string)’:
-attributes.cpp:2813:45: error: ‘>>’ should be ‘> >’ within a nested template argument list
- 2813 |             Rcpp::as<std::vector<std::string>>(pargs_cv);
-      |                                             ^~
-      |                                             > >
-make: *** [/usr/local/lib/R/etc/Makeconf:177: attributes.o] Error 1
-ERROR: compilation failed for package ‘Rcpp’
-"""
-
-Then, there is a chain of package installation failures up to diseq.
-
-Output: https://builder.r-hub.io/status/original/diseq_0.4.3.tar.gz-91faef586ec24491be4ae220bce43418
-
-## R CMD check results in (9) -- std=c++17, with GSL, with execution header -- 1 Note
-── R CMD check results ──────────────────────────────────────────────────────────────────────────────────── diseq 0.4.2 ────
-Duration: 2m 35.7s
+## Linux, GCC
+### (9) Local (Ubuntu 20.04.3 LTS in WSL2 under Windows 11) -- 1 NOTE
+── R CMD check results ─────────────────────────────────────────────────────────────────── markets 1.0.2 ────
+Duration: 2m 12s
 
 ❯ checking installed package size ... NOTE
-    installed size is  6.6Mb
+    installed size is  6.7Mb
+    sub-directories of 1Mb or more:
+      doc    1.0Mb
+      libs   4.0Mb
+
+0 errors ✔ | 0 warnings ✔ | 1 note ✖
+## Macos
+### (15) Mac mini at https://mac.r-project.org/macbuilder/submit.html -- 1 Note
+Build system: r-devel-macosx-arm64|4.2.0|macosx|macOS 11.5.2 (20G95)|Mac mini|Apple M1||en_US.UTF-8
+
+Results: https://mac.r-project.org/macbuilder/results/1652871080-6c182ae52049aaae/
+
+
+# Test Environments and Results (version 1.0.1)
+## Windows
+### (1) R-devel win-builder.r-project.org -- 1 NOTE
+Installation time in seconds: 69
+Check time in seconds: 273
+Status: 1 NOTE
+R Under development (unstable) (2022-05-12 r82348 ucrt)
+
+Results: https://win-builder.r-project.org/hUFD3AbSbYMP/
+
+### (2) R-oldrelease win-builder.r-project.org -- 1 NOTE
+Installation time in seconds: 150
+Check time in seconds: 574
+Status: 1 NOTE
+R version 4.1.3 (2022-03-10)
+
+Results: https://win-builder.r-project.org/H7aFUnNUKEPr/
+
+### (3) R-release win-builder.r-project.org -- 1 NOTE
+Installation time in seconds: 57
+Check time in seconds: 279
+Status: 1 NOTE
+R version 4.2.0 (2022-04-22 ucrt)
+
+Results: https://win-builder.r-project.org/UScvE2r58un2/
+
+
+### (4) rhub windows-x86_64-devel -- OK
+Build ID:	markets_1.0.0.tar.gz-9e380be640184f8dbedbaed831c6177f
+Platform:	Windows Server 2022, R-devel, 64 bit
+Submitted:	9 minutes 55.7 seconds ago
+Build time:	9 minutes 52 seconds
+
+
+See the full build log: https://builder.r-hub.io/status/original/markets_1.0.0.tar.gz-9e380be640184f8dbedbaed831c6177f
+
+## Linux, GCC
+### (5) rhub ubuntu-gcc-release -- PREPERROR
+Build ID:	markets_1.0.0.tar.gz-a74c3b2118144f6f99d1dbcc3e94b659
+Platform:	Ubuntu Linux 20.04.1 LTS, R-release, GCC
+Submitted:	11.4 seconds ago
+Build time:	4.5 seconds
+
+
+See the full build log: https://builder.r-hub.io/status/original/markets_1.0.0.tar.gz-a74c3b2118144f6f99d1dbcc3e94b659
+
+
+### (6) rhub debian-gcc-devel -- PREPERROR
+Build ID:	markets_1.0.0.tar.gz-9619b8ed4ce94f1d8ad3c7b3b7cca972
+Platform:	Debian Linux, R-devel, GCC
+Submitted:	14.7 seconds ago
+Build time:	3.5 seconds
+
+
+See the full build log: https://builder.r-hub.io/status/original/markets_1.0.0.tar.gz-9619b8ed4ce94f1d8ad3c7b3b7cca972
+
+### (7) rhub debian-gcc-devel-nold -- PREPERROR
+Build ID:	markets_1.0.0.tar.gz-617d10545fe445189bc63de931e62193
+Platform:	Debian Linux, R-devel, GCC, no long double
+Submitted:	30.7 seconds ago
+Build time:	3.4 seconds
+
+
+See the full build log: https://builder.r-hub.io/status/original/markets_1.0.0.tar.gz-617d10545fe445189bc63de931e62193
+
+### (8) rhub rocker-gcc-san -- PREPERROR
+Build ID:	markets_1.0.0.tar.gz-cf2ccb8a4a394bf59096fc29c3d11e22
+Platform:	Debian Linux, R-devel, GCC ASAN/UBSAN
+Submitted:	13.5 seconds ago
+Build time:	4.1 seconds
+
+
+See the full build log: https://builder.r-hub.io/status/original/markets_1.0.0.tar.gz-cf2ccb8a4a394bf59096fc29c3d11e22
+
+### (9) Local (Ubuntu 20.04.3 LTS in WSL2 under Windows 11) -- 1 NOTE
+── R CMD check results ──────────────────────────────────────────────────────────────────────────── markets 1.0.2 ────
+Duration: 2m 12s
+
+❯ checking installed package size ... NOTE
+    installed size is  6.7Mb
     sub-directories of 1Mb or more:
       doc    1.0Mb
       libs   4.0Mb
 
 0 errors ✔ | 0 warnings ✔ | 1 note ✖
 
-## R CMD check results in (10) -- std=c++17, with GSL, with execution header -- OK
-Build time:	37 minutes 51.4 seconds
-Status: OK
-
-Artifacts: https://artifacts.r-hub.io/diseq_0.4.2.tar.gz-d019ef5b50744495b8cc1dc3213afb50/diseq.Rcheck/
-
-## R CMD check results in (11) -- std=c++17, with GSL, with execution header -- OK
-Build time:	28 minutes 39.7 seconds
-Status: OK
-	
-Artifacts: https://artifacts.r-hub.io/diseq_0.4.3.tar.gz-a8fa07f9fd324fd9850766f1155bd0b5/diseq.Rcheck/
+## Linux, LLVM
+### (10) rhub debian-clang-devel -- PREPERROR
+Build ID:	markets_1.0.0.tar.gz-b3c7168bc9f94af48ffaab274e4823fd
+Platform:	Debian Linux, R-devel, clang, ISO-8859-15 locale
+Submitted:	29.8 seconds ago
+Build time:	3.4 seconds
 
 
-## R CMD check results in (12) -- std=gnu++11, with GSL, no execution header -- Preperror
-Build time:	16 minutes 8.1 seconds
+See the full build log: https://builder.r-hub.io/status/original/markets_1.0.0.tar.gz-b3c7168bc9f94af48ffaab274e4823fd
 
-Point of failure most probably is:
-ERROR: compilation failed for package ‘nloptr’
-
-This error message might be relevant:
-"
-using NLopt via local cmake build on i86pc 
-tools/cmake_call.sh: syntax error at line 3: `(' unexpected
-"
-
-Then, there is a chain of package installation failures up to diseq.
-
-Artifacts: https://builder.r-hub.io/status/original/diseq_0.4.3.tar.gz-b481aca53dcd48a49f5945718a150a47
-
-## R CMD check results in (13) -- std=gnu++11, with GSL, no execution header -- OK
-Build time: 8 minutes 9.7 seconds
-Status: OK
-
-Artifacts: https://artifacts.r-hub.io/diseq_0.4.3.tar.gz-e8ccbecae28149338c8ceadec3b1ba7f/
+### (11) rhub fedora-clang-devel -- PREPERROR
+Build ID:	markets_1.0.0.tar.gz-fbeaafbafdb344d7bab80a80d8fd9d15
+Platform:	Fedora Linux, R-devel, clang, gfortran
+Submitted:	22 seconds ago
+Build time:	3.5 seconds
 
 
-## R CMD check results in (14) -- std=gnu++11, with GSL, no execution header -- OK
-Build time: 9 minutes 15.4 seconds
-Status: OK
+See the full build log: https://builder.r-hub.io/status/original/markets_1.0.0.tar.gz-fbeaafbafdb344d7bab80a80d8fd9d15
 
 
-Artifacts: https://artifacts.r-hub.io/diseq_0.4.3.tar.gz-6a2f9af870aa47f5b9fc6b512721b71a/
+## Solaris
+### (12) rhub solaris-x86-patched -- PREPERROR
+Build ID:	markets_1.0.0.tar.gz-9925c698568244828c192282cc6b30c1
+Platform:	Oracle Solaris 10, x86, 32 bit, R-release
+Submitted:	31 minutes 53.8 seconds ago
+Build time:	31 minutes 29.7 seconds
 
-## R CMD check results in (15) -- std=gnu++11, with GSL, no execution header -- 1 Note
-elapsed time (check, wall clock): 1:29
-Status: 1 NOTE
 
-* checking installed package size ... NOTE
-  installed size is  6.4Mb
-  sub-directories of 1Mb or more:
-    doc    1.0Mb
-    libs   3.8Mb
+See the full build log: https://builder.r-hub.io/status/original/markets_1.0.0.tar.gz-9925c698568244828c192282cc6b30c1
 
-Artifacts: https://mac.r-project.org/macbuilder/results/1645003132-f2208e53f4dd83a2/
+## Macos
+### (13) rhub macos-highsierra-release-cran -- OK
+Build ID:	markets_1.0.0.tar.gz-2144ca18eb254d46a4465d69ddf948f4
+Platform:	macOS 10.13.6 High Sierra, R-release, CRAN's setup
+Submitted:	10 minutes 14.2 seconds ago
+Build time:	9 minutes 53.2 seconds
+
+
+See the full build log: https://builder.r-hub.io/status/original/markets_1.0.0.tar.gz-2144ca18eb254d46a4465d69ddf948f4
+
+### (14) rhub macos-highsierra-release -- OK
+Build ID:	markets_1.0.0.tar.gz-1933cff095204cf0b857cd0bfaf14442
+Platform:	macOS 10.13.6 High Sierra, R-release, brew
+Submitted:	9 minutes 40.8 seconds ago
+Build time:	9 minutes 24.4 seconds
+
+
+See the full build log: https://builder.r-hub.io/status/original/markets_1.0.0.tar.gz-1933cff095204cf0b857cd0bfaf14442
+
+### (15) Mac mini at https://mac.r-project.org/macbuilder/submit.html -- 1 Note
+Build system: r-devel-macosx-arm64|4.2.0|macosx|macOS 11.5.2 (20G95)|Mac mini|Apple M1||en_US.UTF-8
+
+Results: https://mac.r-project.org/macbuilder/results/1652473853-07eb9562409912bf/
