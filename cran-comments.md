@@ -28,8 +28,31 @@ Hopefully, these arguments justify the inconvenience of the requested name chang
 * Updated documentation website.
 
 
-# Test Environments and Results (version 1.0.1)
-## Rhub checks freeze for the last two days.
+# Test Environments and Results (version 1.0.2)
+## Rhub checks freeze for the last two days
+## Windows
+### (1) R-devel win-builder.r-project.org -- 1 NOTE
+Installation time in seconds: 135
+Check time in seconds: 493
+Status: 1 NOTE
+R Under development (unstable) (2022-05-17 r82371 ucrt)
+
+Results: https://win-builder.r-project.org/d4eWUXypEH0O/
+### (2) R-oldrelease win-builder.r-project.org -- 1 NOTE
+Installation time in seconds: 82
+Check time in seconds: 359
+Status: 1 NOTE
+R version 4.1.3 (2022-03-10)
+
+Results: https://win-builder.r-project.org/AmWqJqVWijO6/
+
+### (3) R-release win-builder.r-project.org -- 1 NOTE
+Installation time in seconds: 125
+Check time in seconds: 528
+Status: 1 NOTE
+R version 4.2.0 (2022-04-22 ucrt)
+
+Results: https://win-builder.r-project.org/vUU34AHXJwQm/
 
 ## Linux, GCC
 ### (9) Local (Ubuntu 20.04.3 LTS in WSL2 under Windows 11) -- 1 NOTE
@@ -43,6 +66,7 @@ Duration: 2m 12s
       libs   4.0Mb
 
 0 errors ✔ | 0 warnings ✔ | 1 note ✖
+
 ## Macos
 ### (15) Mac mini at https://mac.r-project.org/macbuilder/submit.html -- 1 Note
 Build system: r-devel-macosx-arm64|4.2.0|macosx|macOS 11.5.2 (20G95)|Mac mini|Apple M1||en_US.UTF-8
