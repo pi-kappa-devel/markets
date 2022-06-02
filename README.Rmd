@@ -8,7 +8,6 @@ output:
     keep_md: false
     self_contained: true
   github_document:
-    html_preview: true
     math_method: webtex
   md_document:
     variant: markdown_github+tex_math_dollars
@@ -17,7 +16,7 @@ bibliography: bibliography.bib
 
 <!-- badges: start -->
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-![](https://cranlogs.r-pkg.org/badges/grand-total/markets)
+![](https://cranlogs.r-pkg.org/badges/last-month/markets)
 ![](https://www.r-pkg.org/badges/version/markets)
 ![](https://www.r-pkg.org/badges/last-release/markets)
 <!-- badges: end -->
@@ -202,7 +201,7 @@ In total, there are four disequilibrium models, which are all estimated using fu
 
 The package organizes these classes in a simple object oriented hierarchy. 
 
-<img src='man/figures/design.png' align="center" />
+<img src='man/figures/design.png' align="center" style="max-width:100%"/>
 
 Concerning post estimation analysis, the package offers functionality to calculate
 

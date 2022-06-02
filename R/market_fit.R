@@ -12,13 +12,15 @@
 #' # estimate an equilibrium  model using the houses dataset
 #' fit <- equilibrium_model(
 #'   HS | RM | ID | TREND ~
-#'   RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
-#'   RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
-#'   fair_houses(), estimation_options = list(method = "2SLS"))
+#'     RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
+#'       RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
+#'   fair_houses(),
+#'   estimation_options = list(method = "2SLS")
+#' )
 #'
 #' # access an inherited method from the underlying model
 #' aggregate_demand(fit)
-#' 
+#'
 #' # summary of results
 #' summary(fit)
 #' @name market_fits
@@ -26,25 +28,27 @@
 NULL
 
 #' @describeIn market_fits Fit class for market models
-#' 
+#'
 #' @description
 #' This is the estimation output class for all market models of the package. It couples
 #' a market model object with estimation results. It provides a common user interface
-#' for accessing estimation results, irrespective of the underlying market model used. The estimation
-#' results are intended to be accessed by passing \code{market_fit} objects to methods such as
-#' \code{\link{plot}}, \code{\link{summary}}, and \code{\link{logLik}}.
+#' for accessing estimation results, irrespective of the underlying market model used.
+#' The estimation results are intended to be accessed by passing \code{market_fit}
+#' objects to methods such as \code{\link{plot}}, \code{\link{summary}}, and
+#' \code{\link{logLik}}.
 #' @details
 #' The \code{market_fit} class derives from the \code{\linkS4class{market_model}}
-#' class. Thus, all the public functionality of the underlying market model is also directly
-#' accessible from the output class.
+#' class. Thus, all the public functionality of the underlying market model is also
+#' directly accessible from the output class.
 #'
-#' Furthermore, the class is responsible for harmonizing the heterogeneous outputs resulting from
-#' different estimation methods of market models. For example, a "2SLS" estimation of the 
-#' \code{\linkS4class{equilibrium_model}} gives a \code{\link[systemfit]{systemfit}} object, while
-#' the maximum likelihood estimation of \code{\linkS4class{diseq_basic}} returns an
-#' \code{\link[bbmle]{mle2}} object. In both cases, the \code{market_fit} stores the
-#' estimation output in the member \code{fit} of type \code{list}. Methods of the class examine
-#' the type of the \code{fit} and direct execution accordingly to different branches to produce
+#' Furthermore, the class is responsible for harmonizing the heterogeneous outputs
+#' resulting from different estimation methods of market models. For example, a
+#' \code{2SLS} estimation of the \code{\linkS4class{equilibrium_model}} gives a
+#' \code{\link[systemfit]{systemfit}} object, while the maximum likelihood estimation
+#' of \code{\linkS4class{diseq_basic}} returns an \code{\link[bbmle]{mle2}} object. In
+#' both cases, the \code{market_fit} stores the estimation output in the member
+#' \code{fit} of type \code{list}. Methods of the class examine the type of the
+#' \code{fit} and direct execution accordingly to different branches to produce
 #' a unified experience for the caller.
 #' @export
 setClass(
@@ -254,7 +258,7 @@ setMethod(
 
     quantity_variable <- colnames(object@system@quantity_vector)
     price_variable <- colnames(object@system@price_vector)
-    
+
     ## create fitted variable
     fitted_column <- paste0(price_variable, "_FITTED")
 
@@ -308,10 +312,12 @@ setMethod(
 #' # estimate a model using the houses dataset
 #' fit <- diseq_deterministic_adjustment(
 #'   HS | RM | ID | TREND ~
-#'   RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
-#'   RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
-#'   fair_houses(),  correlated_shocks = FALSE,
-#'   estimation_options = list(control = list(maxit = 1e+6)))
+#'     RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
+#'       RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
+#'   fair_houses(),
+#'   correlated_shocks = FALSE,
+#'   estimation_options = list(control = list(maxit = 1e+6))
+#' )
 #'
 #' # access the estimated coefficients
 #' coef(fit)
@@ -324,12 +330,14 @@ setMethod(
       object@fit[[1]]@coef
     } else {
       demand <- object@fit[[1]]$system_model$coefficients[
-        grep("demand_", names(object@fit[[1]]$system_model$coefficients))]
+        grep("demand_", names(object@fit[[1]]$system_model$coefficients))
+      ]
       demand <- c(demand[2], demand[1], demand[-c(1, 2)])
       names(demand) <- gsub("demand_", "D_", names(demand))
 
       supply <- object@fit[[1]]$system_model$coefficients[
-        grep("supply_", names(object@fit[[1]]$system_model$coefficients))]
+        grep("supply_", names(object@fit[[1]]$system_model$coefficients))
+      ]
       supply <- c(supply[2], supply[1], supply[-c(1, 2)])
       names(supply) <- gsub("supply_", "S_", names(supply))
 
@@ -346,7 +354,7 @@ setMethod(
         coefs <- c(coefs, rho)
       }
       names(coefs) <- gsub("\\(Intercept\\)", "CONST", names(coefs))
- 
+
       coefs
     }
   }
@@ -365,10 +373,12 @@ setMethod(
 #' # estimate a model using the houses dataset
 #' fit <- diseq_deterministic_adjustment(
 #'   HS | RM | ID | TREND ~
-#'   RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
-#'   RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
-#'   fair_houses(),  correlated_shocks = FALSE,
-#'   estimation_options = list(control = list(maxit = 1e+6)))
+#'     RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
+#'       RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
+#'   fair_houses(),
+#'   correlated_shocks = FALSE,
+#'   estimation_options = list(control = list(maxit = 1e+6))
+#' )
 #'
 #' # access the variance-covariance matrix
 #' head(vcov(fit))
@@ -402,10 +412,12 @@ setMethod(
 #' # estimate a model using the houses dataset
 #' fit <- diseq_deterministic_adjustment(
 #'   HS | RM | ID | TREND ~
-#'   RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
-#'   RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
-#'   fair_houses(),  correlated_shocks = FALSE,
-#'   estimation_options = list(control = list(maxit = 1e+6)))
+#'     RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
+#'       RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
+#'   fair_houses(),
+#'   correlated_shocks = FALSE,
+#'   estimation_options = list(control = list(maxit = 1e+6))
+#' )
 #'
 #' # get the log likelihood object
 #' logLik(fit)
@@ -628,10 +640,12 @@ setMethod(
 #' # estimate a model using the houses dataset
 #' fit <- diseq_deterministic_adjustment(
 #'   HS | RM | ID | TREND ~
-#'   RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
-#'   RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
-#'   fair_houses(),  correlated_shocks = FALSE,
-#'   estimation_options = list(control = list(maxit = 1e+6)))
+#'     RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
+#'       RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
+#'   fair_houses(),
+#'   correlated_shocks = FALSE,
+#'   estimation_options = list(control = list(maxit = 1e+6))
+#' )
 #'
 #' # show model's illustration plot
 #' plot(fit)
@@ -678,7 +692,8 @@ setMethod("plot", signature(x = "market_fit"), function(x, subject, time, ...) {
   tquantities <- max(quantities) * (1 + bandwidth)
   dom <- seq(from = min(fprices), to = max(tprices), length.out = 100)
   plot(
-    prices, quantities, pch = "o", col = "red",
+    prices, quantities,
+    pch = "o", col = "red",
     main = main, xlab = xlab, ylab = ylab,
     xlim = c(fprices, tprices), ylim = c(fquantities, tquantities)
   )

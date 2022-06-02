@@ -1,3 +1,7 @@
+# markets 1.0.3
+
+* Updated package vignette (PDF manuscript) to reflect the latest functionality.
+
 # markets 1.0.2
 
 * Documented `market_fit` object.

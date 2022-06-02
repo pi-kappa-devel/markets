@@ -5,7 +5,7 @@ Models For Markets in Equilibrium and Disequilibrium
 <!-- badges: start -->
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-![](https://cranlogs.r-pkg.org/badges/grand-total/markets)
+![](https://cranlogs.r-pkg.org/badges/last-month/markets)
 ![](https://www.r-pkg.org/badges/version/markets)
 ![](https://www.r-pkg.org/badges/last-release/markets)
 <!-- badges: end -->
@@ -53,15 +53,7 @@ Q\_{n t} &= D\_{n t} = S\_{n t}
 \\end{aligned}\\tag{EM}\\label{equilibrium}
 \\end{align}
 ](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cbegin%7Balign%7D%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20D_%7Bn%20t%7D%20%3D%20S_%7Bn%20t%7D%0A%5Cend%7Baligned%7D%5Ctag%7BEM%7D%5Clabel%7Bequilibrium%7D%0A%5Cend%7Balign%7D%0A
-"
-\\begin{align}
-\\begin{aligned}
-D_{n t} &= X_{d, n t}'\\beta_{d} + P_{n t}\\alpha_{d} + u_{d, n t} \\\\
-S_{n t} &= X_{s, n t}'\\beta_{s} + P_{n t}\\alpha_{s} + u_{s, n t} \\\\
-Q_{n t} &= D_{n t} = S_{n t}
-\\end{aligned}\\tag{EM}\\label{equilibrium}
-\\end{align}
-")  
+)  
 <img src='man/figures/equilibrium_model.png'/>
 
 ## The basic disequilibrium model
@@ -87,15 +79,7 @@ Q\_{n t} &= \\min\\{D\_{n t},S\_{n t}\\}
 \\end{aligned} \\tag{BM} \\label{basic}
 \\end{align}
 ](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cbegin%7Balign%7D%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%0A%5Cend%7Baligned%7D%20%5Ctag%7BBM%7D%20%5Clabel%7Bbasic%7D%0A%5Cend%7Balign%7D%0A
-"
-\\begin{align}
-\\begin{aligned}
-D_{n t} &= X_{d, n t}'\\beta_{d} + u_{d, n t} \\\\
-S_{n t} &= X_{s, n t}'\\beta_{s} + u_{s, n t} \\\\
-Q_{n t} &= \\min\\{D_{n t},S_{n t}\\}
-\\end{aligned} \\tag{BM} \\label{basic}
-\\end{align}
-")  
+)  
 <img src='man/figures/diseq_basic.png'/>
 
 ## The directional disequilibrium model
@@ -124,16 +108,7 @@ Q\_{n t} &= \\min\\{D\_{n t},S\_{n t}\\} \\\\
 \\end{aligned} \\tag{DM} \\label{directional}
 \\end{align}
 ](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cbegin%7Balign%7D%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%20%5C%5C%0A%5CDelta%20P_%7Bn%20t%7D%20%26%5Cge%200%20%5Cimplies%20D_%7Bn%20t%7D%20%5Cge%20S_%7Bn%20t%7D%0A%5Cend%7Baligned%7D%20%5Ctag%7BDM%7D%20%5Clabel%7Bdirectional%7D%0A%5Cend%7Balign%7D%0A
-"
-\\begin{align}
-\\begin{aligned}
-D_{n t} &= X_{d, n t}'\\beta_{d} + u_{d, n t} \\\\
-S_{n t} &= X_{s, n t}'\\beta_{s} + u_{s, n t} \\\\
-Q_{n t} &= \\min\\{D_{n t},S_{n t}\\} \\\\
-\\Delta P_{n t} &\\ge 0 \\implies D_{n t} \\ge S_{n t}
-\\end{aligned} \\tag{DM} \\label{directional}
-\\end{align}
-")  
+)  
 <img src='man/figures/diseq_directional.png'/>
 
 ## A disequilibrium model with deterministic price dynamics
@@ -150,8 +125,7 @@ market-clearing condition. This model offers a flexible estimation
 alternative, with one extra degree of freedom in the estimation of price
 dynamics, that accounts for market forces that are in alignment with
 standard economic reasoning. By letting
-![\\gamma](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cgamma
-"\\gamma") approach zero, the equilibrium model can be obtained as a
+![\\gamma](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cgamma) approach zero, the equilibrium model can be obtained as a
 limiting case of this model.
 
   
@@ -168,16 +142,7 @@ Q\_{n t} &= \\min\\{D\_{n t},S\_{n t}\\} \\\\
 \\end{aligned} \\tag{DA} \\label{deterministic\_adjustment}
 \\end{align}
 ](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cbegin%7Balign%7D%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%20%5C%5C%0A%5CDelta%20P_%7Bn%20t%7D%20%26%3D%20%5Cfrac%7B1%7D%7B%5Cgamma%7D%20%5Cleft%28%20D_%7Bn%20t%7D%20-%20S_%7Bn%20t%7D%20%5Cright%29%0A%5Cend%7Baligned%7D%20%5Ctag%7BDA%7D%20%5Clabel%7Bdeterministic_adjustment%7D%0A%5Cend%7Balign%7D%0A
-"
-\\begin{align}
-\\begin{aligned}
-D_{n t} &= X_{d, n t}'\\beta_{d} + P_{n t}\\alpha_{d} + u_{d, n t} \\\\
-S_{n t} &= X_{s, n t}'\\beta_{s} + P_{n t}\\alpha_{s} + u_{s, n t} \\\\
-Q_{n t} &= \\min\\{D_{n t},S_{n t}\\} \\\\
-\\Delta P_{n t} &= \\frac{1}{\\gamma} \\left( D_{n t} - S_{n t} \\right)
-\\end{aligned} \\tag{DA} \\label{deterministic_adjustment}
-\\end{align}
-")  
+)  
 <img src='man/figures/diseq_deterministic_adjustment.png'/>
 
 ## A disequilibrium model with stochastic price dynamics
@@ -187,10 +152,8 @@ deterministic adjustment model by adding additional explanatory
 variables and a stochastic term. The latter term, in particular, makes
 the price adjustment mechanism stochastic and, deviating from the
 structural assumptions of models
-![(DA)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%28DA%29
-"(DA)") and
-![(DM)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%28DM%29
-"(DM)"), abstains from imposing any separation assumption on the sample
+![(DA)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%28DA%29) and
+![(DM)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%28DM%29), abstains from imposing any separation assumption on the sample
 (Maddala and Nelson 1974; Quandt and Ramsey 1978). The estimation of
 this model offers the highest degree of freedom, accompanied, however,
 by a significant increase in estimation complexity, which can hinder the
@@ -210,16 +173,7 @@ Q\_{n t} &= \\min\\{D\_{n t},S\_{n t}\\} \\\\
 \\end{aligned} \\tag{SA} \\label{stochastic\_adjustment}
 \\end{align}
 ](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%0A%5Cbegin%7Balign%7D%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%20%5C%5C%0A%5CDelta%20P_%7Bn%20t%7D%20%26%3D%20%5Cfrac%7B1%7D%7B%5Cgamma%7D%20%5Cleft%28%20D_%7Bn%20t%7D%20-%20S_%7Bn%20t%7D%20%5Cright%29%20%2B%20%20X_%7Bp%2C%20n%20t%7D%27%5Cbeta_%7Bp%7D%20%2B%20u_%7Bp%2C%20n%20t%7D%0A%5Cend%7Baligned%7D%20%5Ctag%7BSA%7D%20%5Clabel%7Bstochastic_adjustment%7D%0A%5Cend%7Balign%7D%0A
-"
-\\begin{align}
-\\begin{aligned}
-D_{n t} &= X_{d, n t}'\\beta_{d} + P_{n t}\\alpha_{d} + u_{d, n t} \\\\
-S_{n t} &= X_{s, n t}'\\beta_{s} + P_{n t}\\alpha_{s} + u_{s, n t} \\\\
-Q_{n t} &= \\min\\{D_{n t},S_{n t}\\} \\\\
-\\Delta P_{n t} &= \\frac{1}{\\gamma} \\left( D_{n t} - S_{n t} \\right) +  X_{p, n t}'\\beta_{p} + u_{p, n t}
-\\end{aligned} \\tag{SA} \\label{stochastic_adjustment}
-\\end{align}
-")  
+)  
 <img src='man/figures/diseq_stochastic_adjustment.png'/>
 
 # Installation and documentation
@@ -414,7 +368,7 @@ disequilibrium models are
 The package organizes these classes in a simple object oriented
 hierarchy.
 
-<img src='man/figures/design.png' align="center" />
+<img src='man/figures/design.png' align="center" style="max-width:100%"/>
 
 Concerning post estimation analysis, the package offers functionality to
 calculate
