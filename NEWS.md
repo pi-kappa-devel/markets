@@ -1,3 +1,7 @@
+# markets 1.0.4.9001
+
+* Removed faulty default from the generic of function `scores`.
+
 # markets 1.0.4
 
 * Removed dependency to package `magrittr`.
