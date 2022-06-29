@@ -113,7 +113,7 @@ setMethod(
   function(object) {
     start <- callNextMethod(object)
 
-    lhs <- object@model_tibble[, price_differences_variable(object@system)] %>%
+    lhs <- object@model_tibble[, price_differences_variable(object@system)] |>
       dplyr::pull()
     rhs <- cbind(
       object@system@quantity_vector,
@@ -197,7 +197,7 @@ setMethod(
     var_s <- var(supply$residuals)
     names(var_s) <- prefixed_variance_variable(object@system@supply)
 
-    dp <- object@model_tibble[, price_differences_variable(object@system)] %>%
+    dp <- object@model_tibble[, price_differences_variable(object@system)] |>
       dplyr::pull()
     xd <- demand$fitted.values - supply$fitted.values
     rhs <- cbind(xd, object@system@price_equation@independent_matrix)

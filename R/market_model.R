@@ -3,7 +3,6 @@
 #' @importFrom bbmle mle2 parnames summary
 #' @import dplyr
 #' @importFrom graphics legend lines
-#' @importFrom magrittr %>%
 #' @importFrom rlang :=
 #' @importFrom stats formula lm model.matrix na.omit median qnorm sd var
 #' @import tibble
@@ -257,8 +256,8 @@ setMethod(
 
     ## Create model tibble
     len <- nrow(.Object@model_tibble)
-    .Object@model_tibble <- .Object@model_tibble %>%
-      dplyr::select(!!!.Object@columns) %>%
+    .Object@model_tibble <- .Object@model_tibble |>
+      dplyr::select(!!!.Object@columns) |>
       na.omit()
     drops <- len - nrow(.Object@model_tibble)
     if (drops) {
@@ -278,7 +277,7 @@ setMethod(
       }
       x
     }
-    .Object@model_tibble <- .Object@model_tibble %>%
+    .Object@model_tibble <- .Object@model_tibble |>
       dplyr::mutate(dplyr::across(
         where(is.factor),
         remove_unused_levels
@@ -286,7 +285,7 @@ setMethod(
 
     ## Create primary key column
     key_columns_syms <- rlang::syms(c(.Object@subject_column, .Object@time_column))
-    .Object@model_tibble <- .Object@model_tibble %>%
+    .Object@model_tibble <- .Object@model_tibble |>
       dplyr::mutate(pk = as.integer(paste0(!!!key_columns_syms)))
 
     ## Do we need to use lags?
@@ -301,16 +300,16 @@ setMethod(
       lagged_price_column <- paste0("LAGGED_", price_column)
       lagged_price_sym <- rlang::sym(lagged_price_column)
 
-      .Object@model_tibble <- .Object@model_tibble %>%
-        dplyr::group_by(!!!subject_sym) %>%
+      .Object@model_tibble <- .Object@model_tibble |>
+        dplyr::group_by(!!!subject_sym) |>
         dplyr::mutate(
           !!lagged_price_sym := dplyr::lag(!!price_sym, order_by = !!time_sym)
-        ) %>%
+        ) |>
         dplyr::ungroup()
 
-      drop_rows <- .Object@model_tibble %>%
-        dplyr::select(!!lagged_price_sym) %>%
-        is.na() %>%
+      drop_rows <- .Object@model_tibble |>
+        dplyr::select(!!lagged_price_sym) |>
+        is.na() |>
         c()
       .Object@model_tibble <- .Object@model_tibble[!drop_rows, ]
       print_info(
@@ -322,9 +321,9 @@ setMethod(
       diff_column <- paste0(price_column, "_DIFF")
       diff_sym <- rlang::sym(diff_column)
 
-      .Object@model_tibble <- .Object@model_tibble %>%
-        dplyr::group_by(!!!subject_sym) %>%
-        dplyr::mutate(!!diff_sym := !!price_sym - !!lagged_price_sym) %>%
+      .Object@model_tibble <- .Object@model_tibble |>
+        dplyr::group_by(!!!subject_sym) |>
+        dplyr::mutate(!!diff_sym := !!price_sym - !!lagged_price_sym) |>
         dplyr::ungroup()
     }
 
@@ -821,10 +820,10 @@ setMethod(
     fit@details$original_hessian <- fit@details$hessian
     cluster_var <- rlang::syms(cluster_errors_by)
     clustered_scores <- tibble::tibble(
-      object@model_tibble %>% dplyr::select(!!!cluster_var),
+      object@model_tibble |> dplyr::select(!!!cluster_var),
       tibble::as_tibble(scores(object, coef(fit)))
-    ) %>%
-      dplyr::group_by(!!!cluster_var) %>%
+    ) |>
+      dplyr::group_by(!!!cluster_var) |>
       dplyr::group_map(~ t(as.matrix(.)) %*% (as.matrix(.)))
     fit@details$number_of_clusters <- length(clustered_scores)
     adjustment <- MASS::ginv(Reduce("+", clustered_scores))
@@ -989,9 +988,9 @@ aggregate_equation <- function(model, parameters, equation) {
   if (nrow(unique(model@model_tibble[, model@subject_column])) > 1) {
     time_symbol <- rlang::sym(model@time_column)
     aggregate_symbol <- rlang::sym(colnames(qs))
-    result <- model@model_tibble[, model@time_column] %>%
-      dplyr::mutate(!!aggregate_symbol := qs) %>%
-      dplyr::group_by(!!time_symbol) %>%
+    result <- model@model_tibble[, model@time_column] |>
+      dplyr::mutate(!!aggregate_symbol := qs) |>
+      dplyr::group_by(!!time_symbol) |>
       dplyr::summarise(!!aggregate_symbol := sum(!!aggregate_symbol))
   } else {
     result <- sum(qs)

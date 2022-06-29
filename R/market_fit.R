@@ -654,13 +654,13 @@ setMethod(
 #' @export
 setMethod("plot", signature(x = "market_fit"), function(x, subject, time, ...) {
   if (missing(subject)) {
-    subject <- x@model_tibble %>%
-      dplyr::distinct(!!as.symbol(x@subject_column)) %>%
+    subject <- x@model_tibble |>
+      dplyr::distinct(!!as.symbol(x@subject_column)) |>
       dplyr::pull()
   }
   if (missing(time)) {
-    time <- x@model_tibble %>%
-      dplyr::distinct(!!as.symbol(x@time_column)) %>%
+    time <- x@model_tibble |>
+      dplyr::distinct(!!as.symbol(x@time_column)) |>
       dplyr::pull()
   }
   va_args <- list(...)
@@ -674,10 +674,10 @@ setMethod("plot", signature(x = "market_fit"), function(x, subject, time, ...) {
     main <- x@model_type_string
   }
   x@system <- set_parameters(x@system, coef(x))
-  indices <- x@model_tibble %>%
-    dplyr::mutate(row = row_number()) %>%
+  indices <- x@model_tibble |>
+    dplyr::mutate(row = row_number()) |>
     dplyr::filter(!!as.symbol(x@subject_column) %in% subject &
-      !!as.symbol(x@time_column) %in% time) %>%
+      !!as.symbol(x@time_column) %in% time) |>
     dplyr::pull(row)
   a <- x@system@demand@control_matrix[indices, ] %*% x@system@demand@beta
   d <- function(p) mean(c(a) + x@system@demand@alpha * p)

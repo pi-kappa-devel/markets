@@ -90,7 +90,7 @@ NULL
 #' @describeIn houses Generate Fair & Jaffee (1972) dataset
 #' @export
 fair_houses <- function() {
-  houses <- markets::houses %>%
+  houses <- markets::houses |>
     dplyr::mutate(
       ID = 1,
       DSF = .data$DSLA + .data$DMSB - dplyr::lag(.data$DSLA + .data$DMSB),
@@ -105,8 +105,8 @@ fair_houses <- function() {
                 dplyr::lag(.data$DSF, 2) + dplyr::lag(.data$DSF)) / 6,
       MA3DHF = (dplyr::lag(.data$DHF, 3) + dplyr::lag(.data$DHF, 2) +
                 dplyr::lag(.data$DHF)) / 3,
-    ) %>%
-    dplyr::arrange(.data$DATE) %>%
+    ) |>
+    dplyr::arrange(.data$DATE) |>
     dplyr::mutate(TREND = 1:dplyr::n())
   houses
 }

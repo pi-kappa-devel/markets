@@ -1,3 +1,7 @@
+# markets 1.0.4
+
+* Removed dependency to package `magrittr`.
+
 # markets 1.0.3
 
 * Updated package vignette (PDF manuscript) to reflect the latest functionality.

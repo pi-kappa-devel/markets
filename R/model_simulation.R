@@ -79,7 +79,7 @@ setMethod(
     .Object@price_generator <- price_generator
     .Object@control_generator <- control_generator
 
-    .Object@simulation_tbl <- tibble::tibble(id = 1:.Object@nobs) %>%
+    .Object@simulation_tbl <- tibble::tibble(id = 1:.Object@nobs) |>
       tidyr::crossing(tibble::tibble(date = as.factor(1:.Object@tobs)))
 
     .Object <- simulate_controls(.Object)
@@ -170,7 +170,7 @@ setMethod(
       simn <- nrow(object@simulation_tbl)
       mat <- matrix(generator(simn * clen), simn, clen)
       colnames(mat) <- paste0(prefix, 1:clen)
-      object@simulation_tbl <- object@simulation_tbl %>%
+      object@simulation_tbl <- object@simulation_tbl |>
         dplyr::bind_cols(dplyr::as_tibble(mat))
     }
 
@@ -192,7 +192,7 @@ setMethod("simulate_shocks", signature(object = "simulated_model"), function(obj
 
   disturbances <- MASS::mvrnorm(n = nrow(object@simulation_tbl), object@mu, object@sigma)
   colnames(disturbances) <- c("u_d", "u_s")
-  object@simulation_tbl <- object@simulation_tbl %>%
+  object@simulation_tbl <- object@simulation_tbl |>
     dplyr::bind_cols(dplyr::as_tibble(disturbances))
 
   object
@@ -224,17 +224,17 @@ setMethod(
       )
     }
 
-    object@simulation_tbl <- object@simulation_tbl %>%
-      dplyr::mutate(D = demanded_quantities) %>%
-      dplyr::mutate(S = supplied_quantities) %>%
-      dplyr::mutate(P = prices) %>%
-      dplyr::mutate(Q = pmin(.data$D, .data$S)) %>%
-      dplyr::group_by(id) %>%
-      dplyr::mutate(LP = dplyr::lag(.data$P, order_by = date)) %>%
+    object@simulation_tbl <- object@simulation_tbl |>
+      dplyr::mutate(D = demanded_quantities) |>
+      dplyr::mutate(S = supplied_quantities) |>
+      dplyr::mutate(P = prices) |>
+      dplyr::mutate(Q = pmin(.data$D, .data$S)) |>
+      dplyr::group_by(id) |>
+      dplyr::mutate(LP = dplyr::lag(.data$P, order_by = date)) |>
       dplyr::ungroup()
     object@simulation_tbl[is.na(object@simulation_tbl$LP), "LP"] <- starting_prices
-    object@simulation_tbl <- object@simulation_tbl %>%
-      dplyr::mutate(DP = .data$P - .data$LP) %>%
+    object@simulation_tbl <- object@simulation_tbl |>
+      dplyr::mutate(DP = .data$P - .data$LP) |>
       dplyr::mutate(XD = .data$D - .data$S)
 
     object
@@ -494,7 +494,7 @@ setMethod(
     )
     colnames(disturbances) <- c("u_d", "u_s", "u_p")
 
-    object@simulation_tbl <- object@simulation_tbl %>%
+    object@simulation_tbl <- object@simulation_tbl |>
       dplyr::bind_cols(dplyr::as_tibble(disturbances))
 
     object

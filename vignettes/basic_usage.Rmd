@@ -22,7 +22,6 @@ Load the required libraries.
 
 ```{r setup.libraries}
 library(markets)
-library(magrittr)
 library(Formula)
 ```
 
@@ -234,9 +233,9 @@ summary(market)
 The package also offers basic aggregation functionality.
 
 ```{r analysis.aggregation}
-aggregates <- aggregate_demand(fit) %>%
-  dplyr::left_join(aggregate_supply(fit), by = "date") %>%
-  dplyr::mutate(date = as.numeric(date)) %>%
+aggregates <- aggregate_demand(fit) |>
+  dplyr::left_join(aggregate_supply(fit), by = "date") |>
+  dplyr::mutate(date = as.numeric(date)) |>
   dplyr::rename(demand = D_Q, supply = S_Q)
 if (requireNamespace("ggplot2", quietly = TRUE)) {
   pdt <- tibble::tibble(
