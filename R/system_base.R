@@ -4,6 +4,7 @@
 #'
 #' @details Classes with data and functionality describing systems of models.
 #' @name system_classes
+#' @keywords internal
 NULL
 
 #' @describeIn system_classes System base class

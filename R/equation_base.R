@@ -6,6 +6,7 @@ setOldClass(c("Formula"))
 #'
 #' @details Classes with data and functionality describing equations of model systems.
 #' @name equation_classes
+#' @keywords internal
 NULL
 
 #' @describeIn equation_classes Equation base class

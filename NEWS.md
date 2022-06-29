@@ -1,3 +1,7 @@
+# markets 1.0.4.9002
+
+* Removed logger, equation, and system back-end classes from documentation.
+
 # markets 1.0.4.9001
 
 * Removed faulty default from the generic of function `scores`.

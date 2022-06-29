@@ -107,7 +107,9 @@ test_scores <- function(est) {
 test_coef <- function(est) {
   testthat::expect(
     class(coef(est)) == "numeric" &
-      length(coef(est)) == length(likelihood_variables(est@system)),
+      class(coefficients(est)) == "numeric" &
+      length(coef(est)) == length(likelihood_variables(est@system)) &
+      length(coefficients(est)) == length(likelihood_variables(est@system)),
     sprintf("Failed to access coefficients via coef")
   )
 }

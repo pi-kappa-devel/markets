@@ -56,7 +56,8 @@
 #'
 #' @docType package
 #' @name markets
-NULL
+#' @keywords internal
+"_PACKAGE"
 
 ## usethis namespace: start
 #' @useDynLib markets, .registration = TRUE

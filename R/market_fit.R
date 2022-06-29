@@ -5,7 +5,7 @@
 #' @include diseq_stochastic_adjustment.R
 
 
-#' @title Market Model Fit
+#' @title Market model Fit
 #'
 #' @slot fit A list holding estimation outputs.
 #' @examples
@@ -300,32 +300,7 @@ setMethod(
   }
 )
 
-
-#' Estimated coefficients of a fitted market model.
-#'
-#' Returns the coefficients of the fitted model.
-#' @param object A fitted model object.
-#' @return A vector of estimated model coefficients.
-#' @rdname coef
-#' @examples
-#' \donttest{
-#' # estimate a model using the houses dataset
-#' fit <- diseq_deterministic_adjustment(
-#'   HS | RM | ID | TREND ~
-#'     RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
-#'       RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
-#'   fair_houses(),
-#'   correlated_shocks = FALSE,
-#'   estimation_options = list(control = list(maxit = 1e+6))
-#' )
-#'
-#' # access the estimated coefficients
-#' coef(fit)
-#' }
-#' @export
-setMethod(
-  "coef", signature(object = "market_fit"),
-  function(object) {
+market_fit_coefficients <-  function(object) {
     if (is(object@fit[[1]], "mle2")) {
       object@fit[[1]]@coef
     } else {
@@ -358,6 +333,37 @@ setMethod(
       coefs
     }
   }
+
+#' Estimated coefficients of a fitted market model.
+#'
+#' Returns the coefficients of the fitted model.
+#' @param object A fitted model object.
+#' @return A vector of estimated model coefficients.
+#' @rdname coef
+#' @examples
+#' \donttest{
+#' # estimate a model using the houses dataset
+#' fit <- diseq_deterministic_adjustment(
+#'   HS | RM | ID | TREND ~
+#'     RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
+#'       RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
+#'   fair_houses(),
+#'   correlated_shocks = FALSE,
+#'   estimation_options = list(control = list(maxit = 1e+6))
+#' )
+#'
+#' # access the estimated coefficients
+#' coef(fit)
+#' coefficients(fit)
+#' }
+#' @export
+setMethod("coef", signature(object = "market_fit"), market_fit_coefficients)
+
+#' @describeIn coef Estimated coefficients alias.
+#' @export
+setMethod(
+  "coefficients", signature(object = "market_fit"),
+  market_fit_coefficients
 )
 
 #' Variance-covariance matrix for a fitted market model.

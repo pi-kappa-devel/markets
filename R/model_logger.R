@@ -8,7 +8,7 @@
 #'  \item{3}{prints verbose information and,}
 #'  \item{4}{prints debug information.}
 #' }
-
+#' @keywords internal
 setClass(
   "model_logger",
   representation(
