@@ -60,16 +60,16 @@ setMethod("print_warning", signature(object = "model_logger"), function(object, 
 })
 
 setMethod("print_info", signature(object = "model_logger"), function(object, ...) {
-  if (object@verbosity > 1) cat("Info: ", ..., "\n", sep = "")
+  if (object@verbosity > 1) cat("Info: ", ..., "\n", fill = TRUE, sep = "")
   object
 })
 
 setMethod("print_verbose", signature(object = "model_logger"), function(object, ...) {
-  if (object@verbosity > 2) cat("Verbose: ", ..., "\n", sep = "")
+  if (object@verbosity > 2) cat("Verbose: ", ..., "\n", fill = TRUE, sep = "")
   object
 })
 
 setMethod("print_debug", signature(object = "model_logger"), function(object, ...) {
-  if (object@verbosity > 3) cat("Debug: ", ..., "\n", sep = "")
+  if (object@verbosity > 3) cat("Debug: ", ..., "\n", fill = TRUE, sep = "")
   object
 })

@@ -40,7 +40,7 @@ Imports:
     Rcpp,
     RcppGSL,
     RcppParallel
-License: MIT + file LICENSE
+License: Expat + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.0

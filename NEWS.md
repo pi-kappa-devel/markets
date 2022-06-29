@@ -1,3 +1,7 @@
+# markets 1.0.4.9003
+
+* Patched logging functionality to respect the console width set in options.
+
 # markets 1.0.4.9002
 
 * Removed logger, equation, and system back-end classes from documentation.
