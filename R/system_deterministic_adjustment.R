@@ -62,7 +62,7 @@ setMethod(
   function(object) {
     callNextMethod(object)
     cat(sprintf(
-      "  %-18s: %s\n  %-18s: %s\n", "Short Side Rule", paste0(
+      "  %-18s: %s\n  %-18s: %s", "Short Side Rule", paste0(
         quantity_variable(object@demand), " = min(",
         prefixed_quantity_variable(object@demand), ", ",
         prefixed_quantity_variable(object@supply), ")"
@@ -72,7 +72,7 @@ setMethod(
         prefixed_quantity_variable(object@demand), " - ",
         prefixed_quantity_variable(object@supply), ")"
       )
-    ))
+    ), fill = TRUE)
   }
 )
 

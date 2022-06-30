@@ -29,7 +29,7 @@ test_calculated_gradient <- function(mdl, params, tolerance) {
 
 test_convergence <- function(est) {
   testthat::expect(
-    est@fit[[1]]@details$convergence == 0,
+    est@fit$convergence == 0,
     sprintf("Failed to converge")
   )
 }

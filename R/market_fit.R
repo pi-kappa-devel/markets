@@ -45,7 +45,7 @@ NULL
 #' resulting from different estimation methods of market models. For example, a
 #' \code{2SLS} estimation of the \code{\linkS4class{equilibrium_model}} gives a
 #' \code{\link[systemfit]{systemfit}} object, while the maximum likelihood estimation
-#' of \code{\linkS4class{diseq_basic}} returns an \code{\link[bbmle]{mle2}} object. In
+#' of \code{\linkS4class{diseq_basic}} returns an \code{\link[stats]{optim}} list. In
 #' both cases, the \code{market_fit} stores the estimation output in the member
 #' \code{fit} of type \code{list}. Methods of the class examine the type of the
 #' \code{fit} and direct execution accordingly to different branches to produce
@@ -66,7 +66,7 @@ setMethod(
     for (slot_name in slotNames(market_model)) {
       slot(.Object, slot_name) <- slot(market_model, slot_name)
     }
-    .Object@fit <- list(estimate)
+    .Object@fit <- estimate
 
     .Object
   }
@@ -93,31 +93,35 @@ setMethod(
 #' @export
 setMethod("summary", signature(object = "market_fit"), function(object) {
   (selectMethod("summary", "market_model"))(object)
-  if (is(object@fit[[1]], "mle2")) {
-    summary <- (selectMethod("summary", "mle2"))(object@fit[[1]])
-    args <- summary@call[[2]]
+  if (object@fit$method != "2SLS") {
+    args <- object@fit$call[[2]]
 
-    cat("\nMaximum likelihood estimation\n")
-    cat(sprintf("  %-20s: %s\n", "Method", object@fit[[1]]@method))
+    cat("\nMaximum likelihood estimation:", fill = TRUE)
+    cat(sprintf("  %-20s: %s", "Method", args$method),
+      fill = TRUE
+    )
     cat(sprintf(
-      "  %-20s: %d\n", "Max Iterations",
-      args$control$maxit
-    ))
+      "  %-20s: %d", "Max Iterations", args$control$maxit
+    ), fill = TRUE)
     cat(sprintf(
-      "  %-20s: %g\n", "Relative Tolerance",
-      args$control$reltol
-    ))
+      "  %-20s: %g", "Relative Tolerance", args$control$reltol
+    ), fill = TRUE)
     cat(sprintf(
-      "  %-20s: %s\n", "Convergence Status",
-      ifelse(!object@fit[[1]]@details$convergence, "success", "failure")
-    ))
-    cat(sprintf("  %-20s:\n", "Starting Values"))
-    print(args$start, digits = 4)
-    cat("\nCoefficients\n")
-    print(summary@coef, digits = 4)
-    cat(sprintf("\n%s: %g\n", "-2 log L", summary@m2logL))
+      "  %-20s: %s", "Convergence Status",
+      ifelse(!object@fit$convergence, "success", "failure")
+    ), fill = TRUE)
+    cat(sprintf("  %-20s:", "Starting Values"), fill = TRUE)
+    print(object@fit$start, digits = 4)
+    cat("\nCoefficients:", fill = TRUE)
+    m <- object@fit$par
+    sd <- sqrt(diag(object@fit$vcov))
+    z <- m / sd
+    p <- 2 * pnorm(abs(z), lower.tail = FALSE)
+    r <- cbind(Estimate = m, `Std. Error` = sd, `z value` = z, `Pr(z)` = p)
+    print(r, digits = 4)
+    cat(sprintf("\n%s: %g", "-2 log L", -2 * logLik(object)), fill = TRUE)
   } else {
-    print(summary(object@fit[[1]]$system_model))
+    print(summary(object@fit$system_model))
   }
 })
 
@@ -127,17 +131,17 @@ setMethod("summary", signature(object = "market_fit"), function(object) {
 #' All models are estimated using full information maximum likelihood. The
 #' \code{\linkS4class{equilibrium_model}} can also be estimated using two-stage
 #' least squares. The maximum likelihood estimation is based on
-#' \code{\link[bbmle]{mle2}}. If no starting values are provided, the function uses
+#' \code{\link[stats]{optim}}. If no starting values are provided, the function uses
 #' linear regression estimates as initializing values. The default optimization method is
-#' BFGS. For other alternatives see \code{\link[bbmle]{mle2}}. The implementation of
+#' BFGS. For other alternatives see \code{\link[stats]{optim}}. The implementation of
 #' the two-stage least square estimation of the \code{\linkS4class{equilibrium_model}}
 #' is based on \code{\link[systemfit]{systemfit}}.
 #' @param object A model object.
 #' @param ... Named parameter used in the model's estimation. These are passed further
 #' down to the estimation call. For the \code{\linkS4class{equilibrium_model}} model, the
 #' parameters are passed to \code{\link[systemfit]{systemfit}}, if the method is set to
-#' \code{2SLS}, or to \code{\link[bbmle]{mle2}} for any other method. For the rest of
-#' the models, the parameters are passed to \code{\link[bbmle]{mle2}}.
+#' \code{2SLS}, or to \code{\link[stats]{optim}} for any other method. For the rest of
+#' the models, the parameters are passed to \code{\link[stats]{optim}}.
 #' @return The object that holds the estimation result.
 #' @rdname estimate
 #' @examples
@@ -196,34 +200,33 @@ setMethod(
     if (hessian == "skip" ||
       ((object@model_type_string %in% c("Basic", "Directional")) &&
         hessian == "calculated")) {
-      va_args$skip.hessian <- TRUE
+      va_args$hessian <- FALSE
     } else {
+      va_args$hessian <- TRUE
       hessian <- "numerical"
     }
 
-    va_args$start <- prepare_initializing_values(object, va_args$start)
+    va_args$par <- start <- prepare_initializing_values(object, va_args$par)
 
     if (is.null(va_args$method)) {
       va_args$method <- "BFGS"
     }
 
-    va_args$minuslogl <- function(...) minus_log_likelihood(object, ...)
-    bbmle::parnames(va_args$minuslogl) <- likelihood_variables(object@system)
+    va_args$fn <- function(...) minus_log_likelihood(object, ...)
+    # bbmle::parnames(va_args$minuslogl) <- likelihood_variables(object@system)
     if (gradient == "calculated") {
       va_args$gr <- function(...) gradient(object, ...)
-      bbmle::parnames(va_args$gr) <- likelihood_variables(object@system)
+      # bbmle::parnames(va_args$gr) <- likelihood_variables(object@system)
     }
 
-    fit <- do.call(bbmle::mle2, va_args)
-    fit@call.orig <- call("bbmle::mle2", va_args)
+    fit <- do.call(optim, va_args)
+    fit$call <- call("optim", va_args)
+    fit$start <- start
+    fit$method <- va_args$method
 
     if (hessian == "calculated") {
       print_verbose(object@logger, "Calculating hessian and variance-covariance matrix.")
-      fit@details$hessian <- hessian(object, fit@coef)
-      tryCatch(
-        fit@vcov <- MASS::ginv(fit@details$hessian),
-        error = function(e) print_warning(object@logger, e$message)
-      )
+      fit$hessian <- hessian(object, fit$par)
     }
 
     if (length(standard_errors) == 1) {
@@ -236,6 +239,13 @@ setMethod(
       fit <- set_clustered_errors(object, fit, standard_errors)
     }
 
+    if (!is.null(fit$hessian)) {
+      tryCatch(
+        fit$vcov <- MASS::ginv(fit$hessian),
+        error = function(e) print_warning(object@logger, e$message)
+      )
+    }
+
     new("market_fit", object, fit)
   }
 )
@@ -244,7 +254,7 @@ setMethod(
 #' @param method A string specifying the estimation method. When the passed value is
 #' among \code{Nelder-Mead}, \code{BFGS}, \code{CG}, \code{L-BFGS-B}, \code{SANN},
 #' and \code{Brent}, the model is estimated using
-#' full information maximum likelihood based on \code{\link[bbmle]{mle2}} functionality.
+#' full information maximum likelihood based on \code{\link[stats]{optim}} functionality.
 #' When \code{2SLS} is supplied, the model is estimated using two-stage least squares
 #' based on \code{\link[systemfit]{systemfit}}. In this case, the function returns a
 #' list containing the first and second stage estimates. The default value is
@@ -295,44 +305,47 @@ setMethod(
 
     new(
       "market_fit", object,
-      list(first_stage_model = first_stage_model, system_model = system_model)
+      list(
+        method = method, first_stage_model = first_stage_model,
+        system_model = system_model
+      )
     )
   }
 )
 
-market_fit_coefficients <-  function(object) {
-    if (is(object@fit[[1]], "mle2")) {
-      object@fit[[1]]@coef
-    } else {
-      demand <- object@fit[[1]]$system_model$coefficients[
-        grep("demand_", names(object@fit[[1]]$system_model$coefficients))
-      ]
-      demand <- c(demand[2], demand[1], demand[-c(1, 2)])
-      names(demand) <- gsub("demand_", "D_", names(demand))
+market_fit_coefficients <- function(object) {
+  if (object@fit$method != "2SLS") {
+    object@fit$par
+  } else {
+    demand <- object@fit$system_model$coefficients[
+      grep("demand_", names(object@fit$system_model$coefficients))
+    ]
+    demand <- c(demand[2], demand[1], demand[-c(1, 2)])
+    names(demand) <- gsub("demand_", "D_", names(demand))
 
-      supply <- object@fit[[1]]$system_model$coefficients[
-        grep("supply_", names(object@fit[[1]]$system_model$coefficients))
-      ]
-      supply <- c(supply[2], supply[1], supply[-c(1, 2)])
-      names(supply) <- gsub("supply_", "S_", names(supply))
+    supply <- object@fit$system_model$coefficients[
+      grep("supply_", names(object@fit$system_model$coefficients))
+    ]
+    supply <- c(supply[2], supply[1], supply[-c(1, 2)])
+    names(supply) <- gsub("supply_", "S_", names(supply))
 
-      var_d <- object@fit[[1]]$system_model$residCov[[1, 1]]
-      names(var_d) <- prefixed_variance_variable(object@system@demand)
+    var_d <- object@fit$system_model$residCov[[1, 1]]
+    names(var_d) <- prefixed_variance_variable(object@system@demand)
 
-      var_s <- object@fit[[1]]$system_model$residCov[[2, 2]]
-      names(var_s) <- prefixed_variance_variable(object@system@supply)
+    var_s <- object@fit$system_model$residCov[[2, 2]]
+    names(var_s) <- prefixed_variance_variable(object@system@supply)
 
-      coefs <- c(demand, supply, var_d, var_s)
-      if (object@system@correlated_shocks) {
-        rho <- object@fit[[1]]$system_model$residCov[1, 2] / sqrt(var_d * var_s)
-        names(rho) <- correlation_variable(object@system)
-        coefs <- c(coefs, rho)
-      }
-      names(coefs) <- gsub("\\(Intercept\\)", "CONST", names(coefs))
-
-      coefs
+    coefs <- c(demand, supply, var_d, var_s)
+    if (object@system@correlated_shocks) {
+      rho <- object@fit$system_model$residCov[1, 2] / sqrt(var_d * var_s)
+      names(rho) <- correlation_variable(object@system)
+      coefs <- c(coefs, rho)
     }
+    names(coefs) <- gsub("\\(Intercept\\)", "CONST", names(coefs))
+
+    coefs
   }
+}
 
 #' Estimated coefficients of a fitted market model.
 #'
@@ -393,12 +406,12 @@ setMethod(
 setMethod(
   "vcov", signature(object = "market_fit"),
   function(object) {
-    if (is(object@fit[[1]], "mle2")) {
-      colnames(object@fit[[1]]@vcov) <- names(coef(object))
-      rownames(object@fit[[1]]@vcov) <- names(coef(object))
-      object@fit[[1]]@vcov
+    if (object@fit$method != "2SLS") {
+      colnames(object@fit$vcov) <- names(coef(object))
+      rownames(object@fit$vcov) <- names(coef(object))
+      object@fit$vcov
     } else {
-      object@fit[[1]]$system_model$coefCov
+      object@fit$system_model$coefCov
     }
   }
 )
@@ -433,9 +446,9 @@ setMethod(
   "logLik", signature(object = "market_fit"),
   function(object) {
     ll <- NULL
-    if (is(object@fit[[1]], "mle2")) {
-      ll <- structure(-object@fit[[1]]@min,
-        df = length(object@fit[[1]]@coef), class = "logLik"
+    if (object@fit$method != "2SLS") {
+      ll <- structure(-object@fit$value,
+        df = length(coef(object)), class = "logLik"
       )
     }
     ll

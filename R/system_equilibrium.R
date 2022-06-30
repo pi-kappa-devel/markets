@@ -64,12 +64,12 @@ setMethod(
   function(object) {
     callNextMethod(object)
     cat(sprintf(
-      "  %-18s: %s\n", "Market Clearing", paste0(
+      "  %-18s: %s", "Market Clearing", paste0(
         quantity_variable(object@demand), " = ",
         prefixed_quantity_variable(object@demand), " = ",
         prefixed_quantity_variable(object@supply)
       )
-    ))
+    ), fill = TRUE)
   }
 )
 

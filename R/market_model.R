@@ -482,14 +482,14 @@ setMethod(
 #' @export
 setMethod("show", signature(object = "market_model"), function(object) {
   cat(sprintf(
-    "%s Model for Markets in %s\n",
+    "%s Model for Markets in %s:",
     object@model_type_string, object@market_type_string
-  ))
+  ), fill = TRUE)
   show_implementation(object@system)
   cat(sprintf(
-    "  %-18s: %s\n", "Shocks",
+    "  %-18s: %s", "Shocks",
     ifelse(object@system@correlated_shocks, "Correlated", "Independent")
-  ))
+  ), fill = TRUE)
 })
 
 #' @title Model and fit summaries
@@ -517,7 +517,7 @@ setMethod("show", signature(object = "market_model"), function(object) {
 #'
 #' # estimate
 #' fit <- estimate(model)
-#' 
+#'
 #' # print estimation summary
 #' summary(fit)
 #' }
@@ -536,17 +536,20 @@ NULL
 #' @export
 setMethod("summary", signature(object = "market_model"), function(object) {
   show(object)
-  cat(sprintf("  %-18s: %d\n", "Nobs", nrow(object@model_tibble)))
+  cat(
+    sprintf("  %-18s: %d", "Nobs", nrow(object@model_tibble)),
+    fill = TRUE
+  )
   summary_implementation(object@system)
   cat(sprintf(
-    "  %-18s: %s\n", "Key Var(s)",
+    "  %-18s: %s", "Key Var(s)",
     paste0(c(object@subject_column, object@time_column), collapse = ", ")
-  ))
+  ), fill = TRUE)
   if (!is.null(object@time_column)) {
     cat(sprintf(
-      "  %-18s: %s\n", "Time Var",
+      "  %-18s: %s", "Time Var",
       paste0(object@time_column, collapse = ", ")
-    ))
+    ), fill = TRUE)
   }
 })
 
@@ -800,11 +803,11 @@ setGeneric("supply_descriptives", function(object) {
 setMethod(
   "set_heteroscedasticity_consistent_errors", signature(object = "market_model"),
   function(object, fit) {
-    fit@details$original_hessian <- fit@details$hessian
-    scores <- scores(object, coef(fit))
+    fit$original_hessian <- fit$hessian
+    scores <- scores(object, fit$par)
     adjustment <- MASS::ginv(t(scores) %*% scores)
-    fit@details$hessian <- fit@details$hessian %*% adjustment %*% fit@details$hessian
-    fit@vcov <- MASS::ginv(fit@details$hessian)
+    fit$hessian <- fit$hessian %*% adjustment %*% fit$hessian
+    fit$vcov <- MASS::ginv(fit$hessian)
     fit
   }
 )
@@ -817,19 +820,19 @@ setMethod(
         object@logger, "Cluster variable is not among model data variables."
       )
     }
-    fit@details$original_hessian <- fit@details$hessian
+    fit$original_hessian <- fit$hessian
     cluster_var <- rlang::syms(cluster_errors_by)
     clustered_scores <- tibble::tibble(
       object@model_tibble |> dplyr::select(!!!cluster_var),
-      tibble::as_tibble(scores(object, coef(fit)))
+      tibble::as_tibble(scores(object, fit$par))
     ) |>
       dplyr::group_by(!!!cluster_var) |>
       dplyr::group_map(~ t(as.matrix(.)) %*% (as.matrix(.)))
-    fit@details$number_of_clusters <- length(clustered_scores)
+    fit$number_of_clusters <- length(clustered_scores)
     adjustment <- MASS::ginv(Reduce("+", clustered_scores))
-    fit@details$hessian <- fit@details$hessian %*% adjustment %*% fit@details$hessian
-    fit@vcov <- MASS::ginv(fit@details$hessian) * (
-      fit@details$number_of_clusters / (fit@details$number_of_clusters - 1)
+    fit$hessian <- fit$hessian %*% adjustment %*% fit$hessian
+    fit$vcov <- MASS::ginv(fit$hessian) * (
+      fit$number_of_clusters / (fit$number_of_clusters - 1)
     )
     fit
   }
@@ -945,8 +948,8 @@ setMethod(
 #' \donttest{
 #' fit <- diseq_basic(
 #'   HS | RM | ID | TREND ~
-#'   RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
-#'     RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
+#'     RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
+#'       RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
 #'   fair_houses(),
 #'   correlated_shocks = FALSE
 #' )
@@ -1026,8 +1029,8 @@ setMethod(
 #' \donttest{
 #' fit <- diseq_basic(
 #'   HS | RM | ID | TREND ~
-#'   RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
-#'     RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
+#'     RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
+#'       RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
 #'   fair_houses(),
 #'   correlated_shocks = FALSE
 #' )
@@ -1101,10 +1104,12 @@ setMethod(
 #' # estimate a model using the houses dataset
 #' fit <- diseq_deterministic_adjustment(
 #'   HS | RM | ID | TREND ~
-#'   RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
-#'   RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
-#'   fair_houses(),  correlated_shocks = FALSE,
-#'   estimation_options = list(control = list(maxit = 1e+5)))
+#'     RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
+#'       RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
+#'   fair_houses(),
+#'   correlated_shocks = FALSE,
+#'   estimation_options = list(control = list(maxit = 1e+5))
+#' )
 #'
 #' # get estimated normalized shortages
 #' head(normalized_shortages(fit))
@@ -1209,10 +1214,12 @@ setGeneric("shortage_standard_deviation", function(fit, model, parameters) {
 #' # estimate a model using the houses dataset
 #' fit <- diseq_deterministic_adjustment(
 #'   HS | RM | ID | TREND ~
-#'   RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
-#'   RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
-#'   fair_houses(),  correlated_shocks = FALSE,
-#'   estimation_options = list(control = list(maxit = 1e+5)))
+#'     RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
+#'       RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
+#'   fair_houses(),
+#'   correlated_shocks = FALSE,
+#'   estimation_options = list(control = list(maxit = 1e+5))
+#' )
 #'
 #' # mean marginal effect of variable "RM" on the shortage probabilities
 #' #' shortage_probability_marginal(fit, "RM")

@@ -30,7 +30,7 @@ test_that(paste0(model_name(mdl), " can be estimated"), {
       control = optimization_options, method = optimization_method
     )
   )
-  expect_is(est@fit[[1]], "mle2")
+  expect_is(est@fit, "list")
 })
 
 test_that(paste0(model_name(mdl), " fit can be summarized"), {

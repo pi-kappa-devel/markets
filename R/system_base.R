@@ -85,9 +85,17 @@ setMethod("summary_implementation", signature(object = "system_base"), function(
   } else {
     sample_separation_output <- "Not Separated"
   }
-  cat(sprintf("  %-18s: %s\n", "Sample Separation", sample_separation_output))
-  cat(sprintf("  %-18s: %s\n", "Quantity Var", colnames(object@quantity_vector)))
-  cat(sprintf("  %-18s: %s\n", "Price Var", colnames(object@price_vector)))
+  cat(
+    sprintf("  %-18s: %s", "Sample Separation", sample_separation_output),
+    fill = TRUE
+  )
+  cat(
+    sprintf("  %-18s: %s", "Quantity Var", colnames(object@quantity_vector)),
+    fill = TRUE
+  )
+  cat(sprintf("  %-18s: %s", "Price Var", colnames(object@price_vector)),
+    fill = TRUE
+  )
 })
 
 #' @describeIn variable_names Lagged price variable name.

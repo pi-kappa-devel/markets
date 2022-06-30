@@ -305,7 +305,7 @@ The results can be inspected in the usual fashion via `summary`.
 summary(fit)
 ```
 
-    ## Basic Model for Markets in Disequilibrium
+    ## Basic Model for Markets in Disequilibrium:
     ##   Demand RHS        : D_P + D_Xd1 + D_Xd2 + D_X1 + D_X2
     ##   Supply RHS        : S_P + S_Xs1 + S_X1 + S_X2
     ##   Short Side Rule   : Q = min(D_Q, S_Q)
@@ -317,8 +317,10 @@ summary(fit)
     ##   Key Var(s)        : id, date
     ##   Time Var          : date
     ## 
-    ## Maximum likelihood estimation
+    ## Maximum likelihood estimation:
     ##   Method              : BFGS
+    ## 
+    ## 
     ##   Convergence Status  : success
     ##   Starting Values     :
     ##        D_P    D_CONST      D_Xd1      D_Xd2       D_X1       D_X2        S_P 
@@ -326,7 +328,7 @@ summary(fit)
     ##    S_CONST      S_Xs1       S_X1       S_X2 D_VARIANCE S_VARIANCE        RHO 
     ##    32.8104     0.4500     1.9376     4.8819     3.8528     4.2008     0.0000 
     ## 
-    ## Coefficients
+    ## Coefficients:
     ##             Estimate Std. Error   z value  Pr(z)
     ## D_P        -1.924718   0.013833 -139.1346 0.0000
     ## D_CONST    36.937193   0.021933 1684.0868 0.0000

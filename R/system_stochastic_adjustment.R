@@ -154,12 +154,12 @@ setMethod(
     callNextMethod(object)
     show_implementation(object@price_equation)
     cat(sprintf(
-      "  %-18s: %s\n", "Short Side Rule", paste0(
+      "  %-18s: %s", "Short Side Rule", paste0(
         quantity_variable(object@demand), " = min(",
         prefixed_quantity_variable(object@demand), ", ",
         prefixed_quantity_variable(object@supply), ")"
       )
-    ))
+    ), fill = TRUE)
   }
 )
 

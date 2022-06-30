@@ -31,7 +31,7 @@ test_that(paste0(model_name(mdl), " can be estimated"), {
       method = optimization_method, standard_errors = "heteroscedastic"
     )
   )
-  expect_is(est@fit[[1]], "mle2")
+  expect_is(est@fit, "list")
 })
 
 

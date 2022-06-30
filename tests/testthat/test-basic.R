@@ -30,7 +30,7 @@ test_that(paste0(model_name(mdl), " can be estimated"), {
       standard_errors = c("id")
     )
   )
-  expect_is(est@fit[[1]], "mle2")
+  expect_is(est@fit, "list")
 })
 
 test_that(paste0(model_name(mdl), " fit can be summarized"), {

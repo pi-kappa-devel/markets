@@ -1,3 +1,7 @@
+# markets 1.0.5
+
+* Removed dependency to package `bbmle`. Using directly `optim` for maximum likelihood estimations.
+
 # markets 1.0.4.9003
 
 * Patched logging functionality to respect the console width set in options.

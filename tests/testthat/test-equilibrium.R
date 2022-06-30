@@ -28,7 +28,7 @@ test_that(paste0(model_name(mdl), " can be estimated"), {
       control = optimization_options, method = optimization_method
     )
   )
-  expect_is(est@fit[[1]], "mle2")
+  expect_is(est@fit, "list")
 })
 
 test_that(paste0(model_name(mdl), " fit can be summarized"), {
@@ -55,11 +55,11 @@ test_that(paste0("Scores can be calculated"), {
 reg <- NULL
 test_that(paste0("First stage of '", model_name(mdl), "' can be estimated"), {
   reg <<- estimate(mdl, method = "2SLS")
-  expect_is(reg@fit[[1]]$first_stage_model, "lm")
+  expect_is(reg@fit$first_stage_model, "lm")
 })
 
 test_that(paste0("Second stage of '", model_name(mdl), "' can be estimated"), {
-  expect_is(reg@fit[[1]]$system_model, "systemfit")
+  expect_is(reg@fit$system_model, "systemfit")
 })
 
 test_that(paste0(model_name(mdl), " regressions can be summarized"), {
