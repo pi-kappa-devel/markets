@@ -61,18 +61,20 @@ setMethod(
   "show_implementation", signature(object = "system_deterministic_adjustment"),
   function(object) {
     callNextMethod(object)
-    cat(sprintf(
-      "  %-18s: %s\n  %-18s: %s", "Short Side Rule", paste0(
-        quantity_variable(object@demand), " = min(",
-        prefixed_quantity_variable(object@demand), ", ",
-        prefixed_quantity_variable(object@supply), ")"
-      ),
-      "Separation Rule", paste0(
-        price_differences_variable(object), " analogous to (",
-        prefixed_quantity_variable(object@demand), " - ",
-        prefixed_quantity_variable(object@supply), ")"
-      )
-    ), fill = TRUE)
+    cat(
+      labels = sprintf("  %-18s:", "Short Side Rule"),
+      quantity_variable(object@demand), " = min(",
+      prefixed_quantity_variable(object@demand), ", ",
+      prefixed_quantity_variable(object@supply), ")",
+      sep = "", fill = TRUE
+    )
+    cat(
+      labels = sprintf("  %-18s:", "Separation Rule"),
+      price_differences_variable(object), " analogous to (",
+      prefixed_quantity_variable(object@demand), " - ",
+      prefixed_quantity_variable(object@supply), ")",
+      sep = "", fill = TRUE
+    )
   }
 )
 

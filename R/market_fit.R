@@ -96,30 +96,46 @@ setMethod("summary", signature(object = "market_fit"), function(object) {
   if (object@fit$method != "2SLS") {
     args <- object@fit$call[[2]]
 
-    cat("\nMaximum likelihood estimation:", fill = TRUE)
-    cat(sprintf("  %-20s: %s", "Method", args$method),
-      fill = TRUE
+    cat("\nMaximum likelihood estimation:", sep = "", fill = TRUE)
+    cat(
+      labels = sprintf("  %-20s:", "Method"), args$method,
+      sep = "", fill = TRUE
     )
-    cat(sprintf(
-      "  %-20s: %d", "Max Iterations", args$control$maxit
-    ), fill = TRUE)
-    cat(sprintf(
-      "  %-20s: %g", "Relative Tolerance", args$control$reltol
-    ), fill = TRUE)
-    cat(sprintf(
-      "  %-20s: %s", "Convergence Status",
-      ifelse(!object@fit$convergence, "success", "failure")
-    ), fill = TRUE)
-    cat(sprintf("  %-20s:", "Starting Values"), fill = TRUE)
+    if (!is.null(args$control$maxit)) {
+      cat(
+        labels = sprintf("  %-20s:", "Max Iterations"), args$control$maxit,
+        sep = "", fill = TRUE
+      )
+    }
+    if (!is.null(args$control$reltol)) {
+      cat(
+        labels = sprintf("  %-20s:", "Relative Tolerance"),
+        args$control$reltol,
+        sep = "", fill = TRUE
+      )
+    }
+    cat(
+      labels = sprintf("  %-20s:", "Convergence Status"),
+      ifelse(!object@fit$convergence, "success", "failure"),
+      sep = "", fill = TRUE
+    )
+    cat(sprintf("  %-20s:", "Starting Values"), sep = "", fill = TRUE)
     print(object@fit$start, digits = 4)
-    cat("\nCoefficients:", fill = TRUE)
-    m <- object@fit$par
-    sd <- sqrt(diag(object@fit$vcov))
-    z <- m / sd
-    p <- 2 * pnorm(abs(z), lower.tail = FALSE)
-    r <- cbind(Estimate = m, `Std. Error` = sd, `z value` = z, `Pr(z)` = p)
+    cat("\nCoefficients:", sep = "", fill = TRUE)
+    means <- object@fit$par
+    sds <- sqrt(diag(object@fit$vcov))
+    zvals <- means / sds
+    pvals <- 2 * pnorm(abs(zvals), lower.tail = FALSE)
+    r <- cbind(
+      Estimate = means, `Std. Error` = sds,
+      `z value` = zvals, `Pr(z)` = pvals
+    )
     print(r, digits = 4)
-    cat(sprintf("\n%s: %g", "-2 log L", -2 * logLik(object)), fill = TRUE)
+    cat(
+      labels = sprintf("\n%s:", "-2 log L"),
+      -2 * logLik(object),
+      sep = "", fill = TRUE
+    )
   } else {
     print(summary(object@fit$system_model))
   }
@@ -137,9 +153,10 @@ setMethod("summary", signature(object = "market_fit"), function(object) {
 #' the two-stage least square estimation of the \code{\linkS4class{equilibrium_model}}
 #' is based on \code{\link[systemfit]{systemfit}}.
 #' @param object A model object.
-#' @param ... Named parameter used in the model's estimation. These are passed further
-#' down to the estimation call. For the \code{\linkS4class{equilibrium_model}} model, the
-#' parameters are passed to \code{\link[systemfit]{systemfit}}, if the method is set to
+#' @param ... Additional parameter used in the model's estimation. These are
+#' passed further down to the estimation call. For the
+#' \code{\linkS4class{equilibrium_model}} model, the parameters are passed to
+#' \code{\link[systemfit]{systemfit}}, if the method is set to
 #' \code{2SLS}, or to \code{\link[stats]{optim}} for any other method. For the rest of
 #' the models, the parameters are passed to \code{\link[stats]{optim}}.
 #' @return The object that holds the estimation result.
@@ -206,7 +223,8 @@ setMethod(
       hessian <- "numerical"
     }
 
-    va_args$par <- start <- prepare_initializing_values(object, va_args$par)
+    va_args$par <- start <- prepare_initializing_values(object, va_args$start)
+    va_args$start <- NULL
 
     if (is.null(va_args$method)) {
       va_args$method <- "BFGS"
@@ -422,6 +440,7 @@ setMethod(
 #' returns \code{NULL} for the equilibrium model estimated with
 #' \code{\link[systemfit]{systemfit}}.
 #' @param object A fitted model object.
+#' @param ... Additional arguments. Unused.
 #' @return A \code{\link[stats]{logLik}} object.
 #' @rdname logLik
 #' @examples
@@ -439,19 +458,22 @@ setMethod(
 #' # get the log likelihood object
 #' logLik(fit)
 #' }
+#' @method logLik market_fit
 #' @export
-setMethod(
-  "logLik", signature(object = "market_fit"),
-  function(object) {
-    ll <- NULL
-    if (object@fit$method != "2SLS") {
-      ll <- structure(-object@fit$value,
-        df = length(coef(object)), class = "logLik"
-      )
-    }
-    ll
+logLik.market_fit <- function(object, ...) {
+  ll <- NULL
+  if (object@fit$method != "2SLS") {
+    ll <- structure(-object@fit$value,
+      df = length(coef(object)), class = "logLik"
+    )
   }
-)
+  ll
+}
+
+#' @rdname logLik
+#' @export
+setMethod("logLik", signature(object = "market_fit"), logLik.market_fit)
+
 
 try_coerce_market_fit <- function(object) {
   to_class <- class(object)[[1]]

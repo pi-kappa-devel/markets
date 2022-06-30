@@ -54,22 +54,21 @@ setMethod("print_error", signature(object = "model_logger"), function(object, ..
 })
 
 setMethod("print_warning", signature(object = "model_logger"), function(object, ...) {
-  ate <- ifelse(rlang::is_installed("knitr") && length(knitr::opts_chunk$get()) > 0, "\n", "")
-  if (object@verbosity > 0) warning(..., ate, immediate. = TRUE, call. = FALSE)
+  if (object@verbosity > 0) cat(labels = "Warning: ", ..., fill = TRUE, sep = "")
   object
 })
 
 setMethod("print_info", signature(object = "model_logger"), function(object, ...) {
-  if (object@verbosity > 1) cat("Info: ", ..., fill = TRUE, sep = "")
+  if (object@verbosity > 1) cat(labels = "Info: ", ..., fill = TRUE, sep = "")
   object
 })
 
 setMethod("print_verbose", signature(object = "model_logger"), function(object, ...) {
-  if (object@verbosity > 2) cat("Verbose: ", ..., fill = TRUE, sep = "")
+  if (object@verbosity > 2) cat(labels = "Verbose: ", ..., fill = TRUE, sep = "")
   object
 })
 
 setMethod("print_debug", signature(object = "model_logger"), function(object, ...) {
-  if (object@verbosity > 3) cat("Debug: ", ..., fill = TRUE, sep = "")
+  if (object@verbosity > 3) cat(labels = "Debug: ", ..., fill = TRUE, sep = "")
   object
 })

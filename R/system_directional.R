@@ -37,10 +37,12 @@ setMethod(
   "show_implementation", signature(object = "system_directional"),
   function(object) {
     callNextMethod(object)
-    cat(sprintf("  %-18s: %s", "Separation Rule", paste0(
+    cat(
+      labels = sprintf("  %-18s:", "Separation Rule"),
       price_differences_variable(object), " >= 0 then ",
       prefixed_quantity_variable(object@demand), " >= ",
-      prefixed_quantity_variable(object@supply)
-    )), fill = TRUE)
+      prefixed_quantity_variable(object@supply),
+      sep = "", fill = TRUE
+    )
   }
 )

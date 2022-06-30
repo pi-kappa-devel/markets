@@ -69,15 +69,17 @@ setMethod(
       print_error(
         .Object@logger,
         "Price cannot be part of both the demand and supply equations here ",
-        "(See Maddala, (1974) <https://doi.org/10.2307/1914215>, p1021)"
+        "(See Maddala, (1974) <https://doi.org/10.2307/1914215>, p1021)."
       )
     }
 
+    ndrows <- sum(.Object@system@demand@separation_subset)
+    nsrows <- sum(.Object@system@supply@separation_subset)
     print_info(
       .Object@logger,
-      "Sample separated with ", sum(.Object@system@demand@separation_subset),
-      " rows in excess supply and ",
-      sum(.Object@system@supply@separation_subset), " in excess demand state."
+      "Sample separated with ", ndrows,
+      " row", ifelse(ndrows > 1, "s"), " in excess supply and ",
+      nsrows, " row", ifelse(ndrows > 1, "s"), " in excess demand states."
     )
 
     .Object
@@ -148,7 +150,7 @@ setMethod(
   function(object) {
     demand <- stats::lm(
       object@system@demand@dependent_vector ~
-      object@system@demand@independent_matrix - 1,
+        object@system@demand@independent_matrix - 1,
       subset = object@system@demand@separation_subset
     )
     names(demand$coefficients) <- colnames(
@@ -159,7 +161,7 @@ setMethod(
 
     supply <- stats::lm(
       object@system@supply@dependent_vector ~
-      object@system@supply@independent_matrix - 1,
+        object@system@supply@independent_matrix - 1,
       subset = object@system@supply@separation_subset
     )
     names(supply$coefficients) <- colnames(

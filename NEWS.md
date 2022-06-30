@@ -1,3 +1,7 @@
+# markets 1.0.5.9003
+
+* Re-implemented the logging, the summary, and the show functionality to respect the width set in `options()`.
+
 # markets 1.0.5.9002
 
 * Removed `bbmle` imports from all files.

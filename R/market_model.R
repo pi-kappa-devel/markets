@@ -3,7 +3,7 @@
 #' @import dplyr
 #' @importFrom graphics legend lines
 #' @importFrom rlang :=
-#' @importFrom stats formula lm model.matrix na.omit median qnorm sd var
+#' @importFrom stats formula lm logLik model.matrix na.omit median optim qnorm sd var
 #' @import tibble
 
 setOldClass(c("spec_tbl_df", "tbl_df", "tbl", "data.frame"))
@@ -237,7 +237,7 @@ setMethod(
     .Object@model_type_string <- model_type_string
     .Object@logger <- new("model_logger", verbose)
     .Object@system@correlated_shocks <- correlated_shocks
-    print_info(.Object@logger, "This is '", model_name(.Object), "' model")
+    print_info(.Object@logger, "This is ", model_name(.Object), ".")
 
     .Object@subject_column <- all.vars(formula(specification, lhs = 3, rhs = 0))
     .Object@time_column <- all.vars(formula(specification, lhs = 4, rhs = 0))
@@ -260,7 +260,10 @@ setMethod(
       na.omit()
     drops <- len - nrow(.Object@model_tibble)
     if (drops) {
-      print_warning(.Object@logger, "Dropping ", drops, " rows due to missing values.")
+      print_warning(
+        .Object@logger, "Dropping ", drops, " row", ifelse(drops > 1, "s", ""),
+        " due to missing values."
+      )
     }
 
     remove_unused_levels <- function(x) {
@@ -311,9 +314,12 @@ setMethod(
         is.na() |>
         c()
       .Object@model_tibble <- .Object@model_tibble[!drop_rows, ]
+
+      drops <- sum(drop_rows)
       print_info(
         .Object@logger, "Dropping ",
-        sum(drop_rows), " rows to generate '", lagged_price_column, "'."
+        drops, " row", ifelse(drops > 1, "s", ""),
+        " to generate '", lagged_price_column, "'."
       )
 
       ## Generate first differences
@@ -480,15 +486,19 @@ setMethod(
 #' @rdname show
 #' @export
 setMethod("show", signature(object = "market_model"), function(object) {
-  cat(sprintf(
-    "%s Model for Markets in %s:",
-    object@model_type_string, object@market_type_string
-  ), fill = TRUE)
+  cat(
+    sprintf(
+      "%s Model for Markets in %s:",
+      object@model_type_string, object@market_type_string
+    ),
+    sep = "", fill = TRUE
+  )
   show_implementation(object@system)
-  cat(sprintf(
-    "  %-18s: %s", "Shocks",
-    ifelse(object@system@correlated_shocks, "Correlated", "Independent")
-  ), fill = TRUE)
+  cat(
+    labels = sprintf("  %-18s:", "Shocks"),
+    ifelse(object@system@correlated_shocks, "Correlated", "Independent"),
+    sep = "", fill = TRUE
+  )
 })
 
 #' @title Model and fit summaries
@@ -536,19 +546,21 @@ NULL
 setMethod("summary", signature(object = "market_model"), function(object) {
   show(object)
   cat(
-    sprintf("  %-18s: %d", "Nobs", nrow(object@model_tibble)),
-    fill = TRUE
+    labels = sprintf("  %-18s:", "Nobs"), nrow(object@model_tibble),
+    sep = "", fill = TRUE
   )
   summary_implementation(object@system)
-  cat(sprintf(
-    "  %-18s: %s", "Key Var(s)",
-    paste0(c(object@subject_column, object@time_column), collapse = ", ")
-  ), fill = TRUE)
+  cat(
+    labels = sprintf("  %-18s:", "Key Var(s)"),
+    paste0(c(object@subject_column, object@time_column), collapse = ", "),
+    sep = "", fill = TRUE
+  )
   if (!is.null(object@time_column)) {
-    cat(sprintf(
-      "  %-18s: %s", "Time Var",
-      paste0(object@time_column, collapse = ", ")
-    ), fill = TRUE)
+    cat(
+      labels = sprintf("  %-18s:", "Time Var"),
+      paste0(object@time_column, collapse = ", "),
+      sep = "", fill = TRUE
+    )
   }
 })
 

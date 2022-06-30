@@ -153,13 +153,13 @@ setMethod(
   function(object) {
     callNextMethod(object)
     show_implementation(object@price_equation)
-    cat(sprintf(
-      "  %-18s: %s", "Short Side Rule", paste0(
-        quantity_variable(object@demand), " = min(",
-        prefixed_quantity_variable(object@demand), ", ",
-        prefixed_quantity_variable(object@supply), ")"
-      )
-    ), fill = TRUE)
+    cat(
+      labels = sprintf("  %-18s:", "Short Side Rule"),
+      quantity_variable(object@demand), " = min(",
+      prefixed_quantity_variable(object@demand), ", ",
+      prefixed_quantity_variable(object@supply), ")",
+      sep = "", fill = TRUE
+    )
   }
 )
 

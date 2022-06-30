@@ -105,10 +105,14 @@ setGeneric("show_implementation", function(object) {
 })
 
 setMethod("show_implementation", signature(object = "equation_base"), function(object) {
-  cat(sprintf(
-    "  %-18s: %s", paste0(object@name, " RHS"),
-    deparse(object@formula[[3]])
-  ), fill = TRUE)
+  cat(
+    strwrap(
+      initial = sprintf("  %-18s: ", paste0(object@name, " RHS")),
+      deparse(object@formula[[3]]),
+      indent = 2, exdent = 4
+    ),
+    sep = "", fill = TRUE
+  )
 })
 
 #' @title Variable name access
@@ -293,4 +297,3 @@ setMethod("quantities", signature(object = "equation_base"), function(object) {
   colnames(qs) <- prefixed_quantity_variable(object)
   qs
 })
-

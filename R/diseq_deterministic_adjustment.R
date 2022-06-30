@@ -66,11 +66,13 @@ setMethod(
       function(...) new("system_deterministic_adjustment", ...)
     )
 
+    ndrows <- sum(.Object@system@demand@separation_subset)
+    nsrows <- sum(.Object@system@supply@separation_subset)
     print_info(
       .Object@logger,
-      "Sample separated with ", sum(.Object@system@demand@separation_subset),
-      " rows in excess supply and ",
-      sum(.Object@system@supply@separation_subset), " in excess demand state."
+      "Sample separated with ", ndrows,
+      " row", ifelse(ndrows > 1, "s", ""), " in excess supply and ",
+      nsrows, " row", ifelse(nsrows > 1, "s", ""), " in excess demand states."
     )
 
     .Object

@@ -306,8 +306,8 @@ summary(fit)
 ```
 
     ## Basic Model for Markets in Disequilibrium:
-    ##   Demand RHS        : D_P + D_Xd1 + D_Xd2 + D_X1 + D_X2
-    ##   Supply RHS        : S_P + S_Xs1 + S_X1 + S_X2
+    ##   Demand RHS        :   D_P + D_Xd1 + D_Xd2 + D_X1 + D_X2
+    ##   Supply RHS        :   S_P + S_Xs1 + S_X1 + S_X2
     ##   Short Side Rule   : Q = min(D_Q, S_Q)
     ##   Shocks            : Correlated
     ##   Nobs              : 50000
@@ -319,8 +319,6 @@ summary(fit)
     ## 
     ## Maximum likelihood estimation:
     ##   Method              : BFGS
-    ## 
-    ## 
     ##   Convergence Status  : success
     ##   Starting Values     :
     ##        D_P    D_CONST      D_Xd1      D_Xd2       D_X1       D_X2        S_P 

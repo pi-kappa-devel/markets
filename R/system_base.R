@@ -86,15 +86,19 @@ setMethod("summary_implementation", signature(object = "system_base"), function(
     sample_separation_output <- "Not Separated"
   }
   cat(
-    sprintf("  %-18s: %s", "Sample Separation", sample_separation_output),
-    fill = TRUE
+    labels = sprintf("  %-18s:", "Sample Separation"),
+    sample_separation_output,
+    sep = "", fill = TRUE
   )
   cat(
-    sprintf("  %-18s: %s", "Quantity Var", colnames(object@quantity_vector)),
-    fill = TRUE
+    labels = sprintf("  %-18s:", "Quantity Var"),
+    colnames(object@quantity_vector),
+    sep = "", fill = TRUE
   )
-  cat(sprintf("  %-18s: %s", "Price Var", colnames(object@price_vector)),
-    fill = TRUE
+  cat(
+    labels = sprintf("  %-18s:", "Price Var"),
+    colnames(object@price_vector),
+    sep = "", fill = TRUE
   )
 })
 
