@@ -213,10 +213,8 @@ setMethod(
     }
 
     va_args$fn <- function(...) minus_log_likelihood(object, ...)
-    # bbmle::parnames(va_args$minuslogl) <- likelihood_variables(object@system)
     if (gradient == "calculated") {
       va_args$gr <- function(...) gradient(object, ...)
-      # bbmle::parnames(va_args$gr) <- likelihood_variables(object@system)
     }
 
     fit <- do.call(optim, va_args)

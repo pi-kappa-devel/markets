@@ -1,3 +1,11 @@
+# markets 1.0.5.9002
+
+* Removed `bbmle` imports from all files.
+
+# markets 1.0.5.9001
+
+* Minor vignette changes adjusting to dropping `bbmle` from the dependencies.
+
 # markets 1.0.5
 
 * Removed dependency to package `bbmle`. Using directly `optim` for maximum likelihood estimations.
