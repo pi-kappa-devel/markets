@@ -90,12 +90,12 @@ setMethod(
   }
 )
 
-#' @rdname minus_log_likelihood
+#' @rdname log_likelihood
 setMethod(
-  "minus_log_likelihood", signature(object = "equilibrium_model"),
+  "log_likelihood", signature(object = "equilibrium_model"),
   function(object, parameters) {
     object@system <- set_parameters(object@system, parameters)
-    -sum(object@system@llh)
+    sum(object@system@llh)
   }
 )
 
@@ -107,7 +107,7 @@ setMethod(
     object@system <- set_parameters(object@system, parameters)
     g <- colSums(calculate_system_scores(object@system))
 
-    as.matrix(-g)
+    as.matrix(g)
   }
 )
 
@@ -116,7 +116,7 @@ setMethod(
   "scores", signature(object = "equilibrium_model"),
   function(object, parameters) {
     object@system <- set_parameters(object@system, parameters)
-    -calculate_system_scores(object@system)
+    calculate_system_scores(object@system)
   }
 )
 

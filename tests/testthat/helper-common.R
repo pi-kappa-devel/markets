@@ -1,7 +1,7 @@
 test_calculated_gradient <- function(mdl, params, tolerance) {
   cg <- as.matrix(markets:::gradient(mdl, params))
   ng <- as.matrix(numDeriv::grad(
-    function(p) minus_log_likelihood(mdl, p), params,
+    function(p) log_likelihood(mdl, p), params,
     method = "Richardson"
   ))
   rownames(ng) <- rownames(cg)

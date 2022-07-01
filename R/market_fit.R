@@ -72,6 +72,50 @@ setMethod(
   }
 )
 
+market_fit_coefficients <- function(object, summary = FALSE) {
+  if (object@fit$method != "2SLS") {
+    coefs <- object@fit$par
+  } else {
+    demand <- object@fit$system_model$coefficients[
+      grep("demand_", names(object@fit$system_model$coefficients))
+    ]
+    demand <- c(demand[2], demand[1], demand[-c(1, 2)])
+    names(demand) <- gsub("demand_", "D_", names(demand))
+
+    supply <- object@fit$system_model$coefficients[
+      grep("supply_", names(object@fit$system_model$coefficients))
+    ]
+    supply <- c(supply[2], supply[1], supply[-c(1, 2)])
+    names(supply) <- gsub("supply_", "S_", names(supply))
+
+    var_d <- object@fit$system_model$residCov[[1, 1]]
+    names(var_d) <- prefixed_variance_variable(object@system@demand)
+
+    var_s <- object@fit$system_model$residCov[[2, 2]]
+    names(var_s) <- prefixed_variance_variable(object@system@supply)
+
+    coefs <- c(demand, supply, var_d, var_s)
+    if (object@system@correlated_shocks) {
+      rho <- object@fit$system_model$residCov[1, 2] / sqrt(var_d * var_s)
+      names(rho) <- correlation_variable(object@system)
+      coefs <- c(coefs, rho)
+    }
+    names(coefs) <- gsub("\\(Intercept\\)", "CONST", names(coefs))
+  }
+
+  if (summary) {
+    sds <- sqrt(diag(object@fit$vcov))
+    zvals <- coefs / sds
+    pvals <- 2 * pnorm(-abs(zvals))
+    coefs <- cbind(
+      Estimate = coefs, `Std. Error` = sds,
+      `z value` = zvals, `Pr(z)` = pvals
+    )
+  }
+
+  coefs
+}
+
 #' @describeIn summaries Summarizes the model's fit.
 #' @description \code{market_fit}: Prints basic information about the
 #' passed model fit. In addition to the output of
@@ -122,15 +166,7 @@ setMethod("summary", signature(object = "market_fit"), function(object) {
     cat(sprintf("  %-20s:", "Starting Values"), sep = "", fill = TRUE)
     print(object@fit$start, digits = 4)
     cat("\nCoefficients:", sep = "", fill = TRUE)
-    means <- object@fit$par
-    sds <- sqrt(diag(object@fit$vcov))
-    zvals <- means / sds
-    pvals <- 2 * pnorm(abs(zvals), lower.tail = FALSE)
-    r <- cbind(
-      Estimate = means, `Std. Error` = sds,
-      `z value` = zvals, `Pr(z)` = pvals
-    )
-    print(r, digits = 4)
+    print(market_fit_coefficients(object, summary = TRUE), digits = 4)
     cat(
       labels = sprintf("\n%s:", "-2 log L"),
       -2 * logLik(object),
@@ -230,36 +266,33 @@ setMethod(
       va_args$method <- "BFGS"
     }
 
-    va_args$fn <- function(...) minus_log_likelihood(object, ...)
+    va_args$fn <- function(...) -log_likelihood(object, ...)
     if (gradient == "calculated") {
-      va_args$gr <- function(...) gradient(object, ...)
+      va_args$gr <- function(...) -gradient(object, ...)
     }
 
     fit <- do.call(optim, va_args)
     fit$call <- call("optim", va_args)
     fit$start <- start
     fit$method <- va_args$method
+    fit$value <- -fit$value
 
     if (hessian == "calculated") {
       print_verbose(object@logger, "Calculating hessian and variance-covariance matrix.")
       fit$hessian <- hessian(object, fit$par)
-    }
-
-    if (length(standard_errors) == 1) {
-      if (standard_errors == "heteroscedastic") {
-        fit <- set_heteroscedasticity_consistent_errors(object, fit)
-      } else if (standard_errors != "homoscedastic") {
-        fit <- set_clustered_errors(object, fit, standard_errors)
-      }
     } else {
-      fit <- set_clustered_errors(object, fit, standard_errors)
+      fit$hessian <- -fit$hessian
     }
 
-    if (!is.null(fit$hessian)) {
+    if (standard_errors == "heteroscedastic") {
+      fit <- set_heteroscedasticity_consistent_errors(object, fit)
+    } else if (standard_errors == "homoscedastic") {
       tryCatch(
-        fit$vcov <- MASS::ginv(fit$hessian),
+        fit$vcov <- -MASS::ginv(fit$hessian),
         error = function(e) print_warning(object@logger, e$message)
       )
+    } else {
+      fit <- set_clustered_errors(object, fit, standard_errors)
     }
 
     new("market_fit", object, fit)
@@ -329,40 +362,6 @@ setMethod(
   }
 )
 
-market_fit_coefficients <- function(object) {
-  if (object@fit$method != "2SLS") {
-    object@fit$par
-  } else {
-    demand <- object@fit$system_model$coefficients[
-      grep("demand_", names(object@fit$system_model$coefficients))
-    ]
-    demand <- c(demand[2], demand[1], demand[-c(1, 2)])
-    names(demand) <- gsub("demand_", "D_", names(demand))
-
-    supply <- object@fit$system_model$coefficients[
-      grep("supply_", names(object@fit$system_model$coefficients))
-    ]
-    supply <- c(supply[2], supply[1], supply[-c(1, 2)])
-    names(supply) <- gsub("supply_", "S_", names(supply))
-
-    var_d <- object@fit$system_model$residCov[[1, 1]]
-    names(var_d) <- prefixed_variance_variable(object@system@demand)
-
-    var_s <- object@fit$system_model$residCov[[2, 2]]
-    names(var_s) <- prefixed_variance_variable(object@system@supply)
-
-    coefs <- c(demand, supply, var_d, var_s)
-    if (object@system@correlated_shocks) {
-      rho <- object@fit$system_model$residCov[1, 2] / sqrt(var_d * var_s)
-      names(rho) <- correlation_variable(object@system)
-      coefs <- c(coefs, rho)
-    }
-    names(coefs) <- gsub("\\(Intercept\\)", "CONST", names(coefs))
-
-    coefs
-  }
-}
-
 #' Estimated coefficients of a fitted market model.
 #'
 #' Returns the coefficients of the fitted model.
@@ -386,13 +385,16 @@ market_fit_coefficients <- function(object) {
 #' coefficients(fit)
 #' }
 #' @export
-setMethod("coef", signature(object = "market_fit"), market_fit_coefficients)
+setMethod(
+  "coef", signature(object = "market_fit"),
+  function(object) market_fit_coefficients(object)
+)
 
 #' @describeIn coef Estimated coefficients alias.
 #' @export
 setMethod(
   "coefficients", signature(object = "market_fit"),
-  market_fit_coefficients
+  function(object) market_fit_coefficients(object)
 )
 
 #' Variance-covariance matrix for a fitted market model.

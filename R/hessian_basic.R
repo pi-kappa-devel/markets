@@ -79,5 +79,5 @@ setMethod("hessian", signature(object = "diseq_basic"), function(object, paramet
   rownames(Dl) <- likelihood_variables(object)
   colnames(Dl) <- likelihood_variables(object)
 
-  -Dl
+  Dl
 })

@@ -84,5 +84,5 @@ setMethod("hessian", signature(object = "diseq_directional"),
   rownames(Dl) <- likelihood_variables(object)
   colnames(Dl) <- likelihood_variables(object)
 
-  -Dl
+  Dl
 })

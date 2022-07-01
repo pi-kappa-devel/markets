@@ -566,7 +566,7 @@ setMethod("summary", signature(object = "market_model"), function(object) {
 
 #' Minus log-likelihood.
 #'
-#' Returns the opposite of the log-likelihood. The likelihood functions are based on
+#' Returns the log-likelihood. The likelihood functions are based on
 #' Maddala and Nelson (1974) \doi{10.2307/1914215}. The likelihoods expressions
 #' that the function uses are derived in
 #' Karapanagiotis (2020) \doi{10.2139/ssrn.3525622}. The function calculates
@@ -574,20 +574,19 @@ setMethod("summary", signature(object = "market_model"), function(object) {
 #' the sample and summing the evaluation results.
 #' @param object A model object.
 #' @param parameters A vector of parameters at which the function is to be evaluated.
-#' @return The opposite of the sum of the likelihoods evaluated for each observation.
-#' @rdname minus_log_likelihood
+#' @return The sum of the likelihoods evaluated for each observation.
+#' @rdname log_likelihood
 #' @export
-setGeneric("minus_log_likelihood", function(object, parameters) {
-  standardGeneric("minus_log_likelihood")
+setGeneric("log_likelihood", function(object, parameters) {
+  standardGeneric("log_likelihood")
 })
 
 #' Gradient
 #'
-#' Returns the gradient of the opposite of the log-likelihood evaluated at the passed
-#' parameters.
+#' Returns the gradient of the log-likelihood evaluated at the passed parameters.
 #' @param object A model object.
 #' @param parameters A vector of parameters at which the gradient is to be evaluated.
-#' @return The opposite of the model log likelihood's gradient.
+#' @return The log likelihood's gradient.
 #' @rdname gradient
 #' @export
 setGeneric("gradient", function(object, parameters) {
@@ -596,11 +595,10 @@ setGeneric("gradient", function(object, parameters) {
 
 #' Hessian
 #'
-#' Returns the hessian of the opposite of the log-likelihood evaluated at the passed
-#' parameters.
+#' Returns the hessian of the log-likelihood evaluated at the passed parameters.
 #' @param object A model object.
 #' @param parameters A vector of parameters at which the hessian is to be evaluated.
-#' @return The opposite of the model log likelihood's hessian.
+#' @return The log likelihood's hessian.
 #' @rdname hessian
 #' @export
 setGeneric("hessian", function(object, parameters) {

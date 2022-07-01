@@ -103,12 +103,12 @@ setMethod(
   }
 )
 
-#' @rdname minus_log_likelihood
+#' @rdname log_likelihood
 setMethod(
-  "minus_log_likelihood", signature(object = "diseq_deterministic_adjustment"),
+  "log_likelihood", signature(object = "diseq_deterministic_adjustment"),
   function(object, parameters) {
     object@system <- set_parameters(object@system, parameters)
-    -sum(calculate_system_loglikelihood(object@system))
+    sum(calculate_system_loglikelihood(object@system))
   }
 )
 
@@ -118,7 +118,7 @@ setMethod(
   function(object, parameters) {
     object@system <- set_parameters(object@system, parameters)
     gradient <- as.matrix(colSums(calculate_system_scores(object@system)))
-    -gradient
+    gradient
   }
 )
 
@@ -127,7 +127,7 @@ setMethod(
   "scores", signature(object = "diseq_deterministic_adjustment"),
   function(object, parameters) {
     object@system <- set_parameters(object@system, parameters)
-    -calculate_system_scores(object@system)
+    calculate_system_scores(object@system)
   }
 )
 

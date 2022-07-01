@@ -109,9 +109,9 @@ setMethod(
   }
 )
 
-#' @rdname minus_log_likelihood
+#' @rdname log_likelihood
 setMethod(
-  "minus_log_likelihood", signature(object = "diseq_directional"),
+  "log_likelihood", signature(object = "diseq_directional"),
   function(object, parameters) {
     object@system <- set_parameters(object@system, parameters)
 
@@ -123,7 +123,7 @@ setMethod(
       log(object@system@supply@Psi[object@system@supply@separation_subset] /
         object@system@supply@sigma)
     )
-    -loglhd - loglhs
+    loglhd + loglhs
   }
 )
 
@@ -132,7 +132,7 @@ setMethod(
   "gradient", signature(object = "diseq_directional"),
   function(object, parameters) {
     object@system <- set_parameters(object@system, parameters)
-    -colSums(calculate_system_scores(object@system))
+    colSums(calculate_system_scores(object@system))
   }
 )
 
@@ -141,7 +141,7 @@ setMethod(
   "scores", signature(object = "diseq_directional"),
   function(object, parameters) {
     object@system <- set_parameters(object@system, parameters)
-    -calculate_system_scores(object@system)
+    calculate_system_scores(object@system)
   }
 )
 

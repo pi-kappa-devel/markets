@@ -343,7 +343,7 @@ summary(fit)
     ## S_VARIANCE  1.006628   0.008312  121.0987 0.0000
     ## RHO        -0.009219   0.026586   -0.3467 0.7288
     ## 
-    ## -2 log L: 138460
+    ## -2 log L: -138460
 
 # Design and functionality
 
