@@ -1,7 +1,7 @@
 Package: markets
 Title: Estimation Methods for Markets in Equilibrium and Disequilibrium
-Version: 1.0.5.9004
-Date: 2022-07-01
+Version: 1.0.5.9005
+Date: 2022-07-02
 Authors@R: 
     person(given = "Pantelis",
            family = "Karapanagiotis",
@@ -85,6 +85,7 @@ Collate:
     'likelihood_equilibrium.R'
     'likelihood_stochastic_adjustment.R'
     'market_fit.R'
+    'market_formula.R'
     'markets.R'
     'model_simulation.R'
 LinkingTo: 

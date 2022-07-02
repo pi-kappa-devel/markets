@@ -1,5 +1,9 @@
 # markets 1.0.5.9004
 
+* Updated formula implementation to allow using inline variable transformations (offset, splines, log, etc). Added unit tests checking the updated functionality.	
+
+# markets 1.0.5.9004
+
 * Replaced `minus_log_likelihood` with `log_likelihood` and adjusted `gradient`, `scores` and `hessian`. Gradient and hessian return derivatives of log-likelihood instead of derivatives of minus log-likelihood.
 
 # markets 1.0.5.9003

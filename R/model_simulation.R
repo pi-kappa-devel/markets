@@ -684,12 +684,13 @@ setMethod(
 #' \code{\link{simulate_data}} function for details.
 #' @param seed Pseudo random number generator seed.
 #' @param verbose Verbosity level.
-#' @param ... Additional parameters to be passed to the model's constructor.
+#' @param correlated_shocks Should the model be estimated using correlated shocks?
 #' @return \strong{\code{simulate_model}:} The simulated model.
 #' @export
 setGeneric(
   "simulate_model",
-  function(model_type_string, simulation_parameters, seed = NA, verbose = 0, ...) {
+  function(model_type_string, simulation_parameters, seed = NA, verbose = 0,
+           correlated_shocks = TRUE) {
     standardGeneric("simulate_model")
   }
 )
@@ -698,13 +699,16 @@ setGeneric(
 #' @rdname market_simulation
 setMethod(
   "simulate_model", signature(),
-  function(model_type_string, simulation_parameters, seed, verbose, ...) {
+  function(model_type_string, simulation_parameters, seed, verbose,
+           correlated_shocks) {
     sdt <- do.call(simulate_data, c(
       model_type_string = model_type_string,
       simulation_parameters, seed = seed,
       verbose = verbose
     ))
 
+    subject <- "id"
+    time <- "date"
     quantity <- "Q"
     price <- "P"
     demand <- paste(
@@ -717,7 +721,6 @@ setMethod(
       ),
       sep = " + "
     )
-    demand <- str2lang(demand)
     supply <- paste(
       paste("Xs", seq_along(simulation_parameters$beta_s), sep = "", collapse = " + "),
       paste("X", seq_along(simulation_parameters$eta_s), sep = "", collapse = " + "),
@@ -726,52 +729,25 @@ setMethod(
     if (model_type_string != "diseq_directional") {
       supply <- paste0(price, " + ", supply)
     }
-    supply <- str2lang(supply)
-    price_dynamics <- paste("Xp",
-      seq_along(simulation_parameters$beta_p),
-      sep = "", collapse = " + "
-    )
-    # Use this avoid cran-check complains about undefined global variables
-    price_dynamics <- str2lang(price_dynamics)
-    quantity <- str2lang(quantity)
-    price <- str2lang(price)
-    subject <- str2lang("id")
-    time <- str2lang("date")
 
-    if (model_type_string %in% c("equilibrium_model", "diseq_basic")) {
-      model <- new(
-        model_type_string,
-        subject = subject, time = time,
-        quantity = quantity, price = price,
-        demand = demand, supply = supply,
-        data = sdt, verbose = verbose, ...
+    specification <- paste0(
+      paste(quantity, price, subject, time, sep = " | "), " ~ ",
+      paste(demand, supply, sep = " | ")
+    )
+
+    if (model_type_string == "diseq_stochastic_adjustment") {
+      price_dynamics <- paste("Xp",
+        seq_along(simulation_parameters$beta_p),
+        sep = "", collapse = " + "
       )
-    } else if (model_type_string %in% c(
-      "diseq_directional",
-      "diseq_deterministic_adjustment"
-    )) {
-      model <- new(
-        model_type_string,
-        subject = subject, time = time,
-        quantity = quantity, price = price,
-        demand = demand,
-        supply = supply,
-        data = sdt, verbose = verbose, ...
-      )
-    } else if (model_type_string %in% c("diseq_stochastic_adjustment")) {
-      model <- new(
-        model_type_string,
-        subject = subject, time = time,
-        quantity = quantity, price = price,
-        demand = demand, supply = supply,
-        price_dynamics = price_dynamics,
-        data = sdt, verbose = verbose, ...
-      )
-    } else {
-      logger <- new("model_logger", verbose)
-      print_error(logger, "Unhandled model type. ")
+
+      specification <- paste(specification, price_dynamics, sep = " | ")
     }
 
-    model
+    initialize_from_formula(
+      model_type = model_type_string,
+      specification = formula(specification),
+      data = sdt, verbose = 5, correlated_shocks = correlated_shocks
+    )
   }
 )

@@ -72,11 +72,11 @@ setMethod(
       paste(prefixed_specification, collapse = ""),
       lhs = 1
     ))
-    .Object@dependent_vector <- as.matrix(model.part(.Object@formula,
-      lhs = 1, data
-    ))
-    .Object@price_vector <- as.matrix(model.part(.Object@formula,
-      lhs = 2, data
+    .Object@dependent_vector <- as.matrix(model.frame(.Object@formula,
+      lhs = 1, rhs = 0, data
+      ))
+    .Object@price_vector <- as.matrix(model.frame(.Object@formula,
+      lhs = 2, rhs = 0, data
     ))
     .Object@independent_matrix <- model.matrix(.Object@formula, data)
     colnames(.Object@independent_matrix) <- gsub(

@@ -56,7 +56,9 @@ setMethod(
            quantity, price, demand, supply, price_dynamics, subject, time,
            data, correlated_shocks = TRUE, verbose = 0) {
     specification <- make_specification(
-      data, quantity, price, demand, supply, subject, time, price_dynamics
+      substitute(quantity), substitute(price),
+      substitute(demand), substitute(supply), substitute(subject), substitute(time),
+      substitute(price_dynamics)
     )
     .Object <- callNextMethod(
       .Object, "Stochastic Adjustment", verbose,
@@ -85,7 +87,7 @@ setMethod(
   "diseq_stochastic_adjustment", signature(specification = "formula"),
   function(specification, data, correlated_shocks, verbose,
            estimation_options) {
-    initialize_from_formula(
+    initialize_and_estimate(
       "diseq_stochastic_adjustment", specification, data,
       correlated_shocks, verbose, estimation_options
     )

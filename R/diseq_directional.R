@@ -52,7 +52,8 @@ setMethod(
            quantity, price, demand, supply, subject, time,
            data, correlated_shocks = TRUE, verbose = 0) {
     specification <- make_specification(
-      data, quantity, price, demand, supply, subject, time
+      substitute(quantity), substitute(price),
+      substitute(demand), substitute(supply), substitute(subject), substitute(time)
     )
     .Object <- callNextMethod(
       .Object, "Directional", verbose,
@@ -102,7 +103,7 @@ setMethod(
   "diseq_directional", signature(specification = "formula"),
   function(specification, data, correlated_shocks, verbose,
            estimation_options) {
-    initialize_from_formula(
+    initialize_and_estimate(
       "diseq_directional", specification, data, correlated_shocks, verbose,
       estimation_options
     )

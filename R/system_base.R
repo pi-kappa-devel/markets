@@ -58,8 +58,8 @@ setMethod(
     .Object@correlated_shocks <- correlated_shocks
     .Object@sample_separation <- FALSE
 
-    .Object@quantity_vector <- as.matrix(model.part(specification, data, lhs = 1))
-    .Object@price_vector <- as.matrix(model.part(specification, data, lhs = 2))
+    .Object@quantity_vector <- as.matrix(model.frame(specification, data, lhs = 1, rhs = 0))
+    .Object@price_vector <- as.matrix(model.frame(specification, data, lhs = 2, rhs = 0))
 
     .Object
   }

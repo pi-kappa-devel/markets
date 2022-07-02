@@ -115,114 +115,30 @@ setClass(
 NULL
 
 
-make_specification <- function(data, quantity, price, demand, supply,
+make_specification <- function(quantity, price, demand, supply,
                                subject, time, price_dynamics) {
   logger <- new("model_logger", 0)
 
-  found <- rep(FALSE, 6)
-  if (!missing(price_dynamics)) {
-    found <- c(found, FALSE)
-  }
+  if (is.language(quantity)) quantity <- paste0(deparse(quantity, 500), collapse = "")
+  if (is.language(price)) price <- paste0(deparse(price, 500), collapse = "")
+  if (is.language(subject)) subject <- paste0(deparse(subject, 500), collapse = "")
+  if (is.language(time)) time <- paste0(deparse(time, 500), collapse = "")
+  if (is.language(demand)) demand <- paste0(deparse(demand, 500), collapse = "")
+  if (is.language(supply)) supply <- paste0(deparse(supply, 500), collapse = "")
 
-  fm <- NULL
-  dnames <- names(data)
-
-  n <- sys.nframe()
-  while (!identical(sys.frame(which = n), globalenv())) {
-    if (!found[1]) {
-      squantity <- toString(substitute(quantity, env = sys.frame(which = n)))
-      if (squantity %in% dnames) {
-        quantity <- squantity
-        found[1] <- TRUE
-      }
-    }
-
-    if (!found[2]) {
-      sprice <- toString(substitute(price, env = sys.frame(which = n)))
-      if (sprice %in% dnames) {
-        price <- sprice
-        found[2] <- TRUE
-      }
-    }
-
-    if (!found[3]) {
-      sdemand <- all.vars(substitute(demand, env = sys.frame(which = n)))
-      if (all(sdemand %in% dnames)) {
-        demand <- paste0(sdemand, collapse = " + ")
-        found[3] <- TRUE
-      }
-    }
-
-    if (!found[4]) {
-      ssupply <- all.vars(substitute(supply, env = sys.frame(which = n)))
-      if (all(ssupply %in% dnames)) {
-        supply <- paste0(ssupply, collapse = " + ")
-        found[4] <- TRUE
-      }
-    }
-
-    if (!found[5]) {
-      ssubject <- toString(substitute(subject, env = sys.frame(which = n)))
-      if (ssubject %in% dnames) {
-        subject <- ssubject
-        found[5] <- TRUE
-      }
-    }
-
-    if (!found[6]) {
-      stime <- toString(substitute(time, env = sys.frame(which = n)))
-      if (stime %in% dnames) {
-        time <- stime
-        found[6] <- TRUE
-      }
-    }
-
-    if (length(found) == 7) {
-      if (!found[7]) {
-        sprice_dynamics <- all.vars(substitute(
-          price_dynamics,
-          env = sys.frame(which = n)
-        ))
-        if (all(sprice_dynamics %in% dnames)) {
-          price_dynamics <- paste0(sprice_dynamics, collapse = " + ")
-          found[7] <- TRUE
-        }
-      }
-    }
-
-    if (all(found)) {
-      rhs <- paste(demand, supply, sep = " | ")
-      if (length(found) == 7) {
-        rhs <- paste(rhs, price_dynamics, sep = " | ")
-      }
-      fm <- formula(paste0(
-        paste(quantity, price, subject, time, sep = " | "), " ~ ",
-        rhs
-      ))
-      break
-    }
-    n <- n - 1
-  }
-  tryCatch(
-    {
-      specification <- Formula::Formula(eval(fm))
-    },
-    error = function(e) {
-      part_names <- c(
-        "quantity", "price", "demand", "supply",
-        "subject", "time"
-      )
-      if (length(found) == 7) {
-        part_names <- c(part_names, "price_dynamics")
-      }
-      print_error(
-        logger, "Failed to substitute model formula parts: ",
-        paste0(part_names[!found], collapse = ", "), "."
-      )
-    }
+  fm <- paste0(
+    paste(quantity, price, subject, time, sep = " | "), " ~ ",
+    paste(demand, supply, sep = " | ")
   )
 
-  specification
+  if (!missing(price_dynamics)) {
+    if (is.language(price_dynamics)) {
+      price_dynamics <- paste0(deparse(price_dynamics, 500), collapse = "")
+    }
+    fm <- paste0(fm, " | ", price_dynamics)
+  }
+
+  Formula::Formula(formula(fm))
 }
 
 setMethod(
@@ -346,9 +262,8 @@ setMethod(
   }
 )
 
-initialize_from_formula <- function(model_type, specification, data,
-                                    correlated_shocks, verbose,
-                                    estimation_options) {
+initialize_from_formula  <- function(model_type, specification, data,
+                                    correlated_shocks, verbose) {
   specification <- Formula::Formula(specification)
   quantity <- terms(specification, lhs = 1, rhs = 0)[[2]]
   price <- terms(specification, lhs = 2, rhs = 0)[[2]]
@@ -367,7 +282,15 @@ initialize_from_formula <- function(model_type, specification, data,
     price_dynamics <- terms(specification, lhs = 0, rhs = 3)[[2]]
     args <- append(args, price_dynamics)
   }
-  model <- do.call(new, args)
+  do.call(new, args)
+}
+
+initialize_and_estimate <- function(model_type, specification, data,
+                                    correlated_shocks, verbose,
+                                    estimation_options) {
+  model  <- initialize_from_formula(
+    model_type, specification, data, correlated_shocks, verbose
+  )
   if (length(estimation_options)) {
     do.call(markets::estimate, c(list(model), estimation_options))
   } else {

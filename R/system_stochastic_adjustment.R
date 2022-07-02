@@ -136,7 +136,7 @@ setMethod(
     # needed in the models' calculations. We only need to adjust the formula
     # for the `show` and `summary` functions.
     .Object@price_equation@formula <- Formula(formula(paste0(
-      price_differences_variable(.Object), " ~ (",
+      price_differences_variable(.Object), " ~ I(",
       prefixed_quantity_variable(.Object@demand), " - ",
       prefixed_quantity_variable(.Object@supply), ") + ",
       deparse(terms(specification, lhs = 0, rhs = 3)[[2]])

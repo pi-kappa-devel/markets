@@ -31,6 +31,24 @@ test_that(paste0(model_name(mdl), " can be estimated"), {
   expect_is(est@fit, "list")
 })
 
+test_that(paste0(
+  model_name(mdl), " can be estimated using formulas",
+  " with transformations"
+), {
+  est <- equilibrium_model(
+    formula(update(
+      Formula(formula(mdl)),
+      . | log(.) | . | . ~ . - P + log(P) | . - P + log(P)
+    )),
+    simulated_data,
+    estimation_options = list(
+      control = optimization_options, method = optimization_method,
+      standard_errors = c("id")
+    )
+  )
+  expect_is(est@fit, "list")
+})
+
 test_that(paste0(model_name(mdl), " fit can be summarized"), {
   test_summary(est, 41)
 })
