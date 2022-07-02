@@ -3,7 +3,7 @@
 #' @import dplyr
 #' @importFrom graphics legend lines
 #' @importFrom rlang :=
-#' @importFrom stats formula lm logLik model.matrix na.omit median optim qnorm sd var
+#' @importFrom stats formula lm logLik model.matrix model.frame na.omit median optim qnorm sd var
 #' @import tibble
 
 setOldClass(c("spec_tbl_df", "tbl_df", "tbl", "data.frame"))

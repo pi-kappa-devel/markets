@@ -277,22 +277,27 @@ setMethod(
     fit$method <- va_args$method
     fit$value <- -fit$value
 
-    if (hessian == "calculated") {
-      print_verbose(object@logger, "Calculating hessian and variance-covariance matrix.")
-      fit$hessian <- hessian(object, fit$par)
-    } else {
-      fit$hessian <- -fit$hessian
-    }
+    if (hessian != "skip") {
+      if (hessian == "calculated") {
+        print_verbose(
+          object@logger,
+          "Calculating hessian and variance-covariance matrix."
+        )
+        fit$hessian <- hessian(object, fit$par)
+      } else {
+        fit$hessian <- -fit$hessian
+      }
 
-    if (standard_errors == "heteroscedastic") {
-      fit <- set_heteroscedasticity_consistent_errors(object, fit)
-    } else if (standard_errors == "homoscedastic") {
-      tryCatch(
-        fit$vcov <- -MASS::ginv(fit$hessian),
-        error = function(e) print_warning(object@logger, e$message)
-      )
-    } else {
-      fit <- set_clustered_errors(object, fit, standard_errors)
+      if (standard_errors == "heteroscedastic") {
+        fit <- set_heteroscedasticity_consistent_errors(object, fit)
+      } else if (standard_errors == "homoscedastic") {
+        tryCatch(
+          fit$vcov <- -MASS::ginv(fit$hessian),
+          error = function(e) print_warning(object@logger, e$message)
+        )
+      } else {
+        fit <- set_clustered_errors(object, fit, standard_errors)
+      }
     }
 
     new("market_fit", object, fit)

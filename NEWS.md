@@ -1,4 +1,8 @@
-# markets 1.0.5.9004
+# markets 1.0.5.9006
+
+* Fixed Hessian skipping bug introduced with 1.0.5.9004.
+
+# markets 1.0.5.9005
 
 * Updated formula implementation to allow using inline variable transformations (offset, splines, log, etc). Added unit tests checking the updated functionality.	
 
