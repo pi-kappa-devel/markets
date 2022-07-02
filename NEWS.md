@@ -1,3 +1,7 @@
+# markets 1.0.5.9007
+
+* Remove experimental code introduced with 1.0.5.9002 from vignettes.
+
 # markets 1.0.5.9006
 
 * Fixed Hessian skipping bug introduced with 1.0.5.9004.

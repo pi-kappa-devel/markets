@@ -161,16 +161,7 @@ model_errors
 Moreover, the average absolute error cannot provide an overall estimation assessment as the market models have different parameter spaces. To assess the overall model performance, one can instead use an information criterion.
 
 ```{r analysis.model.selection}
-showMethods("logLik")
-
-selectMethod("logLik", "market_fit")
-
 fits <- c(da_fit, bs_fit, eq_fit)
-
-print(sapply(fits, class))
-
-print(sapply(fits, AIC))
-
 model_names <- sapply(fits, function(m) m@model_type_string)
 model_obs <- sapply(fits, nobs)
 aic <- sapply(fits, AIC)

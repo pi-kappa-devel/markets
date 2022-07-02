@@ -470,7 +470,7 @@ setMethod(
 logLik.market_fit <- function(object, ...) {
   ll <- NULL
   if (object@fit$method != "2SLS") {
-    ll <- structure(-object@fit$value,
+    ll <- structure(object@fit$value,
       df = length(coef(object)), class = "logLik"
     )
   }
