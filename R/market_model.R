@@ -154,7 +154,7 @@ setMethod(
     .Object@model_name <- model_name
     .Object@logger <- new("model_logger", verbose)
     .Object@system@correlated_shocks <- correlated_shocks
-    print_info(.Object@logger, "This is ", name(.Object), ".")
+    print_info(.Object@logger, "This is ", name(.Object), " model.")
 
     .Object@subject_column <- all.vars(formula(specification, lhs = 3, rhs = 0))
     .Object@time_column <- all.vars(formula(specification, lhs = 4, rhs = 0))

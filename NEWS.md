@@ -1,3 +1,7 @@
+# markets 1.0.5.9009
+
+* Updated package paper.
+
 # markets 1.0.5.9008
 
 * Changed the relationship between market models and fits from 'is a' to 'has a' to avoid class union inheritance issues.
