@@ -7,6 +7,7 @@
 
 #' @title Market model Fit
 #'
+#' @slot model The underlying market model object.
 #' @slot fit A list holding estimation outputs.
 #' @examples
 #' # estimate an equilibrium  model using the houses dataset
@@ -53,8 +54,8 @@ NULL
 #' @export
 setClass(
   "market_fit",
-  contains = "market_model",
   representation(
+    model = "market_model",
     fit = "list"
   ),
   prototype()
@@ -63,9 +64,7 @@ setClass(
 setMethod(
   "initialize", "market_fit",
   function(.Object, market_model, estimate) {
-    for (slot_name in slotNames(market_model)) {
-      slot(.Object, slot_name) <- slot(market_model, slot_name)
-    }
+    .Object@model <- market_model
     .Object@fit <- estimate
 
     .Object
@@ -89,15 +88,15 @@ market_fit_coefficients <- function(object, summary = FALSE) {
     names(supply) <- gsub("supply_", "S_", names(supply))
 
     var_d <- object@fit$system_model$residCov[[1, 1]]
-    names(var_d) <- prefixed_variance_variable(object@system@demand)
+    names(var_d) <- prefixed_variance_variable(object@model@system@demand)
 
     var_s <- object@fit$system_model$residCov[[2, 2]]
-    names(var_s) <- prefixed_variance_variable(object@system@supply)
+    names(var_s) <- prefixed_variance_variable(object@model@system@supply)
 
     coefs <- c(demand, supply, var_d, var_s)
-    if (object@system@correlated_shocks) {
+    if (object@model@system@correlated_shocks) {
       rho <- object@fit$system_model$residCov[1, 2] / sqrt(var_d * var_s)
-      names(rho) <- correlation_variable(object@system)
+      names(rho) <- correlation_variable(object@model@system)
       coefs <- c(coefs, rho)
     }
     names(coefs) <- gsub("\\(Intercept\\)", "CONST", names(coefs))
@@ -115,6 +114,48 @@ market_fit_coefficients <- function(object, summary = FALSE) {
 
   coefs
 }
+
+common_market_fit_show <- function(object, summary = FALSE) {
+  if (object@fit$method == "2SLS") {
+    cat("\nLeast square estimation:", sep = "", fill = TRUE)
+  } else {
+    cat("\nMaximum likelihood estimation:", sep = "", fill = TRUE)
+  }
+  cat(
+    labels = sprintf("  %-20s:", "Method"), object@fit$method,
+    sep = "", fill = TRUE
+  )
+  if (object@fit$method != "2SLS") {
+    args <- object@fit$call[[2]]
+    if (summary) {
+      if (!is.null(args$control$maxit)) {
+        cat(
+          labels = sprintf("  %-20s:", "Max Iterations"), args$control$maxit,
+          sep = "", fill = TRUE
+        )
+      }
+      if (!is.null(args$control$reltol)) {
+        cat(
+          labels = sprintf("  %-20s:", "Relative Tolerance"),
+          args$control$reltol,
+          sep = "", fill = TRUE
+        )
+      }
+    }
+    cat(
+      labels = sprintf("  %-20s:", "Convergence Status"),
+      ifelse(!object@fit$convergence, "success", "failure"),
+      sep = "", fill = TRUE
+    )
+  }
+}
+
+#' @rdname show
+#' @export
+setMethod("show", signature(object = "market_fit"), function(object) {
+  show(object@model)
+  common_market_fit_show(object)
+})
 
 #' @describeIn summaries Summarizes the model's fit.
 #' @description \code{market_fit}: Prints basic information about the
@@ -136,35 +177,14 @@ market_fit_coefficients <- function(object, summary = FALSE) {
 #' @return No return value, called for for side effects (print summary).
 #' @export
 setMethod("summary", signature(object = "market_fit"), function(object) {
-  (selectMethod("summary", "market_model"))(object)
+  summary(object@model)
   if (object@fit$method != "2SLS") {
     args <- object@fit$call[[2]]
 
-    cat("\nMaximum likelihood estimation:", sep = "", fill = TRUE)
-    cat(
-      labels = sprintf("  %-20s:", "Method"), args$method,
-      sep = "", fill = TRUE
-    )
-    if (!is.null(args$control$maxit)) {
-      cat(
-        labels = sprintf("  %-20s:", "Max Iterations"), args$control$maxit,
-        sep = "", fill = TRUE
-      )
-    }
-    if (!is.null(args$control$reltol)) {
-      cat(
-        labels = sprintf("  %-20s:", "Relative Tolerance"),
-        args$control$reltol,
-        sep = "", fill = TRUE
-      )
-    }
-    cat(
-      labels = sprintf("  %-20s:", "Convergence Status"),
-      ifelse(!object@fit$convergence, "success", "failure"),
-      sep = "", fill = TRUE
-    )
+    common_market_fit_show(object, summary = TRUE)
     cat(sprintf("  %-20s:", "Starting Values"), sep = "", fill = TRUE)
     print(object@fit$start, digits = 4)
+
     cat("\nCoefficients:", sep = "", fill = TRUE)
     print(market_fit_coefficients(object, summary = TRUE), digits = 4)
     cat(
@@ -251,7 +271,7 @@ setMethod(
     va_args <- list(...)
 
     if (hessian == "skip" ||
-      ((object@model_type_string %in% c("Basic", "Directional")) &&
+      ((object@model_name %in% c("Basic", "Directional")) &&
         hessian == "calculated")) {
       va_args$hessian <- FALSE
     } else {
@@ -317,7 +337,9 @@ setMethod(
   "estimate", signature(object = "equilibrium_model"),
   function(object, method = "BFGS", ...) {
     if (method != "2SLS") {
-      return(callNextMethod(object, method = method, ...))
+      return((selectMethod("estimate", "market_model"))(
+        object, method = method, ...
+      ))
     }
 
     quantity_variable <- colnames(object@system@quantity_vector)
@@ -477,27 +499,34 @@ logLik.market_fit <- function(object, ...) {
   ll
 }
 
+#' @rdname name
+setMethod(
+  "name", signature(object = "market_fit"),
+  function(object) name(object@model)
+)
+
+#' @rdname describe
+setMethod(
+  "describe", signature(object = "market_fit"),
+  function(object) describe(object@model)
+)
+
+#' @rdname market_type
+setMethod(
+  "market_type", signature(object = "market_fit"),
+  function(object) market_type(object@model)
+)
+
+#' @rdname nobs
+#' @export
+setMethod(
+  "nobs", signature(object = "market_fit"),
+  function(object) nobs(object@model)
+)
+
 #' @rdname logLik
 #' @export
 setMethod("logLik", signature(object = "market_fit"), logLik.market_fit)
-
-
-try_coerce_market_fit <- function(object) {
-  to_class <- class(object)[[1]]
-  if (object@model_type_string == "Equilibrium") {
-    to_class <- "equilibrium_model"
-  } else if (object@model_type_string == "Basic") {
-    to_class <- "diseq_basic"
-  } else if (object@model_type_string == "Directional") {
-    to_class <- "diseq_directional"
-  } else if (object@model_type_string == "Deterministic Adjustment") {
-    to_class <- "diseq_deterministic_adjustment"
-  } else if (object@model_type_string == "Stochastic Adjustment") {
-    to_class <- "diseq_stochastic_adjustment"
-  }
-  class(object)[[1]] <- to_class
-  object
-}
 
 #' @rdname shortage_analysis
 setMethod(
@@ -505,9 +534,7 @@ setMethod(
     model = "missing", parameters = "missing",
     fit = "market_fit"
   ),
-  function(fit) {
-    shortages(model = try_coerce_market_fit(fit), parameters = coef(fit))
-  }
+  function(fit) shortages(model = fit@model, parameters = coef(fit))
 )
 
 #' @rdname shortage_analysis
@@ -516,12 +543,7 @@ setMethod(
     model = "missing", parameters = "missing",
     fit = "market_fit"
   ),
-  function(fit) {
-    normalized_shortages(
-      model = try_coerce_market_fit(fit),
-      parameters = coef(fit)
-    )
-  }
+  function(fit) normalized_shortages(model = fit@model, parameters = coef(fit))
 )
 
 #' @rdname shortage_analysis
@@ -530,12 +552,7 @@ setMethod(
     model = "missing", parameters = "missing",
     fit = "market_fit"
   ),
-  function(fit) {
-    relative_shortages(
-      model = try_coerce_market_fit(fit),
-      parameters = coef(fit)
-    )
-  }
+  function(fit) relative_shortages(model = fit@model, parameters = coef(fit))
 )
 
 #' @rdname shortage_analysis
@@ -544,12 +561,7 @@ setMethod(
     model = "missing", parameters = "missing",
     fit = "market_fit"
   ),
-  function(fit) {
-    shortage_probabilities(
-      model = try_coerce_market_fit(fit),
-      parameters = coef(fit)
-    )
-  }
+  function(fit) shortage_probabilities(model = fit@model, parameters = coef(fit))
 )
 
 #' @rdname shortage_analysis
@@ -558,12 +570,7 @@ setMethod(
     model = "missing", parameters = "missing",
     fit = "market_fit"
   ),
-  function(fit) {
-    shortage_indicators(
-      model = try_coerce_market_fit(fit),
-      parameters = coef(fit)
-    )
-  }
+  function(fit) shortage_indicators(model = fit@model, parameters = coef(fit))
 )
 
 #' @rdname shortage_analysis
@@ -572,12 +579,7 @@ setMethod(
     model = "missing", parameters = "missing",
     fit = "market_fit"
   ),
-  function(fit) {
-    shortage_standard_deviation(
-      model = try_coerce_market_fit(fit),
-      parameters = coef(fit)
-    )
-  }
+  function(fit) shortage_standard_deviation(model = fit@model, parameters = coef(fit))
 )
 
 #' @rdname marginal_effects
@@ -588,8 +590,7 @@ setMethod(
   ),
   function(fit, variable) {
     shortage_marginal(
-      model = try_coerce_market_fit(fit),
-      parameters = coef(fit), variable = variable
+      model = fit@model, parameters = coef(fit), variable = variable
     )
   }
 )
@@ -602,7 +603,7 @@ setMethod(
   ),
   function(fit, variable, aggregate) {
     shortage_probability_marginal(
-      model = try_coerce_market_fit(fit),
+      model = fit@model,
       parameters = coef(fit), variable = variable,
       aggregate = aggregate
     )
@@ -613,7 +614,7 @@ setMethod(
 setMethod(
   "scores",
   signature(object = "missing", parameters = "missing", fit = "market_fit"),
-  function(fit) scores(try_coerce_market_fit(fit), coef(fit))
+  function(fit) scores(fit@model, coef(fit))
 )
 
 #' @rdname market_aggregation
@@ -621,10 +622,7 @@ setMethod(
   "aggregate_demand",
   signature(model = "missing", parameters = "missing", fit = "market_fit"),
   function(fit) {
-    aggregate_demand(
-      model = try_coerce_market_fit(fit),
-      parameters = coef(fit)
-    )
+    aggregate_demand(model = fit@model, parameters = coef(fit))
   }
 )
 
@@ -633,10 +631,7 @@ setMethod(
   "aggregate_supply",
   signature(model = "missing", parameters = "missing", fit = "market_fit"),
   function(fit) {
-    aggregate_supply(
-      model = try_coerce_market_fit(fit),
-      parameters = coef(fit)
-    )
+    aggregate_supply(model = fit@model, parameters = coef(fit))
   }
 )
 
@@ -645,10 +640,7 @@ setMethod(
   "demanded_quantities",
   signature(model = "missing", parameters = "missing", fit = "market_fit"),
   function(fit) {
-    demanded_quantities(
-      model = try_coerce_market_fit(fit),
-      parameters = coef(fit)
-    )
+    demanded_quantities(model = fit@model, parameters = coef(fit))
   }
 )
 
@@ -657,10 +649,7 @@ setMethod(
   "supplied_quantities",
   signature(model = "missing", parameters = "missing", fit = "market_fit"),
   function(fit) {
-    supplied_quantities(
-      model = try_coerce_market_fit(fit),
-      parameters = coef(fit)
-    )
+    supplied_quantities(model = fit@model, parameters = coef(fit))
   }
 )
 
@@ -700,40 +689,40 @@ setMethod(
 #' @export
 setMethod("plot", signature(x = "market_fit"), function(x, subject, time, ...) {
   if (missing(subject)) {
-    subject <- x@model_tibble |>
-      dplyr::distinct(!!as.symbol(x@subject_column)) |>
+    subject <- x@model@model_tibble |>
+      dplyr::distinct(!!as.symbol(x@model@subject_column)) |>
       dplyr::pull()
   }
   if (missing(time)) {
-    time <- x@model_tibble |>
-      dplyr::distinct(!!as.symbol(x@time_column)) |>
+    time <- x@model@model_tibble |>
+      dplyr::distinct(!!as.symbol(x@model@time_column)) |>
       dplyr::pull()
   }
   va_args <- list(...)
   if (is.null(va_args$xlab)) {
-    xlab <- colnames(x@system@price_vector)[1]
+    xlab <- colnames(x@model@system@price_vector)[1]
   }
   if (is.null(va_args$ylab)) {
-    ylab <- quantity_variable(x@system@demand)
+    ylab <- quantity_variable(x@model@system@demand)
   }
   if (is.null(va_args$main)) {
-    main <- x@model_type_string
+    main <- x@model@model_name
   }
-  x@system <- set_parameters(x@system, coef(x))
-  indices <- x@model_tibble |>
+  x@model@system <- set_parameters(x@model@system, coef(x))
+  indices <- x@model@model_tibble |>
     dplyr::mutate(row = row_number()) |>
-    dplyr::filter(!!as.symbol(x@subject_column) %in% subject &
-      !!as.symbol(x@time_column) %in% time) |>
+    dplyr::filter(!!as.symbol(x@model@subject_column) %in% subject &
+      !!as.symbol(x@model@time_column) %in% time) |>
     dplyr::pull(row)
-  a <- x@system@demand@control_matrix[indices, ] %*% x@system@demand@beta
-  d <- function(p) mean(c(a) + x@system@demand@alpha * p)
-  c <- x@system@supply@control_matrix[indices, ] %*% x@system@supply@beta
-  s <- function(p) mean(c(c) + x@system@supply@alpha * p)
-  prices <- x@system@price_vector[indices]
+  a <- x@model@system@demand@control_matrix[indices, ] %*% x@model@system@demand@beta
+  d <- function(p) mean(c(a) + x@model@system@demand@alpha * p)
+  c <- x@model@system@supply@control_matrix[indices, ] %*% x@model@system@supply@beta
+  s <- function(p) mean(c(c) + x@model@system@supply@alpha * p)
+  prices <- x@model@system@price_vector[indices]
   bandwidth <- 0.01
   fprices <- min(prices) * (1 - bandwidth)
   tprices <- max(prices) * (1 + bandwidth)
-  quantities <- x@system@quantity_vector[indices]
+  quantities <- x@model@system@quantity_vector[indices]
   fquantities <- min(quantities) * (1 - bandwidth)
   tquantities <- max(quantities) * (1 + bandwidth)
   dom <- seq(from = min(fprices), to = max(tprices), length.out = 100)

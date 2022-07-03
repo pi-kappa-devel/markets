@@ -173,7 +173,7 @@ Copy the disequilibrium model `tibble` and augment it with post-estimation data.
 ```{r analysis.estimates}
 fit <- sa_fit
 mdt <- tibble::add_column(
-  fit@model_tibble,
+  fit@model@model_tibble,
   shortage_indicators = c(shortage_indicators(fit)),
   normalized_shortages = c(normalized_shortages(fit)),
   shortage_probabilities = c(shortage_probabilities(fit)),
@@ -199,7 +199,7 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
       linetype = Type,
       color = Type
     ), geom = "line") +
-    ggplot2::ggtitle(paste0("Estimated shortages densities (", model_name(fit), ")")) +
+    ggplot2::ggtitle(paste0("Estimated shortages densities (", name(fit), ")")) +
     ggplot2::theme(
       panel.background = ggplot2::element_rect(fill = "transparent"),
       plot.background = ggplot2::element_rect(
@@ -246,7 +246,7 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
   ggplot2::ggplot(pdt, ggplot2::aes(x = Date)) +
     ggplot2::geom_line(ggplot2::aes(y = Quantity, linetype = Side, color = Side)) +
     ggplot2::ggtitle(paste0(
-      "Aggregate estimated demand and supply  (", model_name(fit), ")"
+      "Aggregate estimated demand and supply  (", name(fit), ")"
     )) +
     ggplot2::theme(
       panel.background = ggplot2::element_rect(fill = "transparent"),

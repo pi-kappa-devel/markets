@@ -747,7 +747,7 @@ setMethod(
     initialize_from_formula(
       model_type = model_type_string,
       specification = formula(specification),
-      data = sdt, verbose = 5, correlated_shocks = correlated_shocks
+      data = sdt, verbose = verbose, correlated_shocks = correlated_shocks
     )
   }
 )

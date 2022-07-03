@@ -24,7 +24,7 @@ test_that(paste0("Model can be simulated"), {
 })
 
 est <- NULL
-test_that(paste0(model_name(mdl), " can be estimated"), {
+test_that(paste0(name(mdl), " can be estimated"), {
   est <<- diseq_stochastic_adjustment(
     formula(mdl), simulated_data,
     estimation_options = list(
@@ -35,7 +35,7 @@ test_that(paste0(model_name(mdl), " can be estimated"), {
 })
 
 test_that(paste0(
-  model_name(mdl), " can be estimated using formulas",
+  name(mdl), " can be estimated using formulas",
   " with transformations"
 ), {
   est <- diseq_stochastic_adjustment(
@@ -52,15 +52,15 @@ test_that(paste0(
   expect_is(est@fit, "list")
 })
 
-test_that(paste0(model_name(mdl), " fit can be summarized"), {
+test_that(paste0(name(mdl), " fit can be summarized"), {
   test_summary(est, 50)
 })
 
-test_that(paste0("Estimates of '", model_name(mdl), "' are accurate"), {
+test_that(paste0("Estimates of '", name(mdl), "' are accurate"), {
   test_estimation_accuracy(coef(est), unlist(parameters[-c(1, 2)]), 1e-0)
 })
 
-test_that(paste0(model_name(mdl), "' converges"), {
+test_that(paste0(name(mdl), "' converges"), {
   test_convergence(est)
 })
 
@@ -89,7 +89,7 @@ test_that(paste0("Scores can be calculated"), {
 
 test_that(paste0(
   "Calculated gradient of '",
-  model_name(mdl), "' matches the numerical approximation"
+  name(mdl), "' matches the numerical approximation"
 ), {
   test_calculated_gradient(mdl, coef(est), 1e-04)
 })

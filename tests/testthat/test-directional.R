@@ -23,7 +23,7 @@ test_that(paste0("Model can be simulated"), {
 })
 
 est <- NULL
-test_that(paste0(model_name(mdl), " can be estimated"), {
+test_that(paste0(name(mdl), " can be estimated"), {
   est <<- diseq_directional(
     formula(mdl), simulated_data,
     estimation_options = list(
@@ -33,11 +33,11 @@ test_that(paste0(model_name(mdl), " can be estimated"), {
   expect_is(est@fit, "list")
 })
 
-test_that(paste0(model_name(mdl), " fit can be summarized"), {
+test_that(paste0(name(mdl), " fit can be summarized"), {
   test_summary(est, 41)
 })
 
-test_that(paste0("Estimates of '", model_name(mdl), "' are accurate"), {
+test_that(paste0("Estimates of '", name(mdl), "' are accurate"), {
   test_estimation_accuracy(coef(est), unlist(parameters[-c(1, 2, 7)]), 1e-0)
 })
 
@@ -66,14 +66,14 @@ test_that(paste0("Scores can be calculated"), {
 
 test_that(paste0(
   "Calculated gradient of '",
-  model_name(mdl), "' matches the numerical approximation"
+  name(mdl), "' matches the numerical approximation"
 ), {
   test_calculated_gradient(mdl, coef(est), 1e-3)
 })
 
 test_that(paste0(
   "Calculated hessian of '",
-  model_name(mdl), "' matches the numerical approximation"
+  name(mdl), "' matches the numerical approximation"
 ), {
   test_calculated_hessian(mdl, coef(est), 1e-3)
 })

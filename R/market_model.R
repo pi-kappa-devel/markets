@@ -20,7 +20,8 @@ utils::globalVariables("where")
 #' quantity, price and explanatory columns.
 #' @slot columns Vector of primary key and data column names for all model's equations.
 #' @slot model_tibble Model data \code{tibble}.
-#' @slot model_type_string Model type string description.
+#' @slot model_name Model name string.
+#' @slot market_type Market type string.
 #' @slot system Model's system of equations.
 #' @name market_models
 #' @seealso \link{initialize_market_model}
@@ -42,8 +43,8 @@ setClass(
 
     ## Model data
     model_tibble = "tbl_df",
-    model_type_string = "character",
-    market_type_string = "character",
+    model_name = "character",
+    market_type = "character",
     system = "system_base"
   )
 )
@@ -143,17 +144,17 @@ make_specification <- function(quantity, price, demand, supply,
 
 setMethod(
   "initialize", "market_model",
-  function(.Object, model_type_string, verbose,
+  function(.Object, model_name, verbose,
            specification,
            correlated_shocks,
            data,
            system_initializer) {
 
     ## Model assignments
-    .Object@model_type_string <- model_type_string
+    .Object@model_name <- model_name
     .Object@logger <- new("model_logger", verbose)
     .Object@system@correlated_shocks <- correlated_shocks
-    print_info(.Object@logger, "This is ", model_name(.Object), ".")
+    print_info(.Object@logger, "This is ", name(.Object), ".")
 
     .Object@subject_column <- all.vars(formula(specification, lhs = 3, rhs = 0))
     .Object@time_column <- all.vars(formula(specification, lhs = 4, rhs = 0))
@@ -207,7 +208,7 @@ setMethod(
       dplyr::mutate(pk = as.integer(paste0(!!!key_columns_syms)))
 
     ## Do we need to use lags?
-    if (.Object@model_type_string %in% c(
+    if (.Object@model_name %in% c(
       "Directional", "Deterministic Adjustment", "Stochastic Adjustment"
     )) {
       ## Generate lags
@@ -262,7 +263,7 @@ setMethod(
   }
 )
 
-initialize_from_formula  <- function(model_type, specification, data,
+initialize_from_formula <- function(model_type, specification, data,
                                     correlated_shocks, verbose) {
   specification <- Formula::Formula(specification)
   quantity <- terms(specification, lhs = 1, rhs = 0)[[2]]
@@ -288,7 +289,7 @@ initialize_from_formula  <- function(model_type, specification, data,
 initialize_and_estimate <- function(model_type, specification, data,
                                     correlated_shocks, verbose,
                                     estimation_options) {
-  model  <- initialize_from_formula(
+  model <- initialize_from_formula(
     model_type, specification, data, correlated_shocks, verbose
   )
   if (length(estimation_options)) {
@@ -412,7 +413,7 @@ setMethod("show", signature(object = "market_model"), function(object) {
   cat(
     sprintf(
       "%s Model for Markets in %s:",
-      object@model_type_string, object@market_type_string
+      object@model_name, object@market_type
     ),
     sep = "", fill = TRUE
   )
@@ -665,15 +666,37 @@ setGeneric("set_clustered_errors", function(object, ...) {
   standardGeneric("set_clustered_errors")
 })
 
-#' Model description.
+#' Model name.
 #'
 #' A unique identifying string for the model.
 #' @param object A model object.
 #' @return A string representation of the model.
-#' @rdname model_name
+#' @rdname name
 #' @export
-setGeneric("model_name", function(object) {
-  standardGeneric("model_name")
+setGeneric("name", function(object) {
+  standardGeneric("name")
+})
+
+#' Model description.
+#'
+#' A short (one-liner) description of the market model.
+#' @param object A model object.
+#' @return A model description string.
+#' @rdname describe
+#' @export
+setGeneric("describe", function(object) {
+  standardGeneric("describe")
+})
+
+#' Market type.
+#'
+#' A market type string (equilibrium or disequilibrium) for a given model.
+#' @param object A model object.
+#' @return A string representation of the model.
+#' @rdname market_type
+#' @export
+setGeneric("market_type", function(object) {
+  standardGeneric("market_type")
 })
 
 #' @title Market side descriptive statistics
@@ -770,13 +793,25 @@ setMethod(
   }
 )
 
-#' @rdname model_name
-setMethod("model_name", signature(object = "market_model"), function(object) {
+#' @rdname name
+setMethod(
+  "name", signature(object = "market_model"),
+  function(object) object@model_name
+)
+
+#' @rdname describe
+setMethod("describe", signature(object = "market_model"), function(object) {
   paste0(
-    object@model_type_string, " with ",
+    object@model_name, " with ",
     ifelse(object@system@correlated_shocks, "correlated", "independent"), " shocks"
   )
 })
+
+#' @rdname market_type
+setMethod(
+  "market_type", signature(object = "market_model"),
+  function(object) object@market_type
+)
 
 #' Number of observations.
 #'

@@ -22,7 +22,7 @@ test_that(paste0("Model can be simulated"), {
 })
 
 est <- NULL
-test_that(paste0(model_name(mdl), " can be estimated"), {
+test_that(paste0(name(mdl), " can be estimated"), {
   est <<- diseq_basic(
     formula(mdl), simulated_data,
     estimation_options = list(
@@ -34,7 +34,7 @@ test_that(paste0(model_name(mdl), " can be estimated"), {
 })
 
 test_that(paste0(
-  model_name(mdl), " can be estimated using formulas",
+  name(mdl), " can be estimated using formulas",
   " with transformations"
 ), {
   est <- diseq_basic(
@@ -48,11 +48,11 @@ test_that(paste0(
   expect_is(est@fit, "list")
 })
 
-test_that(paste0(model_name(mdl), " fit can be summarized"), {
+test_that(paste0(name(mdl), " fit can be summarized"), {
   test_summary(est, 41)
 })
 
-test_that(paste0("Estimates of '", model_name(mdl), "' are accurate"), {
+test_that(paste0("Estimates of '", name(mdl), "' are accurate"), {
   test_estimation_accuracy(coef(est), unlist(parameters[-c(1, 2)]), 1e-0)
 })
 
@@ -90,7 +90,7 @@ test_that(paste0("Log=likelihood object can be accessed"), {
 })
 
 test_that(paste0(
-  "Calculated gradient of '", model_name(mdl),
+  "Calculated gradient of '", name(mdl),
   "' matches the numerical approximation"
 ), {
   test_calculated_gradient(mdl, coef(est), 1e-4)
@@ -99,7 +99,7 @@ test_that(paste0(
 skip_on_cran()
 
 test_that(paste0(
-  "Calculated hessian of '", model_name(mdl),
+  "Calculated hessian of '", name(mdl),
   "' matches the numerical approximation"
 ), {
   test_calculated_hessian(mdl, coef(est), 1e-4)

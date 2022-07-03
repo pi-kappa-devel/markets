@@ -162,7 +162,7 @@ Moreover, the average absolute error cannot provide an overall estimation assess
 
 ```{r analysis.model.selection}
 fits <- c(da_fit, bs_fit, eq_fit)
-model_names <- sapply(fits, function(m) m@model_type_string)
+model_names <- sapply(fits, function(m) name(m))
 model_obs <- sapply(fits, nobs)
 aic <- sapply(fits, AIC)
 df <- sapply(fits, function(m) attr(logLik(m), "df"))

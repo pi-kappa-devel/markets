@@ -62,7 +62,7 @@ setMethod(
       data,
       function(...) new("system_equilibrium", ...)
     )
-    .Object@market_type_string <- "Equilibrium"
+    .Object@market_type <- "Equilibrium"
 
     .Object
   }

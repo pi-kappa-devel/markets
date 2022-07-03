@@ -96,7 +96,7 @@ test_shortages <- function(shortage_function, est) {
 test_scores <- function(est) {
   scores <- scores(fit = est)
   n <- markets::nobs(est)
-  k <- length(markets:::likelihood_variables(est@system))
+  k <- length(markets:::likelihood_variables(est@model@system))
   testthat::expect(any(dim(scores) == c(n, k)), sprintf("Score has wrong dimensions"))
   testthat::expect(
     !any(is.na(scores)),
@@ -108,8 +108,8 @@ test_coef <- function(est) {
   testthat::expect(
     class(coef(est)) == "numeric" &
       class(coefficients(est)) == "numeric" &
-      length(coef(est)) == length(likelihood_variables(est@system)) &
-      length(coefficients(est)) == length(likelihood_variables(est@system)),
+      length(coef(est)) == length(likelihood_variables(est@model@system)) &
+      length(coefficients(est)) == length(likelihood_variables(est@model@system)),
     sprintf("Failed to access coefficients via coef")
   )
 }
@@ -118,7 +118,7 @@ test_vcov <- function(est) {
   vc <- vcov(est)
   testthat::expect(
     class(vc)[1] == "matrix" &
-      all(dim(vc) == rep(length(likelihood_variables(est@system)), 2)),
+      all(dim(vc) == rep(length(likelihood_variables(est@model@system)), 2)),
     sprintf("Failed to access variance-covariance matrix via vcov")
   )
 }
