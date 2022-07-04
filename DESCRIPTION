@@ -1,7 +1,7 @@
 Package: markets
 Title: Estimation Methods for Markets in Equilibrium and Disequilibrium
-Version: 1.0.5.9011
-Date: 2022-07-03
+Version: 1.0.5.9012
+Date: 2022-07-04
 Authors@R: 
     person(given = "Pantelis",
            family = "Karapanagiotis",
@@ -33,7 +33,6 @@ Imports:
     MASS (>= 7.3-50),
     methods,
     rlang (>= 0.2.1),
-    systemfit (>= 1.1),
     Rcpp,
     RcppGSL,
     RcppParallel,

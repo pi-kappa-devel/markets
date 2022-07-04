@@ -42,14 +42,16 @@ NULL
 #' class. Thus, all the public functionality of the underlying market model is also
 #' directly accessible from the output class.
 #'
-#' Furthermore, the class is responsible for harmonizing the heterogeneous outputs
-#' resulting from different estimation methods of market models. For example, a
-#' \code{2SLS} estimation of the \code{\linkS4class{equilibrium_model}} gives a
-#' \code{\link[systemfit]{systemfit}} object, while the maximum likelihood estimation
-#' of \code{\linkS4class{diseq_basic}} returns an \code{\link[stats]{optim}} list. In
-#' both cases, the \code{market_fit} stores the estimation output in the member
-#' \code{fit} of type \code{list}. Methods of the class examine the type of the
-#' \code{fit} and direct execution accordingly to different branches to produce
+#' Furthermore, the class is responsible for harmonizing the heterogeneous
+#' outputs resulting from different estimation methods of market models. For
+#' example, a \code{2SLS} estimation of the
+#' \code{\linkS4class{equilibrium_model}} returns a list of linear regression
+#' models (the first stage, demand, and supply models), while the maximum
+#' likelihood estimation of \code{\linkS4class{diseq_basic}} returns an
+#' \code{\link[stats]{optim}} list. In both cases, the \code{market_fit}
+#' stores the estimation output in the member \code{fit} of type \code{list}.
+#' Methods of the class examine the type of the \code{fit} and direct
+#' execution accordingly to different branches to produce
 #' a unified experience for the caller.
 #' @export
 setClass(
@@ -75,27 +77,37 @@ market_fit_coefficients <- function(object, summary = FALSE) {
   if (object@fit$method != "2SLS") {
     coefs <- object@fit$par
   } else {
-    demand <- object@fit$system_model$coefficients[
-      grep("demand_", names(object@fit$system_model$coefficients))
-    ]
+    price_variable <- colnames(object@model@system@price_vector)
+    adjust_names <- function(prefix, side) {
+      paste(
+        prefix, gsub(
+          sprintf("\\b%s_FITTED\\b", price_variable), price_variable,
+          names(side)
+        ),
+        sep = ""
+      )
+    }
+
+    demand <- object@fit$demand_model$coefficients
     demand <- c(demand[2], demand[1], demand[-c(1, 2)])
-    names(demand) <- gsub("demand_", "D_", names(demand))
+    names(demand) <- adjust_names("D_", demand)
 
-    supply <- object@fit$system_model$coefficients[
-      grep("supply_", names(object@fit$system_model$coefficients))
-    ]
+    supply <- object@fit$supply_model$coefficients
     supply <- c(supply[2], supply[1], supply[-c(1, 2)])
-    names(supply) <- gsub("supply_", "S_", names(supply))
+    names(supply) <- adjust_names("S_", supply)
 
-    var_d <- object@fit$system_model$residCov[[1, 1]]
+    var_d <- var(object@fit$demand_model$residuals)
     names(var_d) <- prefixed_variance_variable(object@model@system@demand)
 
-    var_s <- object@fit$system_model$residCov[[2, 2]]
+    var_s <- var(object@fit$supply_model$residuals)
     names(var_s) <- prefixed_variance_variable(object@model@system@supply)
 
     coefs <- c(demand, supply, var_d, var_s)
     if (object@model@system@correlated_shocks) {
-      rho <- object@fit$system_model$residCov[1, 2] / sqrt(var_d * var_s)
+      rho <- cor(
+        object@fit$demand_model$residuals,
+        object@fit$supply_model$residuals
+      )
       names(rho) <- correlation_variable(object@model@system)
       coefs <- c(coefs, rho)
     }
@@ -171,9 +183,13 @@ setMethod("show", signature(object = "market_fit"), function(object) {
 #' \item the estimated coefficients, their standard errors, Z values, and P values, and
 #' \item \eqn{-2 \log L} evaluated at the maximum.
 #' }
-#' For a linear estimation of the equilibrium system, the function prints the
-#' estimation summary provided by \code{\link[systemfit]{systemfit}} in
-#' addition to the model's \code{summary} output.
+#' For a linear estimation of the equilibrium system, the function prints
+#' \itemize{
+#' \item the used method,
+#' \item the summary of the first stage regression,
+#' \item the summary of the demand (second stage) regression, and
+#' \item the summary of the supply (second stage) regression.
+#' }
 #' @return No return value, called for for side effects (print summary).
 #' @export
 setMethod("summary", signature(object = "market_fit"), function(object) {
@@ -193,7 +209,13 @@ setMethod("summary", signature(object = "market_fit"), function(object) {
       sep = "", fill = TRUE
     )
   } else {
-    print(summary(object@fit$system_model))
+    common_market_fit_show(object, summary = TRUE)
+    cat("\nFirst Stage:", sep = "", fill = TRUE)
+    print(summary(object@fit$first_stage_model))
+    cat("\nDemand Equation:", sep = "", fill = TRUE)
+    print(summary(object@fit$demand_model))
+    cat("\nSupply Equation:", sep = "", fill = TRUE)
+    print(summary(object@fit$supply_model))
   }
 })
 
@@ -207,12 +229,12 @@ setMethod("summary", signature(object = "market_fit"), function(object) {
 #' linear regression estimates as initializing values. The default optimization method is
 #' BFGS. For other alternatives see \code{\link[stats]{optim}}. The implementation of
 #' the two-stage least square estimation of the \code{\linkS4class{equilibrium_model}}
-#' is based on \code{\link[systemfit]{systemfit}}.
+#' is based on \code{\link[stats]{lm}}.
 #' @param object A model object.
 #' @param ... Additional parameter used in the model's estimation. These are
 #' passed further down to the estimation call. For the
 #' \code{\linkS4class{equilibrium_model}} model, the parameters are passed to
-#' \code{\link[systemfit]{systemfit}}, if the method is set to
+#' \code{\link[stats]{lm}}, if the method is set to
 #' \code{2SLS}, or to \code{\link[stats]{optim}} for any other method. For the rest of
 #' the models, the parameters are passed to \code{\link[stats]{optim}}.
 #' @return The object that holds the estimation result.
@@ -330,7 +352,7 @@ setMethod(
 #' and \code{Brent}, the model is estimated using
 #' full information maximum likelihood based on \code{\link[stats]{optim}} functionality.
 #' When \code{2SLS} is supplied, the model is estimated using two-stage least squares
-#' based on \code{\link[systemfit]{systemfit}}. In this case, the function returns a
+#' using \code{\link[stats]{lm}}. In this case, the function returns a
 #' list containing the first and second stage estimates. The default value is
 #' \code{BFGS}.
 setMethod(
@@ -360,30 +382,56 @@ setMethod(
     first_stage_model <- lm(first_stage_formula, object@data)
     object@data[, fitted_column] <- first_stage_model$fitted.values
 
-    ## create demand formula
-    independent <- all.vars(terms(object@system@formula, lhs = 0, rhs = 1))
+    ## estimate demand model
+    independent <- gsub(
+      sprintf("\\b%s\\b", price_variable), fitted_column,
+      all.vars(terms(object@system@formula, lhs = 0, rhs = 1))
+    )
     demand_formula <- formula(paste0(
       quantity_variable, " ~ ", paste0(independent, collapse = " + ")
     ))
+    demand_model <- lm(demand_formula, object@data)
 
-    ## create supply formula
-    independent <- all.vars(terms(object@system@formula, lhs = 0, rhs = 2))
-    independent <- independent[independent != "CONST"]
+    ## estimate supply model
+    independent <- gsub(
+      sprintf("\\b%s\\b", price_variable), fitted_column,
+      all.vars(terms(object@system@formula, lhs = 0, rhs = 2))
+    )
     supply_formula <- formula(paste0(
       quantity_variable, " ~ ", paste0(independent, collapse = " + ")
     ))
+    supply_model <- lm(supply_formula, object@data)
 
     inst <- formula(paste0(" ~ ", paste0(first_stage_controls, collapse = " + ")))
-    system_model <- systemfit::systemfit(
-      list(demand = demand_formula, supply = supply_formula),
-      method = "2SLS", inst = inst, data = object@data
+
+    ## coefficient covariance matrix (following Henningsen A, Hamann JD (2007))
+    coefs <- c(demand_model$coefficients, supply_model$coefficients)
+    mp <- model.matrix(first_stage_model)
+    md <- model.matrix(demand_model)
+    ms <- model.matrix(supply_model)
+    nobsd <- nrow(md)
+    ncoefd <- ncol(md)
+    nobss <- nrow(ms)
+    ncoefs <- ncol(ms)
+    nobsall <- nobsd + nobss
+    ncoefall <- ncoefd + ncoefs
+    var <- (
+      sum(demand_model$residuals**2) + sum(demand_model$residuals**2)
+    ) / (nobsall - ncoefall)
+
+    zz <- crossprod(mp)
+    xx <- rbind(
+      mp %*% solve(zz, crossprod(mp, cbind(md, matrix(0, nobss, ncoefs)))),
+      mp %*% solve(zz, crossprod(mp, cbind(matrix(0, nobsd, ncoefd), ms)))
     )
+    vc <- var * solve(crossprod(xx))
 
     new(
       "market_fit", object,
       list(
         method = method, first_stage_model = first_stage_model,
-        system_model = system_model
+        demand_model = demand_model, supply_model = supply_model,
+        vcov = vc
       )
     )
   }
@@ -451,13 +499,9 @@ setMethod(
 setMethod(
   "vcov", signature(object = "market_fit"),
   function(object) {
-    if (object@fit$method != "2SLS") {
-      colnames(object@fit$vcov) <- names(coef(object))
-      rownames(object@fit$vcov) <- names(coef(object))
-      object@fit$vcov
-    } else {
-      object@fit$system_model$coefCov
-    }
+    colnames(object@fit$vcov) <- names(coef(object))
+    rownames(object@fit$vcov) <- names(coef(object))
+    object@fit$vcov
   }
 )
 
@@ -466,8 +510,8 @@ setMethod(
 #'
 #' Specializes the \code{\link[stats]{logLik}} function for the market models
 #' of the package estimated with full information minimum likelihood. It
-#' returns \code{NULL} for the equilibrium model estimated with
-#' \code{\link[systemfit]{systemfit}}.
+#' returns \code{NULL} for the equilibrium model estimated with two stage
+#' least squares (\code{2SLS}).
 #' @param object A fitted model object.
 #' @param ... Additional arguments. Unused.
 #' @return A \code{\link[stats]{logLik}} object.

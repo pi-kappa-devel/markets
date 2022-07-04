@@ -1,3 +1,7 @@
+# markets 1.0.5.9012
+
+* Removed dependency to package `systemfit`. Linear estimations of the equilibrium model use `ls`.
+
 # markets 1.0.5.9011
 
 * Removed dependency to package `tidyr`. Using `expand.grid` instead of `crossing`.

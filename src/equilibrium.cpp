@@ -448,20 +448,20 @@ public:
 };
 
 #ifdef _MARKETS_HAS_GSL_
-double my_f(const gsl_vector *v, void *params) {
+double loglik(const gsl_vector *v, void *params) {
   equilibrium_model *obj = static_cast<equilibrium_model *>(params);
   obj->system_equilibrium_model_set_parameters(v->data);
 
   return -obj->sum_llh;
 }
 
-void my_df(const gsl_vector *v, void *params, gsl_vector *df) {
+void dloglik(const gsl_vector *v, void *params, gsl_vector *df) {
   equilibrium_model *obj = static_cast<equilibrium_model *>(params);
   obj->system_equilibrium_model_set_parameters(v->data);
   obj->calculate_gradient(df->data);
 }
 
-void my_fdf(const gsl_vector *v, void *params, double *f, gsl_vector *df) {
+void loglikdloglik(const gsl_vector *v, void *params, double *f, gsl_vector *df) {
   equilibrium_model *obj = static_cast<equilibrium_model *>(params);
   obj->system_equilibrium_model_set_parameters(v->data);
 
@@ -472,7 +472,7 @@ void my_fdf(const gsl_vector *v, void *params, double *f, gsl_vector *df) {
 std::vector<double> secant_gradient_ratios(const gsl_vector *x, double step, void *params) {
   double fx;
   gsl_vector *dfx = gsl_vector_alloc(x->size);
-  my_fdf(x, params, &fx, dfx);
+  loglikdloglik(x, params, &fx, dfx);
 
   double g = 0;
   for (size_t j = 0; j < x->size; ++j) {
@@ -486,7 +486,7 @@ std::vector<double> secant_gradient_ratios(const gsl_vector *x, double step, voi
     for (size_t j = 0; j < y->size; ++j) {
       gsl_vector_set(y, j, gsl_vector_get(x, j) + step * s);
     }
-    double fy = my_f(y, params);
+    double fy = loglik(y, params);
     qs.push_back((fy - fx) / g / s);
   }
 
@@ -501,20 +501,20 @@ Rcpp::List minimize(equilibrium_model *model, Rcpp::NumericVector &start, double
   int status = -1;
   Rcpp::NumericVector optimizer(model->gradient_size);
   Rcpp::NumericVector gradient(model->gradient_size);
-  double log_likelihood = NAN;
 
 #ifdef _MARKETS_HAS_GSL_
   const gsl_multimin_fdfminimizer_type *T;
   gsl_multimin_fdfminimizer *s;
 
   gsl_vector *x;
-  gsl_multimin_function_fdf my_func;
+  gsl_multimin_function_fdf objective;
+  double log_likelihood = NAN;
 
-  my_func.n = start.length();
-  my_func.f = my_f;
-  my_func.df = my_df;
-  my_func.fdf = my_fdf;
-  my_func.params = model;
+  objective.n = start.length();
+  objective.f = loglik;
+  objective.df = dloglik;
+  objective.fdf = loglikdloglik;
+  objective.params = model;
 
   x = gsl_vector_alloc(start.length());
   for (R_xlen_t i = 0; i < start.length(); ++i) {
@@ -524,7 +524,7 @@ Rcpp::List minimize(equilibrium_model *model, Rcpp::NumericVector &start, double
   T = gsl_multimin_fdfminimizer_vector_bfgs2;
   s = gsl_multimin_fdfminimizer_alloc(T, start.length());
 
-  gsl_multimin_fdfminimizer_set(s, &my_func, x, step, objective_tolerance);
+  gsl_multimin_fdfminimizer_set(s, &objective, x, step, objective_tolerance);
 
   do {
     iter++;
@@ -545,6 +545,7 @@ Rcpp::List minimize(equilibrium_model *model, Rcpp::NumericVector &start, double
         optimizer[c] = s->x->data[c];
         gradient[c] = s->gradient->data[c];
       });
+  log_likelihood = loglik(s->x, model);
 
   gsl_multimin_fdfminimizer_free(s);
   gsl_vector_free(x);

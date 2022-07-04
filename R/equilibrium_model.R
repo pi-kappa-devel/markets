@@ -1,5 +1,4 @@
 #' @include market_model.R
-#' @importFrom systemfit systemfit
 
 #' @describeIn market_models Equilibrium model
 #'
