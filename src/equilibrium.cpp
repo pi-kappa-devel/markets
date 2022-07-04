@@ -501,6 +501,7 @@ Rcpp::List minimize(equilibrium_model *model, Rcpp::NumericVector &start, double
   int status = -1;
   Rcpp::NumericVector optimizer(model->gradient_size);
   Rcpp::NumericVector gradient(model->gradient_size);
+  double log_likelihood = NAN;
 
 #ifdef _MARKETS_HAS_GSL_
   const gsl_multimin_fdfminimizer_type *T;
@@ -508,7 +509,6 @@ Rcpp::List minimize(equilibrium_model *model, Rcpp::NumericVector &start, double
 
   gsl_vector *x;
   gsl_multimin_function_fdf objective;
-  double log_likelihood = NAN;
 
   objective.n = start.length();
   objective.f = loglik;
