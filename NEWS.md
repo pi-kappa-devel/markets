@@ -1,3 +1,7 @@
+# markets 1.0.5.9011
+
+* Removed dependency to package `tidyr`. Using `expand.grid` instead of `crossing`.
+
 # markets 1.0.5.9010
 
 * Removed dependency to package `tibble`. Using data frames for storing model data.

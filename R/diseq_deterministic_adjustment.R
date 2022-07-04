@@ -156,8 +156,7 @@ setMethod(
     var_s <- var(supply$residuals)
     names(var_s) <- prefixed_variance_variable(object@system@supply)
 
-    dp <- object@data[, price_differences_variable(object@system)] |>
-      dplyr::pull()
+    dp <- object@data[, price_differences_variable(object@system)]
     xd <- demand$fitted.values - supply$fitted.values
     prices <- stats::lm(dp ~ xd - 1)
     names(prices$coefficients) <- price_differences_variable(object@system)

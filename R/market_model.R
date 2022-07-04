@@ -5,7 +5,6 @@
 #' @importFrom rlang :=
 #' @importFrom stats formula lm logLik model.matrix model.frame na.omit median optim qnorm sd var
 
-setOldClass(c("spec_tbl_df", "tbl_df", "tbl", "data.frame"))
 utils::globalVariables("where")
 
 #' @title Market model classes
@@ -41,7 +40,7 @@ setClass(
     columns = "vector",
 
     ## Model data
-    data = "tbl_df",
+    data = "data.frame",
     model_name = "character",
     market_type = "character",
     system = "system_base"
@@ -245,7 +244,8 @@ setMethod(
       .Object@data <- .Object@data |>
         dplyr::group_by(!!!subject_sym) |>
         dplyr::mutate(!!diff_sym := !!price_sym - !!lagged_price_sym) |>
-        dplyr::ungroup()
+        dplyr::ungroup() |>
+        as.data.frame()
     }
 
     .Object@system <- system_initializer(
@@ -954,11 +954,11 @@ aggregate_equation <- function(model, parameters, equation) {
   model@system <- set_parameters(model@system, parameters)
   qs <- quantities(slot(model@system, equation))
   result <- NULL
-  if (nrow(unique(model@data[, model@subject_column])) > 1) {
+  if (length(unique(model@data[, model@subject_column])) > 1) {
     time_symbol <- rlang::sym(model@time_column)
     aggregate_symbol <- rlang::sym(colnames(qs))
-    result <- model@data[, model@time_column] |>
-      dplyr::mutate(!!aggregate_symbol := qs) |>
+    result <- data.frame(model@data[, model@time_column], qs) |>
+      dplyr::rename(!!time_symbol := 1) |>
       dplyr::group_by(!!time_symbol) |>
       dplyr::summarise(!!aggregate_symbol := sum(!!aggregate_symbol))
   } else {
