@@ -162,7 +162,7 @@ spmm
 
 ### Shortages
 
-Copy the disequilibrium model `tibble` and augment it with post-estimation data. The disequilibrium models can be used to estimate:
+Copy the disequilibrium model data frame and augment it with post-estimation data. The disequilibrium models can be used to estimate:
 
  * Shortage probabilities. These are the probabilities that the disequilibrium models assign to observing a particular extent of excess demand.
  
@@ -172,8 +172,8 @@ Copy the disequilibrium model `tibble` and augment it with post-estimation data.
 
 ```{r analysis.estimates}
 fit <- sa_fit
-mdt <- tibble::add_column(
-  fit@model@model_tibble,
+mdt <- cbind(
+  fit@model@data,
   shortage_indicators = c(shortage_indicators(fit)),
   normalized_shortages = c(normalized_shortages(fit)),
   shortage_probabilities = c(shortage_probabilities(fit)),
@@ -185,7 +185,7 @@ How is the sample separated post-estimation? The indices of the observations for
 
 ```{r analysis.shortages}
 if (requireNamespace("ggplot2", quietly = TRUE)) {
-  pdt <- tibble::tibble(
+  pdt <- data.frame(
     Shortage = c(mdt$normalized_shortages, mdt$relative_shortages),
     Type = c(rep("Normalized", nrow(mdt)), rep("Relative", nrow(mdt))),
     xpos = c(rep(-1.0, nrow(mdt)), rep(1.0, nrow(mdt))),
@@ -238,7 +238,7 @@ aggregates <- aggregate_demand(fit) |>
   dplyr::mutate(date = as.numeric(date)) |>
   dplyr::rename(demand = D_Q, supply = S_Q)
 if (requireNamespace("ggplot2", quietly = TRUE)) {
-  pdt <- tibble::tibble(
+  pdt <- data.frame(
     Date = c(aggregates$date, aggregates$date),
     Quantity = c(aggregates$demand, aggregates$supply),
     Side = c(rep("Demand", nrow(aggregates)), rep("Supply", nrow(aggregates)))

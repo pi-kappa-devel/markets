@@ -135,7 +135,9 @@ sim_coef <- c(
 )
 
 coef_tbl <- function(fit) {
-    tibble::tibble(coef = names(coef(fit)),!!substitute(fit) := coef(fit))
+    dt <- data.frame(names(coef(fit)), coef(fit))
+    names(dt) <- c("coef", substitute(fit))
+    dt
 }
 
 comp <- coef_tbl(da_fit) |> 
@@ -166,7 +168,7 @@ model_names <- sapply(fits, function(m) name(m))
 model_obs <- sapply(fits, nobs)
 aic <- sapply(fits, AIC)
 df <- sapply(fits, function(m) attr(logLik(m), "df"))
-seltbl <- tibble::tibble(Model = model_names, AIC = aic,
+seltbl <- data.frame(Model = model_names, AIC = aic,
                          D.F = df, Obs. = model_obs,
                          Abs.Error = model_errors) |>
   dplyr::arrange(AIC)

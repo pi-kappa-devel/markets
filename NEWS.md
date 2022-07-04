@@ -1,3 +1,7 @@
+# markets 1.0.5.9010
+
+* Removed dependency to package `tibble`. Using data frames for storing model data.
+
 # markets 1.0.5.9009
 
 * Updated package paper.

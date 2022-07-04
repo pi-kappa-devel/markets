@@ -134,7 +134,7 @@ setGeneric("prefixed_const_variable", function(object) {
 #' @describeIn variable_names Independent variable names.
 #' @description \code{prefixed_independent_variables}: The names of the independent
 #' variables are constructed by concatenating the equation prefix with the column names
-#' of the data \code{tibble}.
+#' of the model's data frame.
 #' @export
 setGeneric("prefixed_independent_variables", function(object) {
   standardGeneric("prefixed_independent_variables")

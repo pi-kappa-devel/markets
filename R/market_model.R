@@ -4,7 +4,6 @@
 #' @importFrom graphics legend lines
 #' @importFrom rlang :=
 #' @importFrom stats formula lm logLik model.matrix model.frame na.omit median optim qnorm sd var
-#' @import tibble
 
 setOldClass(c("spec_tbl_df", "tbl_df", "tbl", "data.frame"))
 utils::globalVariables("where")
@@ -19,7 +18,7 @@ utils::globalVariables("where")
 #' @slot data_columns Vector of model's data column names. This is the union of the
 #' quantity, price and explanatory columns.
 #' @slot columns Vector of primary key and data column names for all model's equations.
-#' @slot model_tibble Model data \code{tibble}.
+#' @slot data Model data frame.
 #' @slot model_name Model name string.
 #' @slot market_type Market type string.
 #' @slot system Model's system of equations.
@@ -42,7 +41,7 @@ setClass(
     columns = "vector",
 
     ## Model data
-    model_tibble = "tbl_df",
+    data = "tbl_df",
     model_name = "character",
     market_type = "character",
     system = "system_base"
@@ -168,14 +167,14 @@ setMethod(
     ))
 
     ## Data assignment
-    .Object@model_tibble <- data
+    .Object@data <- data
 
-    ## Create model tibble
-    len <- nrow(.Object@model_tibble)
-    .Object@model_tibble <- .Object@model_tibble |>
+    ## Create model data frame
+    len <- nrow(.Object@data)
+    .Object@data <- .Object@data |>
       dplyr::select(!!!.Object@columns) |>
       na.omit()
-    drops <- len - nrow(.Object@model_tibble)
+    drops <- len - nrow(.Object@data)
     if (drops) {
       print_warning(
         .Object@logger, "Dropping ", drops, " row", ifelse(drops > 1, "s", ""),
@@ -196,7 +195,7 @@ setMethod(
       }
       x
     }
-    .Object@model_tibble <- .Object@model_tibble |>
+    .Object@data <- .Object@data |>
       dplyr::mutate(dplyr::across(
         where(is.factor),
         remove_unused_levels
@@ -204,7 +203,7 @@ setMethod(
 
     ## Create primary key column
     key_columns_syms <- rlang::syms(c(.Object@subject_column, .Object@time_column))
-    .Object@model_tibble <- .Object@model_tibble |>
+    .Object@data <- .Object@data |>
       dplyr::mutate(pk = as.integer(paste0(!!!key_columns_syms)))
 
     ## Do we need to use lags?
@@ -219,18 +218,18 @@ setMethod(
       lagged_price_column <- paste0("LAGGED_", price_column)
       lagged_price_sym <- rlang::sym(lagged_price_column)
 
-      .Object@model_tibble <- .Object@model_tibble |>
+      .Object@data <- .Object@data |>
         dplyr::group_by(!!!subject_sym) |>
         dplyr::mutate(
           !!lagged_price_sym := dplyr::lag(!!price_sym, order_by = !!time_sym)
         ) |>
         dplyr::ungroup()
 
-      drop_rows <- .Object@model_tibble |>
+      drop_rows <- .Object@data |>
         dplyr::select(!!lagged_price_sym) |>
         is.na() |>
         c()
-      .Object@model_tibble <- .Object@model_tibble[!drop_rows, ]
+      .Object@data <- .Object@data[!drop_rows, ]
 
       drops <- sum(drop_rows)
       print_info(
@@ -243,7 +242,7 @@ setMethod(
       diff_column <- paste0(price_column, "_DIFF")
       diff_sym <- rlang::sym(diff_column)
 
-      .Object@model_tibble <- .Object@model_tibble |>
+      .Object@data <- .Object@data |>
         dplyr::group_by(!!!subject_sym) |>
         dplyr::mutate(!!diff_sym := !!price_sym - !!lagged_price_sym) |>
         dplyr::ungroup()
@@ -251,7 +250,7 @@ setMethod(
 
     .Object@system <- system_initializer(
       specification,
-      .Object@model_tibble, correlated_shocks
+      .Object@data, correlated_shocks
     )
 
     print_verbose(
@@ -470,7 +469,7 @@ NULL
 setMethod("summary", signature(object = "market_model"), function(object) {
   show(object)
   cat(
-    labels = sprintf("  %-18s:", "Nobs"), nrow(object@model_tibble),
+    labels = sprintf("  %-18s:", "Nobs"), nrow(object@data),
     sep = "", fill = TRUE
   )
   summary_implementation(object@system)
@@ -719,7 +718,7 @@ setGeneric("market_type", function(object) {
 #' \item \code{coef_var} Coefficient of variation.
 #' }
 #' @param object A model object.
-#' @return A data \code{tibble} containing descriptive statistics.
+#' @return A data frame containing descriptive statistics.
 #' @examples
 #' # initialize the basic model using the houses dataset
 #' model <- new(
@@ -770,16 +769,16 @@ setMethod(
 setMethod(
   "set_clustered_errors", signature(object = "market_model"),
   function(object, fit, cluster_errors_by) {
-    if (!(cluster_errors_by %in% names(object@model_tibble))) {
+    if (!(cluster_errors_by %in% names(object@data))) {
       print_error(
         object@logger, "Cluster variable is not among model data variables."
       )
     }
     fit$original_hessian <- fit$hessian
     cluster_var <- rlang::syms(cluster_errors_by)
-    clustered_scores <- tibble::tibble(
-      object@model_tibble |> dplyr::select(!!!cluster_var),
-      tibble::as_tibble(scores(object, fit$par))
+    clustered_scores <- data.frame(
+      object@data |> dplyr::select(!!!cluster_var),
+      as.data.frame(scores(object, fit$par))
     ) |>
       dplyr::group_by(!!!cluster_var) |>
       dplyr::group_map(~ t(as.matrix(.)) %*% (as.matrix(.)))
@@ -825,7 +824,7 @@ setMethod(
 setMethod(
   "nobs", signature(object = "market_model"),
   function(object) {
-    nrow(object@model_tibble)
+    nrow(object@data)
   }
 )
 
@@ -837,11 +836,11 @@ setMethod(
     }
     variables <- variables[sapply(
       variables,
-      function(c) !is.factor(object@model_tibble[[c]])
+      function(c) !is.factor(object@data[[c]])
     )]
 
-    tibble::as_tibble(apply(
-      object@model_tibble[, variables], 2,
+    as.data.frame(apply(
+      object@data[, variables], 2,
       function(x) {
         c(
           nobs = length(x), nmval = sum(is.na(x)),
@@ -955,10 +954,10 @@ aggregate_equation <- function(model, parameters, equation) {
   model@system <- set_parameters(model@system, parameters)
   qs <- quantities(slot(model@system, equation))
   result <- NULL
-  if (nrow(unique(model@model_tibble[, model@subject_column])) > 1) {
+  if (nrow(unique(model@data[, model@subject_column])) > 1) {
     time_symbol <- rlang::sym(model@time_column)
     aggregate_symbol <- rlang::sym(colnames(qs))
-    result <- model@model_tibble[, model@time_column] |>
+    result <- model@data[, model@time_column] |>
       dplyr::mutate(!!aggregate_symbol := qs) |>
       dplyr::group_by(!!time_symbol) |>
       dplyr::summarise(!!aggregate_symbol := sum(!!aggregate_symbol))

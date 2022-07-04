@@ -357,8 +357,8 @@ setMethod(
       price_variable, " ~ ", paste0(first_stage_controls, collapse = " + ")
     )
 
-    first_stage_model <- lm(first_stage_formula, object@model_tibble)
-    object@model_tibble[, fitted_column] <- first_stage_model$fitted.values
+    first_stage_model <- lm(first_stage_formula, object@data)
+    object@data[, fitted_column] <- first_stage_model$fitted.values
 
     ## create demand formula
     independent <- all.vars(terms(object@system@formula, lhs = 0, rhs = 1))
@@ -376,7 +376,7 @@ setMethod(
     inst <- formula(paste0(" ~ ", paste0(first_stage_controls, collapse = " + ")))
     system_model <- systemfit::systemfit(
       list(demand = demand_formula, supply = supply_formula),
-      method = "2SLS", inst = inst, data = object@model_tibble
+      method = "2SLS", inst = inst, data = object@data
     )
 
     new(
@@ -689,12 +689,12 @@ setMethod(
 #' @export
 setMethod("plot", signature(x = "market_fit"), function(x, subject, time, ...) {
   if (missing(subject)) {
-    subject <- x@model@model_tibble |>
+    subject <- x@model@data |>
       dplyr::distinct(!!as.symbol(x@model@subject_column)) |>
       dplyr::pull()
   }
   if (missing(time)) {
-    time <- x@model@model_tibble |>
+    time <- x@model@data |>
       dplyr::distinct(!!as.symbol(x@model@time_column)) |>
       dplyr::pull()
   }
@@ -709,7 +709,7 @@ setMethod("plot", signature(x = "market_fit"), function(x, subject, time, ...) {
     main <- x@model@model_name
   }
   x@model@system <- set_parameters(x@model@system, coef(x))
-  indices <- x@model@model_tibble |>
+  indices <- x@model@data |>
     dplyr::mutate(row = row_number()) |>
     dplyr::filter(!!as.symbol(x@model@subject_column) %in% subject &
       !!as.symbol(x@model@time_column) %in% time) |>

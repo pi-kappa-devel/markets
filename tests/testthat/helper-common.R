@@ -162,15 +162,15 @@ load_or_simulate_data <- function(model_string, parameters) {
   if (file.exists("devel-environment") & file.exists(stored_data_filename)) {
     load(stored_data_filename)
   } else {
-    model_tibble <- do.call(
+    data <- do.call(
       markets::simulate_data,
       c(model_string, parameters, verbose = verbose, seed = seed)
     )
     if (file.exists("devel-environment")) {
-      save(model_tibble, file = stored_data_filename)
+      save(data, file = stored_data_filename)
     }
   }
-  model_tibble
+  data
 }
 
 load_or_simulate_model <- function(model_string, parameters) {

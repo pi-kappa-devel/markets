@@ -79,8 +79,8 @@ setMethod(
     .Object@price_generator <- price_generator
     .Object@control_generator <- control_generator
 
-    .Object@simulation_tbl <- tibble::tibble(id = 1:.Object@nobs) |>
-      tidyr::crossing(tibble::tibble(date = as.factor(1:.Object@tobs)))
+    .Object@simulation_tbl <- data.frame(id = 1:.Object@nobs) |>
+      tidyr::crossing(data.frame(date = as.factor(1:.Object@tobs)))
 
     .Object <- simulate_controls(.Object)
     .Object <- simulate_shocks(.Object)
@@ -171,7 +171,7 @@ setMethod(
       mat <- matrix(generator(simn * clen), simn, clen)
       colnames(mat) <- paste0(prefix, 1:clen)
       object@simulation_tbl <- object@simulation_tbl |>
-        dplyr::bind_cols(dplyr::as_tibble(mat))
+        dplyr::bind_cols(as.data.frame(mat))
     }
 
     object
@@ -193,7 +193,7 @@ setMethod("simulate_shocks", signature(object = "simulated_model"), function(obj
   disturbances <- MASS::mvrnorm(n = nrow(object@simulation_tbl), object@mu, object@sigma)
   colnames(disturbances) <- c("u_d", "u_s")
   object@simulation_tbl <- object@simulation_tbl |>
-    dplyr::bind_cols(dplyr::as_tibble(disturbances))
+    dplyr::bind_cols(as.data.frame(disturbances))
 
   object
 })
@@ -495,7 +495,7 @@ setMethod(
     colnames(disturbances) <- c("u_d", "u_s", "u_p")
 
     object@simulation_tbl <- object@simulation_tbl |>
-      dplyr::bind_cols(dplyr::as_tibble(disturbances))
+      dplyr::bind_cols(as.data.frame(disturbances))
 
     object
   }
@@ -513,7 +513,7 @@ NULL
 #' @describeIn market_simulation Simulate model data.
 #' @description
 #' \subsection{\code{simulate_data}}{
-#' Returns a data \code{tibble} with simulated data from a generating process that
+#' Returns a data frame with simulated data from a generating process that
 #' matches the passed model string. By default, the simulated observations of the
 #' controls are drawn from a normal distribution.
 #' }
@@ -673,7 +673,7 @@ setMethod(
 #' @describeIn market_simulation Simulate model.
 #' @description
 #' \subsection{\code{simulate_model}}{
-#' Simulates a data \code{tibble} based on the generating process of the passed model
+#' Simulates a data frame based on the generating process of the passed model
 #' and uses it to initialize a model object. Data are simulated using the
 #' \code{\link{simulate_data}} function.
 #' }
