@@ -26,7 +26,7 @@ setClass(
   representation()
 )
 
-#' @describeIn initialize_market_model Equilibrium model constructor
+#' @describeIn model_initialization Equilibrium model constructor
 #' @examples
 #' simulated_data <- simulate_data(
 #'   "equilibrium_model", 500, 3, # model type, observed entities and time points
@@ -90,7 +90,7 @@ setMethod(
   }
 )
 
-#' @rdname log_likelihood
+#' @rdname model_likelihoods
 setMethod(
   "log_likelihood", signature(object = "equilibrium_model"),
   function(object, parameters) {
@@ -100,7 +100,7 @@ setMethod(
 )
 
 
-#' @rdname gradient
+#' @rdname model_likelihoods
 setMethod(
   "gradient", signature(object = "equilibrium_model"),
   function(object, parameters) {
@@ -111,7 +111,7 @@ setMethod(
   }
 )
 
-#' @rdname scores
+#' @rdname model_likelihoods
 setMethod(
   "scores", signature(object = "equilibrium_model"),
   function(object, parameters) {

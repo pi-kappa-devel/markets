@@ -22,7 +22,7 @@ utils::globalVariables("where")
 #' @slot market_type Market type string.
 #' @slot system Model's system of equations.
 #' @name market_models
-#' @seealso \link{initialize_market_model}
+#' @seealso \link{model_initialization}
 NULL
 
 #' @describeIn market_models Base class for market models
@@ -110,7 +110,7 @@ setClass(
 #' @param correlated_shocks Should the model be estimated using correlated shocks?
 #' @param data The data set.
 #' @return The initialized model.
-#' @name initialize_market_model
+#' @name model_initialization
 NULL
 
 
@@ -306,7 +306,7 @@ initialize_and_estimate <- function(model_type, specification, data,
 #' functionality of the package. The functions expect a formula following the
 #' specification described in \link[=market_model_formula]{formula}, a
 #' dataset, and optionally further initialization (see
-#' \link[=initialize_market_model]{model initialization}) and
+#' \link[=model_initialization]{model initialization}) and
 #' estimation (see \link[=estimate]{model estimation}) options.
 #'
 #' Each of these functions parses the passed formula, initializes the model
@@ -427,7 +427,7 @@ setMethod("show", signature(object = "market_model"), function(object) {
 #' @title Model and fit summaries
 #' @description Methods that summarize models and their estimates.
 #' @param object An object to be summarized.
-#' @name summaries
+#' @name summary
 #' @examples
 #' \donttest{
 #' model <- simulate_model(
@@ -455,7 +455,7 @@ setMethod("show", signature(object = "market_model"), function(object) {
 #' }
 NULL
 
-#' @describeIn summaries Summarizes the model.
+#' @describeIn summary Summarizes the model.
 #' @description \code{market_model}: Prints basic information about the
 #' passed model object. In addition to the output of
 #' the \code{\link{show}} method, \code{summary} prints
@@ -487,8 +487,16 @@ setMethod("summary", signature(object = "market_model"), function(object) {
   }
 })
 
-#' Minus log-likelihood.
+
+#' @title Model likelihoods and derivatives.
+#' @description Methods that calculate the likelihoods, scores, gradients, and Hessians
+#' of market models.
+#' @name model_likelihoods
+NULL
+
+#' @title Log-likelihood
 #'
+#' @description
 #' Returns the log-likelihood. The likelihood functions are based on
 #' Maddala and Nelson (1974) \doi{10.2307/1914215}. The likelihoods expressions
 #' that the function uses are derived in
@@ -498,31 +506,33 @@ setMethod("summary", signature(object = "market_model"), function(object) {
 #' @param object A model object.
 #' @param parameters A vector of parameters at which the function is to be evaluated.
 #' @return The sum of the likelihoods evaluated for each observation.
-#' @rdname log_likelihood
+#' @rdname model_likelihoods
 #' @export
 setGeneric("log_likelihood", function(object, parameters) {
   standardGeneric("log_likelihood")
 })
 
-#' Gradient
+#' @title Gradient
 #'
+#' @description
 #' Returns the gradient of the log-likelihood evaluated at the passed parameters.
 #' @param object A model object.
 #' @param parameters A vector of parameters at which the gradient is to be evaluated.
 #' @return The log likelihood's gradient.
-#' @rdname gradient
+#' @rdname model_likelihoods
 #' @export
 setGeneric("gradient", function(object, parameters) {
   standardGeneric("gradient")
 })
 
-#' Hessian
+#' @title Hessian
 #'
+#' @description
 #' Returns the hessian of the log-likelihood evaluated at the passed parameters.
 #' @param object A model object.
 #' @param parameters A vector of parameters at which the hessian is to be evaluated.
 #' @return The log likelihood's hessian.
-#' @rdname hessian
+#' @rdname model_likelihoods
 #' @export
 setGeneric("hessian", function(object, parameters) {
   standardGeneric("hessian")
@@ -631,7 +641,7 @@ setGeneric("maximize_log_likelihood", function(object, start, step, objective_to
 #' @param parameters A vector with model parameters.
 #' @param fit A fitted model object.
 #' @return The score matrix.
-#' @rdname scores
+#' @rdname model_likelihoods
 #' @examples
 #' \donttest{
 #' model <- simulate_model(
@@ -665,12 +675,28 @@ setGeneric("set_clustered_errors", function(object, ...) {
   standardGeneric("set_clustered_errors")
 })
 
+#' @title Short model and market descriptions
+#'
+#' @name model_description
+NULL
+
 #' Model name.
 #'
 #' A unique identifying string for the model.
 #' @param object A model object.
 #' @return A string representation of the model.
-#' @rdname name
+#' @examples
+#' # initialize the equilibrium using the houses dataset
+#' model <- new(
+#'   "equilibrium_model", # model type
+#'   subject = ID, time = TREND, quantity = HS, price = RM,
+#'   demand = RM + TREND + W + CSHS + L1RM + L2RM + MONTH,
+#'   supply = RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
+#'   fair_houses()
+#' )
+#'
+#' name(model)
+#' @rdname model_description
 #' @export
 setGeneric("name", function(object) {
   standardGeneric("name")
@@ -681,7 +707,18 @@ setGeneric("name", function(object) {
 #' A short (one-liner) description of the market model.
 #' @param object A model object.
 #' @return A model description string.
-#' @rdname describe
+#' @examples
+#' # initialize the basic model using the houses dataset
+#' model <- new(
+#'   "diseq_basic", # model type
+#'   subject = ID, time = TREND, quantity = HS, price = RM,
+#'   demand = RM + TREND + W + CSHS + L1RM + L2RM + MONTH,
+#'   supply = RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
+#'   fair_houses()
+#' )
+#'
+#' describe(model)
+#' @rdname model_description
 #' @export
 setGeneric("describe", function(object) {
   standardGeneric("describe")
@@ -692,13 +729,13 @@ setGeneric("describe", function(object) {
 #' A market type string (equilibrium or disequilibrium) for a given model.
 #' @param object A model object.
 #' @return A string representation of the model.
-#' @rdname market_type
+#' @rdname model_description
 #' @export
 setGeneric("market_type", function(object) {
   standardGeneric("market_type")
 })
 
-#' @title Market side descriptive statistics
+#' @title Market force data descriptive statistics
 #' @details Calculates and returns basic descriptive statistics for the model's demand
 #' or supply side data. Factor variables are excluded from the calculations. The function
 #' calculates and returns:
@@ -792,13 +829,13 @@ setMethod(
   }
 )
 
-#' @rdname name
+#' @rdname model_description
 setMethod(
   "name", signature(object = "market_model"),
   function(object) object@model_name
 )
 
-#' @rdname describe
+#' @rdname model_description
 setMethod("describe", signature(object = "market_model"), function(object) {
   paste0(
     object@model_name, " with ",
@@ -806,7 +843,7 @@ setMethod("describe", signature(object = "market_model"), function(object) {
   )
 })
 
-#' @rdname market_type
+#' @rdname model_description
 setMethod(
   "market_type", signature(object = "market_model"),
   function(object) object@market_type

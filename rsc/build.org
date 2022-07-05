@@ -92,7 +92,7 @@ rhub::check(
     # Solaris platforms
     'solaris-x86-patched', 'solaris-x86-patched-ods',
     # Mac platforms
-    'macos-highsierra-release', 'macos-highsierra-release-cran'
+    'macos-highsierra-release', 'macos-highsierra-release-cran', 'macos-m1-bigsur-release'
   ), env_vars=c(R_COMPILE_AND_INSTALL_PACKAGES = 'always'))
 #+end_src
 

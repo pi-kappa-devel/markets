@@ -26,7 +26,7 @@ setClass(
   prototype()
 )
 
-#' @describeIn initialize_market_model Directional disequilibrium model base constructor
+#' @describeIn model_initialization Directional disequilibrium model base constructor
 #' @examples
 #' \donttest{
 #' simulated_data <- simulate_data(
@@ -110,7 +110,7 @@ setMethod(
   }
 )
 
-#' @rdname log_likelihood
+#' @rdname model_likelihoods
 setMethod(
   "log_likelihood", signature(object = "diseq_directional"),
   function(object, parameters) {
@@ -128,7 +128,7 @@ setMethod(
   }
 )
 
-#' @rdname gradient
+#' @rdname model_likelihoods
 setMethod(
   "gradient", signature(object = "diseq_directional"),
   function(object, parameters) {
@@ -137,7 +137,7 @@ setMethod(
   }
 )
 
-#' @rdname scores
+#' @rdname model_likelihoods
 setMethod(
   "scores", signature(object = "diseq_directional"),
   function(object, parameters) {

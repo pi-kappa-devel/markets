@@ -5,7 +5,7 @@
 #' @include diseq_stochastic_adjustment.R
 
 
-#' @title Market model Fit
+#' @title Market model fit
 #'
 #' @slot model The underlying market model object.
 #' @slot fit A list holding estimation outputs.
@@ -169,7 +169,7 @@ setMethod("show", signature(object = "market_fit"), function(object) {
   common_market_fit_show(object)
 })
 
-#' @describeIn summaries Summarizes the model's fit.
+#' @describeIn summary Summarizes the model's fit.
 #' @description \code{market_fit}: Prints basic information about the
 #' passed model fit. In addition to the output of
 #' the model's \code{summary} method, the function prints basic
@@ -543,19 +543,19 @@ logLik.market_fit <- function(object, ...) {
   ll
 }
 
-#' @rdname name
+#' @rdname model_description
 setMethod(
   "name", signature(object = "market_fit"),
   function(object) name(object@model)
 )
 
-#' @rdname describe
+#' @rdname model_description
 setMethod(
   "describe", signature(object = "market_fit"),
   function(object) describe(object@model)
 )
 
-#' @rdname market_type
+#' @rdname model_description
 setMethod(
   "market_type", signature(object = "market_fit"),
   function(object) market_type(object@model)
@@ -654,7 +654,7 @@ setMethod(
   }
 )
 
-#' @rdname scores
+#' @rdname model_likelihoods
 setMethod(
   "scores",
   signature(object = "missing", parameters = "missing", fit = "market_fit"),

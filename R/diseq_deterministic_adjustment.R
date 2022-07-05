@@ -24,7 +24,7 @@ setClass(
   prototype()
 )
 
-#' @describeIn initialize_market_model Disequilibrium model with deterministic price
+#' @describeIn model_initialization Disequilibrium model with deterministic price
 #'   adjustment constructor
 #' @examples
 #' simulated_data <- simulate_data(
@@ -104,7 +104,7 @@ setMethod(
   }
 )
 
-#' @rdname log_likelihood
+#' @rdname model_likelihoods
 setMethod(
   "log_likelihood", signature(object = "diseq_deterministic_adjustment"),
   function(object, parameters) {
@@ -113,7 +113,7 @@ setMethod(
   }
 )
 
-#' @rdname gradient
+#' @rdname model_likelihoods
 setMethod(
   "gradient", signature(object = "diseq_deterministic_adjustment"),
   function(object, parameters) {
@@ -123,7 +123,7 @@ setMethod(
   }
 )
 
-#' @rdname scores
+#' @rdname model_likelihoods
 setMethod(
   "scores", signature(object = "diseq_deterministic_adjustment"),
   function(object, parameters) {

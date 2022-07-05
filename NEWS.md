@@ -1,3 +1,8 @@
+# markets 1.0.6
+
+* Cumulative update of CRAN version. 
+* Improvements in the organization of the documentation.
+
 # markets 1.0.5.9013
 
 * Fixed bug in `maximize_log_likelihood` introduced in 1.0.5.9012.

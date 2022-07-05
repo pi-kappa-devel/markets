@@ -1,6 +1,6 @@
 #' @include diseq_basic.R
 
-#' @rdname hessian
+#' @rdname model_likelihoods
 setMethod("hessian", signature(object = "diseq_basic"), function(object, parameters) {
   object@system <- set_parameters(object@system, parameters)
   object <- object@system

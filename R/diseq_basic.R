@@ -22,7 +22,7 @@ setClass(
   prototype()
 )
 
-#' @describeIn initialize_market_model Basic disequilibrium model base
+#' @describeIn model_initialization Basic disequilibrium model base
 #' constructor
 #' @examples
 #' simulated_data <- simulate_data(
@@ -85,7 +85,7 @@ setMethod(
   }
 )
 
-#' @rdname log_likelihood
+#' @rdname model_likelihoods
 setMethod(
   "log_likelihood", signature(object = "diseq_basic"),
   function(object, parameters) {
@@ -94,13 +94,13 @@ setMethod(
   }
 )
 
-#' @rdname gradient
+#' @rdname model_likelihoods
 setMethod("gradient", signature(object = "diseq_basic"), function(object, parameters) {
   object@system <- set_parameters(object@system, parameters)
   colSums(calculate_system_scores(object@system))
 })
 
-#' @rdname scores
+#' @rdname model_likelihoods
 setMethod("scores", signature(object = "diseq_basic"), function(object, parameters) {
   object@system <- set_parameters(object@system, parameters)
   calculate_system_scores(object@system)
