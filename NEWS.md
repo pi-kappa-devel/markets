@@ -1,3 +1,8 @@
+# markets 1.0.7
+
+* Added significance stars in summaries.
+* Fixed calculation of two stage least square correlation coefficient.
+
 # markets 1.0.6
 
 * Cumulative update of CRAN version. 

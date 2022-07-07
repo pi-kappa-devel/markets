@@ -51,7 +51,7 @@ test_that(paste0(
 })
 
 test_that(paste0(name(mdl), " fit can be summarized"), {
-  test_summary(est, 41)
+  test_summary(est, 43)
 })
 
 test_that(paste0(
@@ -83,7 +83,7 @@ test_that(paste0("Second stage of '", name(mdl), "' can be estimated"), {
 })
 
 test_that(paste0(name(mdl), " regressions can be summarized"), {
-  test_summary(reg, 88)
+  test_summary(reg, 93)
 })
 
 test_that(paste0(

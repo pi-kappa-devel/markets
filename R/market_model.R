@@ -798,7 +798,7 @@ setMethod(
     scores <- scores(object, fit$par)
     adjustment <- MASS::ginv(t(scores) %*% scores)
     fit$hessian <- fit$hessian %*% adjustment %*% fit$hessian
-    fit$vcov <- MASS::ginv(fit$hessian)
+    fit$vcov <- MASS::ginv(fit$hessian) * nobs(object) / (nobs(object) - ncoef(object))
     fit
   }
 )
@@ -823,7 +823,8 @@ setMethod(
     adjustment <- MASS::ginv(Reduce("+", clustered_scores))
     fit$hessian <- fit$hessian %*% adjustment %*% fit$hessian
     fit$vcov <- MASS::ginv(fit$hessian) * (
-      fit$number_of_clusters / (fit$number_of_clusters - 1)
+      (nobs(object) - ncoef(object)) * (fit$number_of_clusters - 1) /
+      (nobs(object) - 1) / fit$number_of_clusters
     )
     fit
   }
@@ -862,6 +863,26 @@ setMethod(
   "nobs", signature(object = "market_model"),
   function(object) {
     nrow(object@data)
+  }
+)
+
+#' Number of coefficients.
+#'
+#' Returns the number of model's coefficients. This is the sum of demand, supply, price
+#' equation, and the variance-covariance matrix coefficients.
+#' @param object A model object.
+#' @return The number of model coefficients.
+#' @rdname ncoef
+#' @export
+setGeneric("ncoef", function(object) {
+  standardGeneric("ncoef")
+})
+
+#' @rdname ncoef
+setMethod(
+  "ncoef", signature(object = "market_model"),
+  function(object) {
+    length(likelihood_variables(object@system))
   }
 )
 

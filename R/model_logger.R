@@ -54,21 +54,29 @@ setMethod("print_error", signature(object = "model_logger"), function(object, ..
 })
 
 setMethod("print_warning", signature(object = "model_logger"), function(object, ...) {
-  if (object@verbosity > 0) cat(labels = "Warning: ", ..., fill = TRUE, sep = "")
+  if (object@verbosity > 0) {
+    cat(strwrap(paste0("Warning: ", ...), exdent = 2), fill = TRUE, sep = "")
+  }
   object
 })
 
 setMethod("print_info", signature(object = "model_logger"), function(object, ...) {
-  if (object@verbosity > 1) cat(labels = "Info: ", ..., fill = TRUE, sep = "")
+  if (object@verbosity > 1) {
+    cat(strwrap(paste0("Info: ", ...), exdent = 2), fill = TRUE, sep = "")
+  }
   object
 })
 
 setMethod("print_verbose", signature(object = "model_logger"), function(object, ...) {
-  if (object@verbosity > 2) cat(labels = "Verbose: ", ..., fill = TRUE, sep = "")
+  if (object@verbosity > 2) {
+    cat(strwrap(paste0("Verbose: ", ...), exdent = 2), fill = TRUE, sep = "")
+  }
   object
 })
 
 setMethod("print_debug", signature(object = "model_logger"), function(object, ...) {
-  if (object@verbosity > 3) cat(labels = "Debug: ", ..., fill = TRUE, sep = "")
+  if (object@verbosity > 3) {
+    cat(strwrap(paste0("Debug: ", ...), exdent = 2), fill = TRUE, sep = "")
+  }
   object
 })

@@ -1,6 +1,6 @@
 ## Changes in version 1.0.6
 
-* Removed dependencies to packages `systemfit`,  `tidyr`, `tibble`, `bbmle`, `magrittr` that were not extensively was in the package. 
+* Removed dependencies to packages `systemfit`,  `tidyr`, `tibble`, `bbmle`, `magrittr` that were not extensively used in the package. 
 * Updated formula implementation to allow using inline variable transformations (offset, splines, log, etc). Added unit tests checking the updated functionality.
 * Changed the relationship between market models and fits from 'is-a' to 'has-a' to avoid class union inheritance issues.
 * Replaced `minus_log_likelihood` with `log_likelihood` and adjusted `gradient`, `scores` and `hessian`. Gradient and hessian return derivatives of log-likelihood instead of derivatives of minus log-likelihood.

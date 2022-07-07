@@ -3,7 +3,7 @@
 #' @include diseq_directional.R
 #' @include diseq_deterministic_adjustment.R
 #' @include diseq_stochastic_adjustment.R
-
+#' @importFrom utils capture.output
 
 #' @title Market model fit
 #'
@@ -74,53 +74,15 @@ setMethod(
 )
 
 market_fit_coefficients <- function(object, summary = FALSE) {
-  if (object@fit$method != "2SLS") {
-    coefs <- object@fit$par
-  } else {
-    price_variable <- colnames(object@model@system@price_vector)
-    adjust_names <- function(prefix, side) {
-      paste(
-        prefix, gsub(
-          sprintf("\\b%s_FITTED\\b", price_variable), price_variable,
-          names(side)
-        ),
-        sep = ""
-      )
-    }
-
-    demand <- object@fit$demand_model$coefficients
-    demand <- c(demand[2], demand[1], demand[-c(1, 2)])
-    names(demand) <- adjust_names("D_", demand)
-
-    supply <- object@fit$supply_model$coefficients
-    supply <- c(supply[2], supply[1], supply[-c(1, 2)])
-    names(supply) <- adjust_names("S_", supply)
-
-    var_d <- var(object@fit$demand_model$residuals)
-    names(var_d) <- prefixed_variance_variable(object@model@system@demand)
-
-    var_s <- var(object@fit$supply_model$residuals)
-    names(var_s) <- prefixed_variance_variable(object@model@system@supply)
-
-    coefs <- c(demand, supply, var_d, var_s)
-    if (object@model@system@correlated_shocks) {
-      rho <- cor(
-        object@fit$demand_model$residuals,
-        object@fit$supply_model$residuals
-      )
-      names(rho) <- correlation_variable(object@model@system)
-      coefs <- c(coefs, rho)
-    }
-    names(coefs) <- gsub("\\(Intercept\\)", "CONST", names(coefs))
-  }
+  coefs <- object@fit$par
 
   if (summary) {
-    sds <- sqrt(diag(object@fit$vcov))
+    sds <- sapply(diag(vcov(object)), function(s) ifelse(s >= 0, sqrt(s), NaN))
     zvals <- coefs / sds
     pvals <- 2 * pnorm(-abs(zvals))
     coefs <- cbind(
       Estimate = coefs, `Std. Error` = sds,
-      `z value` = zvals, `Pr(z)` = pvals
+      `z value` = zvals, `Pr(>|z|)` = pvals
     )
   }
 
@@ -202,7 +164,29 @@ setMethod("summary", signature(object = "market_fit"), function(object) {
     print(object@fit$start, digits = 4)
 
     cat("\nCoefficients:", sep = "", fill = TRUE)
-    print(market_fit_coefficients(object, summary = TRUE), digits = 4)
+    coefs <- market_fit_coefficients(object, summary = TRUE)
+    stars <- function(p) {
+      if (p < 1e-3) {
+        "***"
+      } else if (p < 1e-2) {
+        "**"
+      } else if (p < 5e-2) {
+        "*"
+      } else if (p < 1e-1) {
+        "."
+      } else {
+        " "
+      }
+    }
+
+    cat(sprintf(
+      "%s %s\n", capture.output(print(coefs)),
+      c("", sapply(coefs[, 4], stars))
+    ))
+    cat(
+      "---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
+      sep = "", fill = TRUE
+    )
     cat(
       labels = sprintf("\n%s:", "-2 log L"),
       -2 * logLik(object),
@@ -210,6 +194,16 @@ setMethod("summary", signature(object = "market_fit"), function(object) {
     )
   } else {
     common_market_fit_show(object, summary = TRUE)
+    cat("\nShocks:", sep = "", fill = TRUE)
+    ncoef <- length(object@fit$par)
+    vcovi <- ncoef - 2
+    cat(
+      sprintf(
+        "  %-20s: %g\n", names(object@fit$par)[vcovi:ncoef],
+        object@fit$par[vcovi:ncoef]
+      ),
+      sep = ""
+    )
     cat("\nFirst Stage:", sep = "", fill = TRUE)
     print(summary(object@fit$first_stage_model))
     cat("\nDemand Equation:", sep = "", fill = TRUE)
@@ -333,13 +327,16 @@ setMethod(
       if (standard_errors == "heteroscedastic") {
         fit <- set_heteroscedasticity_consistent_errors(object, fit)
       } else if (standard_errors == "homoscedastic") {
+        adjustment <- nobs(object) / (nobs(object) - ncoef(object))
         tryCatch(
-          fit$vcov <- -MASS::ginv(fit$hessian),
+          fit$vcov <- -MASS::ginv(fit$hessian) * adjustment,
           error = function(e) print_warning(object@logger, e$message)
         )
       } else {
         fit <- set_clustered_errors(object, fit, standard_errors)
       }
+      colnames(fit$vcov) <- likelihood_variables(object@system)
+      rownames(fit$vcov) <- likelihood_variables(object@system)
     }
 
     new("market_fit", object, fit)
@@ -404,6 +401,44 @@ setMethod(
 
     inst <- formula(paste0(" ~ ", paste0(first_stage_controls, collapse = " + ")))
 
+    # adjust coefficient names
+    price_variable <- colnames(object@system@price_vector)
+    adjust_names <- function(prefix, side) {
+      paste(
+        prefix, gsub(
+          sprintf("\\b%s_FITTED\\b", price_variable), price_variable,
+          names(side)
+        ),
+        sep = ""
+      )
+    }
+
+    dcoefs <- demand_model$coefficients
+    dcoefs <- c(dcoefs[2], dcoefs[1], dcoefs[-c(1, 2)])
+    names(dcoefs) <- adjust_names("D_", dcoefs)
+
+    scoefs <- supply_model$coefficients
+    scoefs <- c(scoefs[2], scoefs[1], scoefs[-c(1, 2)])
+    names(scoefs) <- adjust_names("S_", scoefs)
+
+    var_d <- var(demand_model$residuals - dcoefs[1] * first_stage_model$residuals)
+    names(var_d) <- prefixed_variance_variable(object@system@demand)
+
+    var_s <- var(supply_model$residuals - scoefs[1] * first_stage_model$residuals)
+    names(var_s) <- prefixed_variance_variable(object@system@supply)
+
+    par <- c(dcoefs, scoefs, var_d, var_s)
+
+    if (object@system@correlated_shocks) {
+      rho <- cor(
+        demand_model$residuals - dcoefs[1] * first_stage_model$residuals,
+        supply_model$residuals - scoefs[1] * first_stage_model$residuals
+      )
+      names(rho) <- correlation_variable(object@system)
+      par <- c(par, rho)
+    }
+    names(par) <- gsub("\\(Intercept\\)", "CONST", names(par))
+
     ## coefficient covariance matrix (following Henningsen A, Hamann JD (2007))
     coefs <- c(demand_model$coefficients, supply_model$coefficients)
     mp <- model.matrix(first_stage_model)
@@ -425,13 +460,17 @@ setMethod(
       mp %*% solve(zz, crossprod(mp, cbind(matrix(0, nobsd, ncoefd), ms)))
     )
     vc <- var * solve(crossprod(xx))
+    vc <- vc[c(2, 1, 3:ncoefall), ]
+    vc <- vc[, c(2, 1, 3:ncoefall)]
+    colnames(vc) <- names(par)[1:ncoefall]
+    rownames(vc) <- names(par)[1:ncoefall]
 
     new(
       "market_fit", object,
       list(
         method = method, first_stage_model = first_stage_model,
         demand_model = demand_model, supply_model = supply_model,
-        vcov = vc
+        par = par, vcov = vc
       )
     )
   }
@@ -472,6 +511,24 @@ setMethod(
   function(object) market_fit_coefficients(object)
 )
 
+#' @rdname nobs
+#' @export
+setMethod(
+  "nobs", signature(object = "market_fit"),
+  function(object) {
+    nbons(object@model)
+  }
+)
+
+#' @rdname ncoef
+#' @export
+setMethod(
+  "ncoef", signature(object = "market_fit"),
+  function(object) {
+    ncoef(object@model)
+  }
+)
+
 #' Variance-covariance matrix for a fitted market model.
 #'
 #' Returns the variance-covariance matrix of the estimated coefficients for
@@ -499,8 +556,6 @@ setMethod(
 setMethod(
   "vcov", signature(object = "market_fit"),
   function(object) {
-    colnames(object@fit$vcov) <- names(coef(object))
-    rownames(object@fit$vcov) <- names(coef(object))
     object@fit$vcov
   }
 )

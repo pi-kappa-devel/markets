@@ -111,7 +111,6 @@ da_fit <- diseq_deterministic_adjustment(
 All the models provide estimates for the simulated data. Even with simulated data, it is difficult to assess which model performs better by examining only the summaries in separation or collectively. 
 
 ```{r analysis.summaries}
-summary(eq_reg@fit$first_stage_model)
 summary(eq_reg)
 summary(eq_fit)
 summary(bs_fit)

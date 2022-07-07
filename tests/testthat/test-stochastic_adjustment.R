@@ -53,7 +53,7 @@ test_that(paste0(
 })
 
 test_that(paste0(name(mdl), " fit can be summarized"), {
-  test_summary(est, 50)
+  test_summary(est, 52)
 })
 
 test_that(paste0("Estimates of '", name(mdl), "' are accurate"), {
