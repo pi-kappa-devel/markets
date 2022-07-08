@@ -1,3 +1,7 @@
+# markets 1.0.11
+
+* Removed non exported variable name access functions from documentation.
+
 # markets 1.0.10
 
 * Removed warnings when compiling without `GSL`. 

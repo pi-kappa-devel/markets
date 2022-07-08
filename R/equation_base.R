@@ -121,6 +121,7 @@ setMethod("show_implementation", signature(object = "equation_base"), function(o
 #' @param object An equation object.
 #' @return The prefixed variable name(s).
 #' @name variable_names
+#' @keywords internal
 NULL
 
 #' @describeIn variable_names Constant coefficient variable name.
