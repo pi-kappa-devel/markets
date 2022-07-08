@@ -126,7 +126,6 @@ NULL
 #' @describeIn variable_names Constant coefficient variable name.
 #' @description \code{prefixed_const_variable}: The constant coefficient name is
 #' constructed by concatenating the equation prefix with \code{CONST}.
-#' @export
 setGeneric("prefixed_const_variable", function(object) {
   standardGeneric("prefixed_const_variable")
 })
@@ -135,7 +134,6 @@ setGeneric("prefixed_const_variable", function(object) {
 #' @description \code{prefixed_independent_variables}: The names of the independent
 #' variables are constructed by concatenating the equation prefix with the column names
 #' of the model's data frame.
-#' @export
 setGeneric("prefixed_independent_variables", function(object) {
   standardGeneric("prefixed_independent_variables")
 })
@@ -147,7 +145,6 @@ setGeneric("independent_variables", function(object) {
 #' @describeIn variable_names Price coefficient variable name.
 #' @description \code{prefixed_price_variable}: The price variable name is
 #' constructed by concatenating the equation prefix with the name of the price column.
-#' @export
 setGeneric("prefixed_price_variable", function(object) {
   standardGeneric("prefixed_price_variable")
 })
@@ -156,7 +153,6 @@ setGeneric("prefixed_price_variable", function(object) {
 #' @description \code{prefixed_control_variables}: The controls of the equation are the
 #' independent variables without the price variable. Their names are constructed by
 #' concatenating the equation prefix with the name of the price column.
-#' @export
 setGeneric("prefixed_control_variables", function(object) {
   standardGeneric("prefixed_control_variables")
 })
@@ -168,7 +164,6 @@ setGeneric("control_variables", function(object) {
 #' @describeIn variable_names Variance variable name.
 #' @description \code{prefixed_control_variables}: The variance variable is
 #' constructed by concatenating the equation prefix with \code{VARIANCE}.
-#' @export
 setGeneric("prefixed_variance_variable", function(object) {
   standardGeneric("prefixed_variance_variable")
 })
@@ -177,7 +172,6 @@ setGeneric("prefixed_variance_variable", function(object) {
 #' @description \code{prefixed_quantity_variable}: The quantity variable name is
 #' constructed by concatenating the equation prefix with the name of the quantity
 #' column.
-#' @export
 setGeneric("prefixed_quantity_variable", function(object) {
   standardGeneric("prefixed_quantity_variable")
 })

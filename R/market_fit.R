@@ -100,7 +100,11 @@ common_market_fit_show <- function(object, summary = FALSE) {
     sep = "", fill = TRUE
   )
   if (object@fit$method != "2SLS") {
-    args <- object@fit$call[[2]]
+    if (object@fit$optimizer == "gsl") {
+      args <- object@fit
+    } else { # optim
+      args <- object@fit$call[[2]]
+    }
     if (summary) {
       if (!is.null(args$control$maxit)) {
         cat(
@@ -213,7 +217,6 @@ setMethod("summary", signature(object = "market_fit"), function(object) {
   }
 })
 
-
 #' Model estimation.
 #'
 #' All models are estimated using full information maximum likelihood. The
@@ -302,14 +305,37 @@ setMethod(
       va_args$method <- "BFGS"
     }
 
-    va_args$fn <- function(...) -log_likelihood(object, ...)
-    if (gradient == "calculated") {
-      va_args$gr <- function(...) -gradient(object, ...)
+    if (is.null(va_args$optimizer)) {
+      va_args$optimizer <- "optim"
     }
+    optimizer <- va_args$optimizer
+    va_args$optimizer <- NULL
 
-    fit <- do.call(optim, va_args)
-    fit$call <- call("optim", va_args)
+    if (optimizer == "gsl") {
+      cpp_model <- new(cpp_equilibrium_model, object@system)
+      fit <- do.call(
+        cpp_model$minimize,
+        list(par = va_args$par, control = va_args$control)
+      )
+      names(fit$par) <- likelihood_variables(object@system)
+      names(fit$gradient) <- likelihood_variables(object@system)
+      fit$gradient <- -fit$gradient
+      if (hessian != "skip") {
+        fit$hessian <- optimHess(
+          fit$par, function(...) -log_likelihood(object, ...)
+        )
+      }
+    } else { # optim
+      va_args$fn <- function(...) -log_likelihood(object, ...)
+      if (gradient == "calculated") {
+        va_args$gr <- function(...) -gradient(object, ...)
+      }
+
+      fit <- do.call(optim, va_args)
+      fit$call <- call("optim", va_args)
+    }
     fit$start <- start
+    fit$optimizer <- optimizer
     fit$method <- va_args$method
     fit$value <- -fit$value
 
@@ -344,6 +370,26 @@ setMethod(
 )
 
 #' @describeIn estimate Equilibrium model estimation.
+#' @details
+#' The likelihood of the equilibrium model can be optimized either by using \code{optim}
+#' (the default option) or native
+#' \href{https://www.gnu.org/software/gsl/doc/html/multimin.html}{\code{GSL}} routines.
+#' The caller can override the default behavior by setting the \code{optimizer} argument
+#' equal to \code{"gsl"}, in which \code{GSL} routines are used. This does not
+#' necessarily result to faster execution times. This functionality is primarily
+#' intended for advanced usage. The \code{optim} functionality is a fast,
+#' analysis-oriented alternative, which is more suitable for most use case.
+#'
+#' When \code{optimizer = "gsl"} is used, the only available optimization method is BFGS.
+#' The caller needs to specify in the control list values for the optimization step
+#' (\code{step}), the objective's optimization tolerance (\code{objective_tolerance}),
+#' the gradient's optimization tolerance (\code{gradient_tolerance}, and the maximum
+#' allowed number of iterations (\code{maxit}).
+
+#' If the \code{GSL} library is not available in the calling machine, the function
+#' returns a trivial result list with convergence status set equal to -1. If the
+#' \href{https://en.cppreference.com/w/cpp/algorithm/execution_policy_tag_t}{C++17 execution policies}
+#' are available, the implementation of the optimization is parallelized.
 #' @param method A string specifying the estimation method. When the passed value is
 #' among \code{Nelder-Mead}, \code{BFGS}, \code{CG}, \code{L-BFGS-B}, \code{SANN},
 #' and \code{Brent}, the model is estimated using
@@ -352,12 +398,43 @@ setMethod(
 #' using \code{\link[stats]{lm}}. In this case, the function returns a
 #' list containing the first and second stage estimates. The default value is
 #' \code{BFGS}.
+#' @param optimizer One of two options:
+#' \code{"optim"}, \code{"gsl"}. The default value is \code{"optim"}. If the
+#' option \code{"gsl"} is set, the equilibrium likelihood is maximized using
+#' \href{https://www.gnu.org/software/gsl/doc/html/multimin.html}{\code{GSL}}.
+#' @examples
+#' \donttest{
+#' # simulate an equilibrium model
+#' model <- simulate_model(
+#'   "equilibrium_model", list(
+#'     # observed entities, observed time points
+#'     nobs = 500, tobs = 3,
+#'     # demand coefficients
+#'     alpha_d = -1.9, beta_d0 = 24.9, beta_d = c(2.3, -1.2), eta_d = c(2.0, -1.5),
+#'     # supply coefficients
+#'     alpha_s = .9, beta_s0 = 8.2, beta_s = c(3.3), eta_s = c(1.5, -2.2)
+#'   ),
+#'   seed = 99
+#' )
+#'
+#' # maximize the model's log-likelihood
+#' fit <- estimate(
+#'   model, optimizer = "gsl", start = reg@fit$par + .4, control = list(
+#'     step = 1e-2, objective_tolerance = 1e-8,
+#'     gradient_tolerance = 1e-2, maxit = 1e+3
+#'   )
+#' )
+#'
+#' summary(fit)
+#' }
+#' @export
 setMethod(
   "estimate", signature(object = "equilibrium_model"),
-  function(object, method = "BFGS", ...) {
+  function(object, method = "BFGS", optimizer = "optim", ...) {
     if (method != "2SLS") {
+      validate_optimizer_option(object, optimizer)
       return((selectMethod("estimate", "market_model"))(
-        object, method = method, ...
+        object, method = method, optimizer = optimizer, ...
       ))
     }
 

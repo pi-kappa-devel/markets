@@ -105,7 +105,6 @@ setMethod("summary_implementation", signature(object = "system_base"), function(
 #' @describeIn variable_names Lagged price variable name.
 #' @description \code{lagged_price_variable}: The lagged price variable name is
 #' constructed by concatenating \code{LAGGED} with the price variable name.
-#' @export
 setGeneric("lagged_price_variable", function(object) {
   standardGeneric("lagged_price_variable")
 })
@@ -113,7 +112,6 @@ setGeneric("lagged_price_variable", function(object) {
 #' @describeIn variable_names Price differences variable name.
 #' @description \code{price_differences_variable}: The price difference variable name is
 #' constructed by concatenating the price variable name with \code{DIFF}.
-#' @export
 setGeneric("price_differences_variable", function(object) {
   standardGeneric("price_differences_variable")
 })

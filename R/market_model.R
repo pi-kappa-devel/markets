@@ -577,56 +577,18 @@ validate_standard_error_option <- function(object, option) {
   }
 }
 
-
-#' Maximize the log-likelihood.
-#'
-#' Maximizes the log-likelihood using the
-#' \href{https://www.gnu.org/software/gsl/doc/html/multimin.html}{\code{GSL}}
-#' implementation of the BFGS algorithm. This function is primarily intended for
-#' advanced usage. The \code{\link{estimate}} functionality is a fast,
-#' analysis-oriented alternative. If the
-#' \href{https://www.gnu.org/software/gsl/doc/html/multimin.html}{\code{GSL}} is not
-#' available, the function returns a trivial result list with status set equal to -1.
-#' If the
-#' \href{https://en.cppreference.com/w/cpp/algorithm/execution_policy_tag_t}{C++17
-#' execution policies}
-#' are available, the implementation of the optimization is parallelized.
-#' @param object A model object.
-#' @param start Initializing vector.
-#' @param step Optimization step.
-#' @param objective_tolerance Objective optimization tolerance.
-#' @param gradient_tolerance Gradient optimization tolerance.
-#' @param max_it Maximum allowed number of iterations.
-#' @return A list with the optimization output.
-#' @rdname maximize_log_likelihood
-#' @seealso \code{\link{estimate}}
-#' @examples
-#' \donttest{
-#' model <- simulate_model(
-#'   "equilibrium_model", list(
-#'     # observed entities, observed time points
-#'     nobs = 500, tobs = 3,
-#'     # demand coefficients
-#'     alpha_d = -1.9, beta_d0 = 24.9, beta_d = c(2.3, -1.2), eta_d = c(2.0, -1.5),
-#'     # supply coefficients
-#'     alpha_s = .9, beta_s0 = 8.2, beta_s = c(3.3), eta_s = c(1.5, -2.2)
-#'   ),
-#'   seed = 99
-#' )
-#'
-#' # maximize the model's log-likelihood
-#' mll <- maximize_log_likelihood(
-#'   model,
-#'   start = NULL, step = 1e-2,
-#'   objective_tolerance = 1e-4, gradient_tolerance = 1e-3, max_it = 1e+3
-#' )
-#' mll
-#' }
-#' @export
-setGeneric("maximize_log_likelihood", function(object, start, step, objective_tolerance,
-                                               gradient_tolerance, max_it) {
-  standardGeneric("maximize_log_likelihood")
-})
+validate_optimizer_option <- function(object, option) {
+  allowed <- c("optim", "gsl")
+  if (!(option %in% allowed)) {
+    print_error(
+      object@logger,
+      paste0(
+        "Invalid `optimizer` option '", option, "'. Valid options are ('",
+        paste0(allowed, collapse = "', '"), "')."
+      )
+    )
+  }
+}
 
 #' Likelihood scores.
 #'

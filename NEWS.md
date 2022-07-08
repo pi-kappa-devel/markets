@@ -1,3 +1,7 @@
+# markets 1.0.8
+
+* Integrated functionality of `maximize_log_likelihood` to `estimate`. Equilibrium likelihoods can be optimized via `GSL` by passing the option `optimizer = gsl` to `estimate`.
+
 # markets 1.0.7
 
 * Added significance stars in summaries.

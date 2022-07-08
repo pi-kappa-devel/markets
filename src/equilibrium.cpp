@@ -121,10 +121,8 @@ public:
     alphas_betas.assign(supply_independent_variables_size, 0.0);
 
     Rcpp::Function prefixed_price_variable = markets["prefixed_price_variable"];
-    demand_price_variable =
-        Rcpp::as<Rcpp::String>(prefixed_price_variable(demand)).get_cstring();
-    supply_price_variable =
-        Rcpp::as<Rcpp::String>(prefixed_price_variable(supply)).get_cstring();
+    demand_price_variable = Rcpp::as<Rcpp::String>(prefixed_price_variable(demand)).get_cstring();
+    supply_price_variable = Rcpp::as<Rcpp::String>(prefixed_price_variable(supply)).get_cstring();
 
     demand_price_variable_size = demand_price_variable.empty() ? 0 : 1;
     supply_price_variable_size = supply_price_variable.empty() ? 0 : 1;
@@ -282,7 +280,7 @@ public:
     sigma_Q = std::sqrt(var_Q);
 
     sigma_QP = (alphad * sigmas2 + alphas * sigmad2 - rho_sigmad_sigmas * (alphad + alphas)) /
-             std::pow(-alphad + alphas, 2);
+               std::pow(-alphad + alphas, 2);
     rho_QP = sigma_QP / sigma_P / sigma_Q;
     rho1_QP = 1 / std::sqrt(1 - std::pow(rho_QP, 2));
     rho2_QP = rho_QP * rho1_QP;
@@ -494,14 +492,16 @@ std::vector<double> secant_gradient_ratios(const gsl_vector *x, double step, voi
 }
 #endif /* _MARKETS_HAS_GSL_ */
 
-Rcpp::List minimize(equilibrium_model *model, Rcpp::NumericVector &start, double step,
-                    double objective_tolerance, double gradient_tolerance,
-		    size_t max_it) {
+Rcpp::List minimize(equilibrium_model *model, Rcpp::NumericVector &par, Rcpp::List &control) {
   size_t iter = 0;
   int status = -1;
   Rcpp::NumericVector optimizer(model->gradient_size);
   Rcpp::NumericVector gradient(model->gradient_size);
   double log_likelihood = NAN;
+  double step = control["step"];
+  double objective_tolerance = control["objective_tolerance"];
+  double gradient_tolerance = control["gradient_tolerance"];
+  size_t maxit = control["maxit"];
 
 #ifdef _MARKETS_HAS_GSL_
   const gsl_multimin_fdfminimizer_type *T;
@@ -510,19 +510,19 @@ Rcpp::List minimize(equilibrium_model *model, Rcpp::NumericVector &start, double
   gsl_vector *x;
   gsl_multimin_function_fdf objective;
 
-  objective.n = start.length();
+  objective.n = par.length();
   objective.f = loglik;
   objective.df = dloglik;
   objective.fdf = loglikdloglik;
   objective.params = model;
 
-  x = gsl_vector_alloc(start.length());
-  for (R_xlen_t i = 0; i < start.length(); ++i) {
-    gsl_vector_set(x, i, start[i]);
+  x = gsl_vector_alloc(par.length());
+  for (R_xlen_t i = 0; i < par.length(); ++i) {
+    gsl_vector_set(x, i, par[i]);
   }
 
   T = gsl_multimin_fdfminimizer_vector_bfgs2;
-  s = gsl_multimin_fdfminimizer_alloc(T, start.length());
+  s = gsl_multimin_fdfminimizer_alloc(T, par.length());
 
   gsl_multimin_fdfminimizer_set(s, &objective, x, step, objective_tolerance);
 
@@ -535,7 +535,7 @@ Rcpp::List minimize(equilibrium_model *model, Rcpp::NumericVector &start, double
     }
 
     status = gsl_multimin_test_gradient(s->gradient, gradient_tolerance);
-  } while (status == GSL_CONTINUE && iter < max_it);
+  } while (status == GSL_CONTINUE && iter < maxit);
 
   std::for_each(
 #ifdef _MARKETS_HAS_EXECUTION_POLICIES_
@@ -551,11 +551,9 @@ Rcpp::List minimize(equilibrium_model *model, Rcpp::NumericVector &start, double
   gsl_vector_free(x);
 #endif /* _MARKETS_HAS_GSL_ */
 
-  return Rcpp::List::create(
-      Rcpp::_["step"] = step, Rcpp::_["objective_tolerance"] = objective_tolerance,
-      Rcpp::_["gradient_tolerance"] = gradient_tolerance, Rcpp::_["status"] = status,
-      Rcpp::_["optimizer"] = optimizer, Rcpp::_["gradient"] = gradient,
-      Rcpp::_["log_likelihood"] = log_likelihood, Rcpp::_["iterations"] = iter);
+  return Rcpp::List::create(Rcpp::_["control"] = control, Rcpp::_["convergence"] = status,
+                            Rcpp::_["par"] = optimizer, Rcpp::_["gradient"] = gradient,
+                            Rcpp::_["value"] = log_likelihood, Rcpp::_["iterations"] = iter);
 }
 
 RCPP_MODULE(markets_module) {
