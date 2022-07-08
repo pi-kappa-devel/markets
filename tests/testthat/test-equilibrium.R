@@ -3,7 +3,7 @@ context("Equilibrium Model's Tests\n")
 # Estimation setup
 parameters <- list(
   nobs = 1000, tobs = 3,
-  alpha_d = -1.7, beta_d0 = 14.9, beta_d = c(2.3, -1.2), eta_d = c(-1.3, -1.1),
+  alpha_d = -1.9, beta_d0 = 14.9, beta_d = c(2.3, -1.2), eta_d = c(-1.3, -1.1),
   alpha_s = 1.6, beta_s0 = 10.2, beta_s = c(-1.3), eta_s = c(2.5, 2.2),
   sigma_d = 1.0, sigma_s = 1.0, rho_ds = 0.0
 )

@@ -4,6 +4,7 @@
 #' @include diseq_deterministic_adjustment.R
 #' @include diseq_stochastic_adjustment.R
 #' @importFrom utils capture.output
+#' @importFrom stats optimHess
 
 #' @title Market model fit
 #'
@@ -320,9 +321,9 @@ setMethod(
       names(fit$par) <- likelihood_variables(object@system)
       names(fit$gradient) <- likelihood_variables(object@system)
       fit$gradient <- -fit$gradient
-      if (hessian != "skip") {
+      if (hessian != "skip" && fit$convergence != -1) {
         fit$hessian <- optimHess(
-          fit$par, function(...) -log_likelihood(object, ...)
+          fit$par, function(...) log_likelihood(object, ...)
         )
       }
     } else { # optim
@@ -330,26 +331,24 @@ setMethod(
       if (gradient == "calculated") {
         va_args$gr <- function(...) -gradient(object, ...)
       }
-
       fit <- do.call(optim, va_args)
       fit$call <- call("optim", va_args)
-    }
-    fit$start <- start
-    fit$optimizer <- optimizer
-    fit$method <- va_args$method
-    fit$value <- -fit$value
-
-    if (hessian != "skip") {
       if (hessian == "calculated") {
         print_verbose(
           object@logger,
           "Calculating hessian and variance-covariance matrix."
         )
         fit$hessian <- hessian(object, fit$par)
-      } else {
+      } else if (hessian == "numerical") {
         fit$hessian <- -fit$hessian
       }
+    }
+    fit$start <- start
+    fit$optimizer <- optimizer
+    fit$method <- va_args$method
+    fit$value <- -fit$value
 
+    if (!is.null(fit$hessian)) {
       if (standard_errors == "heteroscedastic") {
         fit <- set_heteroscedasticity_consistent_errors(object, fit)
       } else if (standard_errors == "homoscedastic") {
@@ -419,7 +418,8 @@ setMethod(
 #'
 #' # maximize the model's log-likelihood
 #' fit <- estimate(
-#'   model, optimizer = "gsl", start = reg@fit$par + .4, control = list(
+#'   model,
+#'   optimizer = "gsl", control = list(
 #'     step = 1e-2, objective_tolerance = 1e-8,
 #'     gradient_tolerance = 1e-2, maxit = 1e+3
 #'   )
