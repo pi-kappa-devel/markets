@@ -1,3 +1,7 @@
+# markets 1.0.12
+
+* Reorganized and extended documentation.
+
 # markets 1.0.11
 
 * Removed non exported variable name access functions from documentation.

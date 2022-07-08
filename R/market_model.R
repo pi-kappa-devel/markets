@@ -305,12 +305,19 @@ initialize_and_estimate <- function(model_type, specification, data,
 #' into a single call. They also provide a less verbose interface to the
 #' functionality of the package. The functions expect a formula following the
 #' specification described in \link[=market_model_formula]{formula}, a
-#' dataset, and optionally further initialization (see
-#' \link[=model_initialization]{model initialization}) and
-#' estimation (see \link[=estimate]{model estimation}) options.
+#' dataset, and optionally further initialization and
+#' estimation options (see \link[=model_initialization]{model initialization}
+#' and \link[=estimate]{model estimation} respectively).
 #'
-#' Each of these functions parses the passed formula, initializes the model
-#' specified by the function's name, fit the model to the passed data using
+#' Estimation options are expected to be given in the argument
+#' \code{estimation_options} in a form of a \code{\link{list}}. The list
+#' names should correspond to variables of the \code{\link{estimate}}
+#' function. As a result, optimization options, which are customized using
+#' the \code{control} argument of \code{\link{estimate}} can be passed
+#' as an element of \code{estimation_options}.
+#'
+#' Each of these functions parses the given formula, initializes the model
+#' specified by the function's name, fits the model to the given data using
 #' the estimation options and returns fitted model.
 #'
 #' @param specification The model's formula.
@@ -323,22 +330,74 @@ initialize_and_estimate <- function(model_type, specification, data,
 #' call. See \code{\link[markets]{estimate}} for the available options.
 #' @return The fitted model.
 #' @name single_call_estimation
+#' @examples
+#' \donttest{
+#' # An example of estimating the equilibrium model
+#' eq <- equilibrium_model(
+#'   HS | RM | ID | TREND ~ RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
+#'     RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
+#'   fair_houses(), estimation_options = list(control = list(maxit = 5000))
+#' )
+#'
+#' # An example of estimating the deterministic adjustment model
+#' da <- diseq_deterministic_adjustment(
+#'   HS | RM | ID | TREND ~ RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
+#'     RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
+#'   fair_houses(),
+#'   verbose = 2,
+#'   estimation_options = list(control = list(maxit = 5000))
+#' )
+#'
+#' # An example of estimating the directional model
+#' dr <- diseq_directional(
+#'   HS | RM | ID | TREND ~ TREND + W + CSHS + L1RM + L2RM |
+#'     RM + TREND + W + MA6DSF + MA3DHF + MONTH,
+#'   fair_houses(), estimation_options = list(
+#'     method = "Nelder-Mead", control = list(maxit = 5000)
+#'   )
+#' )
+#'
+#' # An example of estimating the basic model
+#' start <- coef(eq)
+#' start <- start[names(start) != "RHO"]
+#' bs <- diseq_basic(
+#'   HS | RM | ID | TREND ~ RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
+#'     RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
+#'   fair_houses(), verbose = 2, correlated_shocks = FALSE,
+#'   estimation_options = list(
+#'     start = start,
+#'     control = list(maxit = 5000)
+#'   )
+#' )
+#'
+#' # An example of estimating the stochastic adjustment model
+#' sa <- diseq_stochastic_adjustment(
+#'   HS | RM | ID | TREND ~ RM + TREND + W + CSHS + MONTH |
+#'     RM + TREND + W + L1RM + L2RM + MA6DSF + MA3DHF + MONTH |
+#'     TREND + L2RM + L3RM,
+#'   fair_houses() |> dplyr::mutate(L3RM = dplyr::lag(RM, 3)),
+#'   correlated_shocks = FALSE,
+#'   estimation_options = list(
+#'     control = list(maxit = 5000), standard_errors = c("W")
+#'   )
+#' )
+#' }
 NULL
 
 
-#' @title Market model formula.
+#' @title Market model formula
 #' @details Market model formulas adhere to the following specification:
 #'
 #' \code{quantity | price | subject | time ~ demand | supply}
 #'
 #' where
 #' \itemize{
-#' \item{quantity} The model's traded (observed) quantity variable.
-#' \item{price} The model's price variable.
-#' \item{quantity} The model's subject (e.g. firm) identification variable.
-#' \item{quantity} The model's time identification variable.
-#' \item{demand} The right hand side of the model's demand equation.
-#' \item{supply} The right hand side of the model's supply equation.
+#' \item{quantity:} The model's traded (observed) quantity variable.
+#' \item{price:} The model's price variable.
+#' \item{quantity:} The model's subject (e.g. firm) identification variable.
+#' \item{quantity:} The model's time identification variable.
+#' \item{demand:} The right hand side of the model's demand equation.
+#' \item{supply:} The right hand side of the model's supply equation.
 #' }
 #'
 #' The \code{\linkS4class{diseq_stochastic_adjustment}} additionally specify
@@ -382,29 +441,26 @@ setMethod(
   function(x) formula(x@system@formula)
 )
 
-#' Prints a short description of the model.
+#' Prints a short description of the model
 #'
 #' Sends basic information about the model to standard output.
 #' @param object A model object.
 #' @return No return value, called for side effects (print basic model information).
 #' @examples
 #' \donttest{
-#' model <- simulate_model(
-#'   "diseq_stochastic_adjustment", list(
-#'     # observed entities, observed time points
-#'     nobs = 500, tobs = 3,
-#'     # demand coefficients
-#'     alpha_d = -0.1, beta_d0 = 9.8, beta_d = c(0.3, -0.2), eta_d = c(0.6, -0.1),
-#'     # supply coefficients
-#'     alpha_s = 0.1, beta_s0 = 7.1, beta_s = c(0.9), eta_s = c(-0.5, 0.2),
-#'     # price equation coefficients
-#'     gamma = 1.2, beta_p0 = 3.1, beta_p = c(0.8)
-#'   ),
-#'   seed = 31
+#' fit <- equilibrium_model(
+#'   HS | RM | ID | TREND ~
+#'     RM + TREND + W + CSHS + L1RM + L2RM + MONTH |
+#'       RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
+#'   fair_houses(),
+#'   estimation_options = list(method = "2SLS")
 #' )
 #'
-#' # print short model information
-#' show(model)
+#' # print model information
+#' show(fit@model)
+#'
+#' # print fit information
+#' show(fit)
 #' }
 #' @rdname show
 #' @export
@@ -488,24 +544,26 @@ setMethod("summary", signature(object = "market_model"), function(object) {
 })
 
 
-#' @title Model likelihoods and derivatives.
+#' @title Model likelihoods and derivatives
 #' @description Methods that calculate the likelihoods, scores, gradients, and Hessians
-#' of market models.
+#' of market models. The likelihood functions are based on
+#' Maddala and Nelson (1974) \doi{10.2307/1914215}. The likelihoods, gradient, and
+#' Hessian expressions that the function uses are derived in
+#' Karapanagiotis (2020) \doi{10.2139/ssrn.3525622}.
+#' @param object A model object.
+#' @param parameters A vector of parameters at which the function is to be evaluated.
 #' @name model_likelihoods
 NULL
 
 #' @title Log-likelihood
 #'
 #' @description
-#' Returns the log-likelihood. The likelihood functions are based on
-#' Maddala and Nelson (1974) \doi{10.2307/1914215}. The likelihoods expressions
-#' that the function uses are derived in
-#' Karapanagiotis (2020) \doi{10.2139/ssrn.3525622}. The function calculates
-#' the model's log likelihood by evaluating the log likelihood of each observation in
-#' the sample and summing the evaluation results.
-#' @param object A model object.
-#' @param parameters A vector of parameters at which the function is to be evaluated.
-#' @return The sum of the likelihoods evaluated for each observation.
+#' \subsection{\code{log_likelihood}}{
+#' Returns the log-likelihood. The function calculates the model's log likelihood by
+#' evaluating the log likelihood of each observation in the sample and summing the
+#' evaluation results.}
+#' @return \subsection{\code{log_likelihood}}{
+#' The sum of the likelihoods evaluated for each observation.}
 #' @rdname model_likelihoods
 #' @export
 setGeneric("log_likelihood", function(object, parameters) {
@@ -515,10 +573,9 @@ setGeneric("log_likelihood", function(object, parameters) {
 #' @title Gradient
 #'
 #' @description
-#' Returns the gradient of the log-likelihood evaluated at the passed parameters.
-#' @param object A model object.
-#' @param parameters A vector of parameters at which the gradient is to be evaluated.
-#' @return The log likelihood's gradient.
+#' \subsection{\code{gradient}}{Returns the gradient of the log-likelihood
+#' evaluated at the passed parameters.}
+#' @return \subsection{\code{gradient}}{The log likelihood's gradient.}
 #' @rdname model_likelihoods
 #' @export
 setGeneric("gradient", function(object, parameters) {
@@ -528,10 +585,9 @@ setGeneric("gradient", function(object, parameters) {
 #' @title Hessian
 #'
 #' @description
-#' Returns the hessian of the log-likelihood evaluated at the passed parameters.
-#' @param object A model object.
-#' @param parameters A vector of parameters at which the hessian is to be evaluated.
-#' @return The log likelihood's hessian.
+#' \subsection{\code{hessian}}{Returns the hessian of the log-likelihood evaluated
+#' at the passed parameters.}
+#' @return \subsection{\code{hessian}}{The log likelihood's hessian.}
 #' @rdname model_likelihoods
 #' @export
 setGeneric("hessian", function(object, parameters) {
@@ -590,19 +646,19 @@ validate_optimizer_option <- function(object, option) {
   }
 }
 
-#' Likelihood scores.
+#' @title Likelihood scores.
 #'
+#' @description
+#' \subsection{\code{scores}}{
 #' It calculates the gradient of the likelihood at the given parameter point
 #' for each observation in the sample. It, therefore, returns an n x k matrix,
 #' where n denotes the number of observations in the sample and k the number
 #' of estimated parameters. The ordering of the parameters is the same as
 #' the one that is used in the summary of the results. The method can be
 #' called either using directly a fitted model object, or by separately
-#' providing a model object and a parameter vector.
-#' @param object A model object.
-#' @param parameters A vector with model parameters.
+#' providing a model object and a parameter vector.}
 #' @param fit A fitted model object.
-#' @return The score matrix.
+#' @return \subsection{\code{scores}}{The score matrix.}
 #' @rdname model_likelihoods
 #' @examples
 #' \donttest{
@@ -640,37 +696,9 @@ setGeneric("set_clustered_errors", function(object, ...) {
 #' @title Short model and market descriptions
 #'
 #' @name model_description
-NULL
-
-#' Model name.
-#'
-#' A unique identifying string for the model.
 #' @param object A model object.
-#' @return A string representation of the model.
 #' @examples
 #' # initialize the equilibrium using the houses dataset
-#' model <- new(
-#'   "equilibrium_model", # model type
-#'   subject = ID, time = TREND, quantity = HS, price = RM,
-#'   demand = RM + TREND + W + CSHS + L1RM + L2RM + MONTH,
-#'   supply = RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
-#'   fair_houses()
-#' )
-#'
-#' name(model)
-#' @rdname model_description
-#' @export
-setGeneric("name", function(object) {
-  standardGeneric("name")
-})
-
-#' Model description.
-#'
-#' A short (one-liner) description of the market model.
-#' @param object A model object.
-#' @return A model description string.
-#' @examples
-#' # initialize the basic model using the houses dataset
 #' model <- new(
 #'   "diseq_basic", # model type
 #'   subject = ID, time = TREND, quantity = HS, price = RM,
@@ -679,19 +707,37 @@ setGeneric("name", function(object) {
 #'   fair_houses()
 #' )
 #'
+#' # model name
+#' name(model)
+#' # model description
 #' describe(model)
-#' @rdname model_description
+#' # market type
+#' market_type(model)
+NULL
+
+#' @describeIn model_description Model name
+#' @description
+#' \subsection{\code{name}}{A unique identifying string for the model.}
+#' @return \subsection{\code{name}}{The model's name.}
+#' @export
+setGeneric("name", function(object) {
+  standardGeneric("name")
+})
+
+#' @describeIn model_description Model description
+#' @description
+#' \subsection{\code{describe}}{A short (one-liner) description of the market model.}
+#' @return \subsection{\code{describe}}{The model's description.}
 #' @export
 setGeneric("describe", function(object) {
   standardGeneric("describe")
 })
 
-#' Market type.
-#'
-#' A market type string (equilibrium or disequilibrium) for a given model.
-#' @param object A model object.
-#' @return A string representation of the model.
-#' @rdname model_description
+#' @describeIn model_description Market type
+#' @description
+#' \subsection{\code{market_type}}{
+#' A market type string (equilibrium or disequilibrium) for a given model.}
+#' @return \subsection{\code{market_type}}{The model's market type.}
 #' @export
 setGeneric("market_type", function(object) {
   standardGeneric("market_type")
@@ -786,7 +832,7 @@ setMethod(
     fit$hessian <- fit$hessian %*% adjustment %*% fit$hessian
     fit$vcov <- MASS::ginv(fit$hessian) * (
       (nobs(object) - ncoef(object)) * (fit$number_of_clusters - 1) /
-      (nobs(object) - 1) / fit$number_of_clusters
+        (nobs(object) - 1) / fit$number_of_clusters
     )
     fit
   }
@@ -812,14 +858,27 @@ setMethod(
   function(object) object@market_type
 )
 
-#' Number of observations.
+#' Number of observations
 #'
-#' Returns the number of observations that are used by an initialized model. The number
-#' of used observations may differ from the numbers of observations of the data set
-#' that was passed to the model's initialization.
+#' Returns the number of observations that are used by an initialized model. If there
+#' are missing values, the number of used observations may differ from the numbers
+#' of observations of the data set that was passed to the model's initialization.
 #' @param object A model object.
 #' @return The number of used observations.
 #' @rdname nobs
+#' @examples
+#' \donttest{
+#' model <- new(
+#'   "diseq_basic", # model type
+#'   subject = ID, time = TREND, quantity = HS, price = RM,
+#'   demand = RM + TREND + W + CSHS + L1RM + L2RM + MONTH,
+#'   supply = RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
+#'   fair_houses()
+#' )
+#'
+#' # get the number observations
+#' nobs(model)
+#' }
 #' @export
 setMethod(
   "nobs", signature(object = "market_model"),
@@ -828,13 +887,26 @@ setMethod(
   }
 )
 
-#' Number of coefficients.
+#' Number of coefficients
 #'
 #' Returns the number of model's coefficients. This is the sum of demand, supply, price
 #' equation, and the variance-covariance matrix coefficients.
 #' @param object A model object.
 #' @return The number of model coefficients.
 #' @rdname ncoef
+#' @examples
+#' \donttest{
+#' model <- new(
+#'   "diseq_basic", # model type
+#'   subject = ID, time = TREND, quantity = HS, price = RM,
+#'   demand = RM + TREND + W + CSHS + L1RM + L2RM + MONTH,
+#'   supply = RM + TREND + W + L1RM + MA6DSF + MA3DHF + MONTH,
+#'   fair_houses()
+#' )
+#'
+#' # get the number of model coefficients
+#' ncoef(model)
+#' }
 #' @export
 setGeneric("ncoef", function(object) {
   standardGeneric("ncoef")
@@ -915,15 +987,15 @@ setMethod(
   }
 )
 
-#' @title Market side aggregation.
+#' @title Market side aggregation
 #'
 #' @details Calculates the sample's aggregate demand or supply using the
 #' estimated coefficients of a fitted model. Alternatively, the function
 #' calculates aggregates using a model and a set of parameters passed
 #' separately. If the model's data have multiple distinct subjects at each
-#' date, aggregation is calculated over subjects per unique date. If the model
-#' has time series data, namely a single subject per time point, aggregation
-#' is ululated over all time pints.
+#' date (e.g., panel data), aggregation is calculated over subjects per unique date.
+#' If the model has time series data, namely a single subject per time point, aggregation
+#' is calculated over all time points.
 #' @param fit A fitted market model object.
 #' @param model A model object.
 #' @param parameters A vector of model's parameters.
@@ -1002,15 +1074,14 @@ setMethod(
   }
 )
 
-#' @title Estimated market quantities.
+#' @title Estimated market quantities
 #'
 #' @details Calculates and returns the estimated demanded or supplied quantities for
 #' each observation at the passed vector of parameters.
 #' @param fit A fitted model object.
 #' @param model A model object.
 #' @param parameters A vector of model's parameters.
-#' @return A vector with the demanded quantities evaluated at the given parameter
-#' vector.
+#' @return A vector with the market quantities evaluated at the given parameter vector.
 #' @examples
 #' \donttest{
 #' fit <- diseq_basic(
@@ -1076,8 +1147,8 @@ setMethod(
 
 
 #' @title Analysis of shortages
-#'
-#' @details The following methods offer functionality for analyzing estimated
+#' @description
+#' The following methods offer functionality for analyzing estimated
 #' shortages of the market models. The methods can be called either
 #' using directly a fitted model object, or by separately providing a model
 #' object and a parameter vector.
@@ -1112,7 +1183,7 @@ setMethod(
 #' # get the estimated shortages
 #' head(shortages(fit))
 #'
-#' # get the estimated shortage variance
+#' # get the estimated shortage standard deviation
 #' shortage_standard_deviation(fit)
 #' }
 #' @name shortage_analysis
@@ -1174,10 +1245,10 @@ setGeneric("shortage_indicators", function(fit, model, parameters) {
   standardGeneric("shortage_indicators")
 })
 
-#' @describeIn shortage_analysis Shortage variance.
+#' @describeIn shortage_analysis Shortage standard deviation.
 #' @details
 #' \subsection{shortage_standard_deviation}{
-#' Returns the variance of excess demand.
+#' Returns the standard deviation of excess demand.
 #' }
 #' @export
 setGeneric("shortage_standard_deviation", function(fit, model, parameters) {
@@ -1187,7 +1258,11 @@ setGeneric("shortage_standard_deviation", function(fit, model, parameters) {
 
 #' Marginal effects
 #'
-#' Returns the estimated effect of a variable.
+#' Returns the estimated effect of a variable. The effect accounts for both sides
+#' of the market. If the given variable belongs only to the demand side, the name of
+#' result is prefixed by \code{"D_"}. If the given variable belongs only to the supply
+#' side, the name of result is prefixed by \code{"S_"}. If the variable can be found
+#' both sides, the result name is prefixed by \code{"B_"}.
 #' @param fit A fitted market model.
 #' @param variable Variable name for which the effect is calculated.
 #' @param model A market model object.
@@ -1235,10 +1310,10 @@ setGeneric("shortage_marginal", function(fit, variable, model, parameters) {
 #' @describeIn marginal_effects Marginal effect on shortage probabilities
 #'
 #' Returns the estimated marginal effect of a variable on the probability of
-#' observing a shortage state. The mean marginal effect on the shortage probability
-#' is given by
-#' \deqn{M_{x} \mathrm{E} \phi\left(\frac{D - S}{\sqrt{\sigma_{d}^2 + \sigma_{s}^2 - 2 rho \sigma_{d} \sigma_{s}}}\right)}
-#' and the marginal effect at the mean by
+#' observing a shortage state. The mean marginal effect (\code{aggregate = "mean"}) on
+#' the shortage probability is given by
+#' \deqn{M_{x} \mathrm{E} \phi\left(\frac{D - S}{\sqrt{\sigma_{d}^2 + \sigma_{s}^2 - 2 rho \sigma_{d} \sigma_{s}}}\right)}.
+#' and the marginal effect at the mean (\code{aggregate = "at_the_mean"}) by
 #' \deqn{M_{x} \phi\left(\mathrm{E}\frac{D - S}{\sqrt{\sigma_{d}^2 + \sigma_{s}^2 - 2 rho \sigma_{d} \sigma_{s}}}\right)}
 #' where \eqn{M_{x}} is the marginal effect on the system, \eqn{D} is the demanded
 #' quantity, \eqn{S} the supplied quantity, and \eqn{\phi} is the standard normal

@@ -542,11 +542,11 @@ NULL
 #' @param rho_sp Supply and price shocks' correlation coefficient.
 #' @param seed Pseudo random number generator seed.
 #' @param price_generator Pseudo random number generator callback for prices. The
-#' default generator is \eqn{N(2.5, 0.25)}.
+#' default generator is \eqn{N(0, 1)}.
 #' @param control_generator Pseudo random number generator callback for non-price
-#' controls. The default generator is \eqn{N(2.5, 0.25)}.
+#' controls. The default generator is \eqn{N(0, 1)}.
 #' @param verbose Verbosity level.
-#' @return \strong{\code{simulate_data}:} The simulated data.
+#' @return \subsection{\code{simulate_data}}{The simulated data.}
 #' @export
 setGeneric(
   "simulate_data",
@@ -686,7 +686,23 @@ setMethod(
 #' @param seed Pseudo random number generator seed.
 #' @param verbose Verbosity level.
 #' @param correlated_shocks Should the model be estimated using correlated shocks?
-#' @return \strong{\code{simulate_model}:} The simulated model.
+#' @return \subsection{\code{simulate_model}}{The simulated model}.
+#' @examples
+#' \donttest{
+#' model <- simulate_model(
+#'   "diseq_stochastic_adjustment", list(
+#'     # observed entities, observed time points
+#'     nobs = 500, tobs = 3,
+#'     # demand coefficients
+#'     alpha_d = -0.1, beta_d0 = 9.8, beta_d = c(0.3, -0.2), eta_d = c(0.6, -0.1),
+#'     # supply coefficients
+#'     alpha_s = 0.1, beta_s0 = 6.1, beta_s = c(0.9), eta_s = c(-0.5, 0.2),
+#'     # price equation coefficients
+#'     gamma = 1.2, beta_p0 = 3.1, beta_p = c(0.8)
+#'   ),
+#'   seed = 31
+#' )
+#' }
 #' @export
 setGeneric(
   "simulate_model",

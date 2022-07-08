@@ -20,7 +20,7 @@
 #'   estimation_options = list(method = "2SLS")
 #' )
 #'
-#' # access an inherited method from the underlying model
+#' # access an method of the underlying model
 #' aggregate_demand(fit)
 #'
 #' # summary of results
@@ -39,9 +39,10 @@ NULL
 #' objects to methods such as \code{\link{plot}}, \code{\link{summary}}, and
 #' \code{\link{logLik}}.
 #' @details
-#' The \code{market_fit} class derives from the \code{\linkS4class{market_model}}
-#' class. Thus, all the public functionality of the underlying market model is also
-#' directly accessible from the output class.
+#' The \code{market_fit} class composes the \code{\linkS4class{market_model}}
+#' class with the estimation results obtained by \code{\link[stats]{optim}},
+#' \code{\link[stats]{lm}} or \code{GSL}. All the public functionality of the
+#' underlying market model is also directly accessible from the output class.
 #'
 #' Furthermore, the class is responsible for harmonizing the heterogeneous
 #' outputs resulting from different estimation methods of market models. For
@@ -50,10 +51,10 @@ NULL
 #' models (the first stage, demand, and supply models), while the maximum
 #' likelihood estimation of \code{\linkS4class{diseq_basic}} returns an
 #' \code{\link[stats]{optim}} list. In both cases, the \code{market_fit}
-#' stores the estimation output in the member \code{fit} of type \code{list}.
-#' Methods of the class examine the type of the \code{fit} and direct
-#' execution accordingly to different branches to produce
-#' a unified experience for the caller.
+#' stores the estimation output in the member \code{fit} of type \code{list}
+#' and produces additional harmonized list elements. Methods of the class
+#' examine the type of the \code{fit} and direct execution accordingly to different
+#' branches to produce a unified experience for the caller.
 #' @export
 setClass(
   "market_fit",
@@ -99,7 +100,7 @@ market_fit_coefficients <- function(object, summary = FALSE) {
 
 common_market_fit_show <- function(object, summary = FALSE) {
   if (object@fit$method == "2SLS") {
-    cat("\nLeast square estimation:", sep = "", fill = TRUE)
+    cat("\nLeast squares estimation:", sep = "", fill = TRUE)
   } else {
     cat("\nMaximum likelihood estimation:", sep = "", fill = TRUE)
   }
@@ -227,7 +228,7 @@ setMethod("summary", signature(object = "market_fit"), function(object) {
   }
 })
 
-#' Model estimation.
+#' Model estimation
 #'
 #' All models are estimated using full information maximum likelihood. The
 #' \code{\linkS4class{equilibrium_model}} can also be estimated using two-stage
@@ -239,12 +240,12 @@ setMethod("summary", signature(object = "market_fit"), function(object) {
 #' is based on \code{\link[stats]{lm}}.
 #' @param object A model object.
 #' @param ... Additional parameter used in the model's estimation. These are
-#' passed further down to the estimation call. For the
+#' passed further down to the optimization call. For the
 #' \code{\linkS4class{equilibrium_model}} model, the parameters are passed to
 #' \code{\link[stats]{lm}}, if the method is set to
 #' \code{2SLS}, or to \code{\link[stats]{optim}} for any other method. For the rest of
 #' the models, the parameters are passed to \code{\link[stats]{optim}}.
-#' @return The object that holds the estimation result.
+#' @return A market fit object holding the estimation result.
 #' @rdname estimate
 #' @examples
 #' \donttest{
@@ -278,7 +279,7 @@ setGeneric("estimate", function(object, ...) {
 #' analytic expressions of their likelihoods' gradients.
 #' @param hessian One of three potential options: \code{"skip"},
 #' \code{"numerical"}, and \code{"calculated"}. The default is to use the
-#' \code{"calculated"} Hessian for the model that expressions are
+#' \code{"calculated"} Hessian for the models that expressions are
 #' available and the \code{"numerical"} Hessian in other cases. Calculated
 #' Hessian expressions are available for the basic and directional models.
 #' @param standard_errors One of three potential options:
@@ -287,8 +288,9 @@ setGeneric("estimate", function(object, ...) {
 #' default value is \code{"homoscedastic"}. If the option
 #' \code{"heteroscedastic"} is passed, the variance-covariance matrix is
 #' calculated using heteroscedasticity adjusted (Huber-White) standard errors.
-#' If the vector is supplied, the variance-covariance matrix is calculated by
-#' grouping the score matrix based on the passed variables.
+#' If a vector with variable names is supplied, the variance-covariance
+#' matrix is calculated by grouping the score matrix based on the
+#' passed variables.
 setMethod(
   "estimate", signature(object = "market_model"),
   function(object, gradient = "calculated", hessian = "calculated",
@@ -388,29 +390,29 @@ setMethod(
 #' (the default option) or native
 #' \href{https://www.gnu.org/software/gsl/doc/html/multimin.html}{\code{GSL}} routines.
 #' The caller can override the default behavior by setting the \code{optimizer} argument
-#' equal to \code{"gsl"}, in which \code{GSL} routines are used. This does not
+#' equal to \code{"gsl"}, in which case \code{GSL} routines are used. This does not
 #' necessarily result to faster execution times. This functionality is primarily
-#' intended for advanced usage. The \code{optim} functionality is a fast,
+#' intended for advanced usage. The \code{\link[stats]{optim}} functionality is a fast,
 #' analysis-oriented alternative, which is more suitable for most use case.
 #'
 #' When \code{optimizer = "gsl"} is used, the only available optimization method is BFGS.
-#' The caller needs to specify in the control list values for the optimization step
-#' (\code{step}), the objective's optimization tolerance (\code{objective_tolerance}),
-#' the gradient's optimization tolerance (\code{gradient_tolerance}, and the maximum
-#' allowed number of iterations (\code{maxit}).
+#' Additionally, the caller needs to specify in the control list values for the
+#' optimization step (\code{step}), the objective's optimization tolerance
+#' (\code{objective_tolerance}), the gradient's optimization tolerance
+#' (\code{gradient_tolerance}, and the maximum allowed number of iterations (\code{maxit}).
 
 #' If the \code{GSL} library is not available in the calling machine, the function
 #' returns a trivial result list with convergence status set equal to -1. If the
 #' \href{https://en.cppreference.com/w/cpp/algorithm/execution_policy_tag_t}{C++17 execution policies}
 #' are available, the implementation of the optimization is parallelized.
 #' @param method A string specifying the estimation method. When the passed value is
-#' among \code{Nelder-Mead}, \code{BFGS}, \code{CG}, \code{L-BFGS-B}, \code{SANN},
-#' and \code{Brent}, the model is estimated using
+#' among \code{"Nelder-Mead"}, \code{"BFGS"}, \code{"CG"}, \code{"L-BFGS-B"},
+#' \code{"SANN"}, and \code{"Brent"}, the model is estimated using
 #' full information maximum likelihood based on \code{\link[stats]{optim}} functionality.
-#' When \code{2SLS} is supplied, the model is estimated using two-stage least squares
-#' using \code{\link[stats]{lm}}. In this case, the function returns a
+#' When \code{"2SLS"} is supplied, the model is estimated using two-stage least squares
+#' via \code{\link[stats]{lm}}. In this case, the function returns a
 #' list containing the first and second stage estimates. The default value is
-#' \code{BFGS}.
+#' \code{"BFGS"}.
 #' @param optimizer One of two options:
 #' \code{"optim"}, \code{"gsl"}. The default value is \code{"optim"}. If the
 #' option \code{"gsl"} is set, the equilibrium likelihood is maximized using
@@ -567,12 +569,12 @@ setMethod(
   }
 )
 
-#' Estimated coefficients of a fitted market model.
+#' Market fit coefficients
 #'
-#' Returns the coefficients of the fitted model.
+#' Returns the coefficients of the fitted market model.
 #' @param object A fitted model object.
-#' @return A vector of estimated model coefficients.
-#' @rdname coef
+#' @return A named vector of estimated model coefficients.
+#' @name coef
 #' @examples
 #' \donttest{
 #' # estimate a model using the houses dataset
@@ -589,6 +591,10 @@ setMethod(
 #' coef(fit)
 #' coefficients(fit)
 #' }
+#' @export
+NULL
+
+#' @describeIn coef Estimated coefficients.
 #' @export
 setMethod(
   "coef", signature(object = "market_fit"),
@@ -607,7 +613,7 @@ setMethod(
 setMethod(
   "nobs", signature(object = "market_fit"),
   function(object) {
-    nbons(object@model)
+    nobs(object@model)
   }
 )
 
@@ -620,7 +626,7 @@ setMethod(
   }
 )
 
-#' Variance-covariance matrix for a fitted market model.
+#' Variance-covariance matrix for a fitted market model
 #'
 #' Returns the variance-covariance matrix of the estimated coefficients for
 #' the fitted model. Specializes the \code{\link[stats]{vcov}} function for
@@ -652,12 +658,12 @@ setMethod(
 )
 
 
-#' Log likelihood of a fitted market model.
+#' Log likelihood of a fitted market model
 #'
 #' Specializes the \code{\link[stats]{logLik}} function for the market models
 #' of the package estimated with full information minimum likelihood. It
 #' returns \code{NULL} for the equilibrium model estimated with two stage
-#' least squares (\code{2SLS}).
+#' least squares (\code{method = "2SLS"}).
 #' @param object A fitted model object.
 #' @param ... Additional arguments. Unused.
 #' @return A \code{\link[stats]{logLik}} object.
@@ -705,13 +711,6 @@ setMethod(
 setMethod(
   "market_type", signature(object = "market_fit"),
   function(object) market_type(object@model)
-)
-
-#' @rdname nobs
-#' @export
-setMethod(
-  "nobs", signature(object = "market_fit"),
-  function(object) nobs(object@model)
 )
 
 #' @rdname logLik
@@ -843,7 +842,7 @@ setMethod(
   }
 )
 
-#' Plots the fitted model.
+#' Plots the fitted model
 #'
 #' Displays a graphical illustration of the passed fitted model object. The
 #' function creates a scatter plot of quantity-price pairs for the records
@@ -852,11 +851,18 @@ setMethod(
 #' letting prices vary between the minimum and maximum price
 #' points observed in the data subset.
 #'
+#' If the \code{subject} argument is missing, all subjects are used. If the
+#' \code{time} argument is missing, all time points are used. The scatter
+#' plot of the quantity-price data can be suppressed by setting
+#' \code{show_scatter = FALSE}.
+#'
 #' @param x A model object.
 #' @param subject A vector of subject identifiers to be used in the
 #' visualization.
 #' @param time A vector of time identifiers to be used in the visualization.
-#' @param ... Additional parameter to be used for styling the figure.
+#' @param show_scatter Should the price-quantity scatter be plotted? By default
+#' \code{TRUE}.
+#' @param ... Additional parameters to be used for styling the figure.
 #' Specifically \code{xlab}, \code{ylab}, and \code{main} are currently
 #' handled by the function.
 #' @return No return value, called for for side effects (visualization).
@@ -877,7 +883,9 @@ setMethod(
 #' }
 #' @rdname plot
 #' @export
-setMethod("plot", signature(x = "market_fit"), function(x, subject, time, ...) {
+setMethod("plot", signature(x = "market_fit"), function(
+  x, subject, time, show_scatter = TRUE, ...
+) {
   if (missing(subject)) {
     subject <- x@model@data |>
       dplyr::distinct(!!as.symbol(x@model@subject_column)) |>
@@ -916,6 +924,21 @@ setMethod("plot", signature(x = "market_fit"), function(x, subject, time, ...) {
   fquantities <- min(quantities) * (1 - bandwidth)
   tquantities <- max(quantities) * (1 + bandwidth)
   dom <- seq(from = min(fprices), to = max(tprices), length.out = 100)
+
+  labels <- c("avg demand", "avg supply", "data")
+  colors <- c("blue", "orange", "red")
+  line_types <- c(3, 2, NA)
+  marks <- c(NA, NA, "o")
+
+  if (!show_scatter) {
+    prices <- NULL
+    quantities  <- NULL
+    labels <- labels[-3]
+    colors <- colors[-3]
+    line_types <- line_types[-3]
+    marks <- marks[-3]
+  }
+
   plot(
     prices, quantities,
     pch = "o", col = "red",
@@ -925,8 +948,6 @@ setMethod("plot", signature(x = "market_fit"), function(x, subject, time, ...) {
   lines(dom, sapply(dom, d), type = "l", lwd = 2.0, lty = 3, col = "blue")
   lines(dom, sapply(dom, s), type = "l", lwd = 2.0, lty = 2, col = "orange")
   legend("topleft",
-    legend = c("avg demand", "avg supply", "data"),
-    col = c("blue", "orange", "red"), lty = c(3, 2, NA),
-    pch = c(NA, NA, "o")
+    legend = labels, col = colors, lty = line_types, pch = marks
   )
 })

@@ -3,6 +3,7 @@
 S3method(logLik,market_fit)
 export(aggregate_demand)
 export(aggregate_supply)
+export(coef)
 export(demand_descriptives)
 export(demanded_quantities)
 export(describe)
