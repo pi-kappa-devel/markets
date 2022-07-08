@@ -1,6 +1,6 @@
 Package: markets
 Title: Estimation Methods for Markets in Equilibrium and Disequilibrium
-Version: 1.0.9
+Version: 1.0.10
 Date: 2022-07-08
 Authors@R: 
     person(given = "Pantelis",

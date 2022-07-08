@@ -498,12 +498,13 @@ Rcpp::List minimize(equilibrium_model *model, Rcpp::NumericVector &par, Rcpp::Li
   Rcpp::NumericVector optimizer(model->gradient_size);
   Rcpp::NumericVector gradient(model->gradient_size);
   double log_likelihood = NAN;
+
+#ifdef _MARKETS_HAS_GSL_
   double step = control["step"];
   double objective_tolerance = control["objective_tolerance"];
   double gradient_tolerance = control["gradient_tolerance"];
   size_t maxit = control["maxit"];
-
-#ifdef _MARKETS_HAS_GSL_
+  
   const gsl_multimin_fdfminimizer_type *T;
   gsl_multimin_fdfminimizer *s;
 

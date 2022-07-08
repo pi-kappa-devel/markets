@@ -46,7 +46,6 @@ test_that(paste0(
       standard_errors = c("id")
     )
   )
-
   expect_is(est@fit, "list")
 })
 
@@ -103,7 +102,7 @@ test_that(paste0("Optimization of '", name(mdl), "' using GSL succeeds"), {
       maxit = 1e+3
     )
   )
-  testthat::expect_length(mll@fit, 11)
+  expect_is(est@fit, "list")
 })
 
 test_that(paste0(

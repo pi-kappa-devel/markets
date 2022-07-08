@@ -78,13 +78,20 @@ market_fit_coefficients <- function(object, summary = FALSE) {
   coefs <- object@fit$par
 
   if (summary) {
-    sds <- sapply(diag(vcov(object)), function(s) ifelse(s >= 0, sqrt(s), NaN))
-    zvals <- coefs / sds
-    pvals <- 2 * pnorm(-abs(zvals))
-    coefs <- cbind(
-      Estimate = coefs, `Std. Error` = sds,
-      `z value` = zvals, `Pr(>|z|)` = pvals
-    )
+    if (any(is.na(coefs))) {
+      coefs <- cbind(
+        Estimate = coefs, `Std. Error` = coefs,
+        `z value` = coefs, `Pr(>|z|)` = coefs
+      )
+    } else {
+      sds <- sapply(diag(vcov(object)), function(s) ifelse(s >= 0, sqrt(s), NaN))
+      zvals <- coefs / sds
+      pvals <- 2 * pnorm(-abs(zvals))
+      coefs <- cbind(
+        Estimate = coefs, `Std. Error` = sds,
+        `z value` = zvals, `Pr(>|z|)` = pvals
+      )
+    }
   }
 
   coefs
@@ -123,7 +130,9 @@ common_market_fit_show <- function(object, summary = FALSE) {
     }
     cat(
       labels = sprintf("  %-20s:", "Convergence Status"),
-      ifelse(!object@fit$convergence, "success", "failure"),
+      ifelse(!object@fit$convergence, "success",
+        sprintf("failure (%d)", object@fit$convergence)
+      ),
       sep = "", fill = TRUE
     )
   }
@@ -171,16 +180,16 @@ setMethod("summary", signature(object = "market_fit"), function(object) {
     cat("\nCoefficients:", sep = "", fill = TRUE)
     coefs <- market_fit_coefficients(object, summary = TRUE)
     stars <- function(p) {
-      if (p < 1e-3) {
+      if (is.na(p) || p >= 1e-1) {
+        " "
+      } else if (p < 1e-3) {
         "***"
       } else if (p < 1e-2) {
         "**"
       } else if (p < 5e-2) {
         "*"
-      } else if (p < 1e-1) {
-        "."
       } else {
-        " "
+        "."
       }
     }
 
@@ -320,11 +329,16 @@ setMethod(
       )
       names(fit$par) <- likelihood_variables(object@system)
       names(fit$gradient) <- likelihood_variables(object@system)
-      fit$gradient <- -fit$gradient
-      if (hessian != "skip" && fit$convergence != -1) {
-        fit$hessian <- optimHess(
-          fit$par, function(...) log_likelihood(object, ...)
-        )
+      if (fit$convergence != -1) {
+        fit$gradient <- -fit$gradient
+        if (hessian != "skip") {
+          fit$hessian <- optimHess(
+            fit$par, function(...) log_likelihood(object, ...)
+          )
+        }
+      } else {
+        fit$par[1:length(fit$par)] <- NaN
+        fit$gradient[1:length(fit$gradient)] <- NaN
       }
     } else { # optim
       va_args$fn <- function(...) -log_likelihood(object, ...)

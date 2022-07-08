@@ -1,3 +1,7 @@
+# markets 1.0.10
+
+* Removed warnings when compiling without `GSL`. 
+
 # markets 1.0.9
 
 * Adjustments to the integration of `maximize_log_likelihood` to `estimate` accommodating cases where `GSL` is unavailable. 
