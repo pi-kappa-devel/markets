@@ -1,3 +1,8 @@
+# markets 1.1.1
+
+* Switched to `ginv` from `MASS` for the variance-covariance matrix calculation in `2SLS` estimations.
+* Added previously unhanded corner cases when using splines in `2SLS` estimations.
+
 # markets 1.1.0
 
 * Improved figure resolution in the package's paper.
