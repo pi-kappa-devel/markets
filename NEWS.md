@@ -1,3 +1,7 @@
+# markets 1.1.0
+
+* Improved figure resolution in the package's paper.
+
 # markets 1.0.12
 
 * Reorganized and extended documentation.

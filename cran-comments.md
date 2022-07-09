@@ -1,23 +1,29 @@
-## Changes in version 1.0.6
+## Changes in version 1.1.0
 
-* Removed dependencies to packages `systemfit`,  `tidyr`, `tibble`, `bbmle`, `magrittr` that were not extensively used in the package. 
-* Updated formula implementation to allow using inline variable transformations (offset, splines, log, etc). Added unit tests checking the updated functionality.
-* Changed the relationship between market models and fits from 'is-a' to 'has-a' to avoid class union inheritance issues.
-* Replaced `minus_log_likelihood` with `log_likelihood` and adjusted `gradient`, `scores` and `hessian`. Gradient and hessian return derivatives of log-likelihood instead of derivatives of minus log-likelihood.
-* Re-implemented the logging, the summary, and the show functionality to respect the width set in `options()`.
-* Improvements in the organization of the documentation.
-* Updated package paper.
+** Functionality changes:
+* Important (main reason for the short update window): Fixed calculation error in two stage least square correlation parameter (introduced in 1.0.6).
+* Added significance stars in summaries.
+
+* Changes affecting user space:
+** Integrated functionality of `maximize_log_likelihood` to `estimate`. Equilibrium likelihoods can be optimized via `GSL` by passing the option `optimizer = gsl` to `estimate`.
+
+* Documentation changes:
+** Reorganized and extended documentation.
+** Improved figure resolution in the package's paper.
+** Removed non exported variable name access functions from documentation.
 
 # Test Environments and Results
 ## Windows
 ### (1) R-devel win-builder.r-project.org -- 1 NOTE
-Installation time in seconds: 134
-Check time in seconds: 422
+Installation time in seconds: 99
+Check time in seconds: 429
 Status: 1 NOTE
-R Under development (unstable) (2022-07-04 r82541 ucrt)
+R Under development (unstable) (2022-07-08 r82567 ucrt)
 
 * checking CRAN incoming feasibility ... NOTE
 Maintainer: 'Pantelis Karapanagiotis <pikappa.devel@gmail.com>'
+
+Days since last update: 4
 
 Found the following (possibly) invalid URLs:
   URL: https://doi.org/10.2307/1913181
@@ -39,16 +45,18 @@ Found the following (possibly) invalid DOIs:
     Status: Forbidden
     Message: 403
 	
-Results: https://win-builder.r-project.org/V8H99c2I8SpM/
+Results: https://win-builder.r-project.org/Z4nV7G6UPpb3/
 
 ### (2) R-oldrelease win-builder.r-project.org -- 1 NOTE
-Installation time in seconds: 133
-Check time in seconds: 462
+Installation time in seconds: 134
+Check time in seconds: 512
 Status: 1 NOTE
 R version 4.1.3 (2022-03-10)
 
 * checking CRAN incoming feasibility ... NOTE
 Maintainer: 'Pantelis Karapanagiotis <pikappa.devel@gmail.com>'
+
+Days since last update: 4
 
 Found the following (possibly) invalid URLs:
   URL: https://doi.org/10.2307/1913181
@@ -74,16 +82,18 @@ Found the following (possibly) invalid DOIs:
     Status: Forbidden
     Message: 403
 
-Results: https://win-builder.r-project.org/92mo4wExjUTf/
+Results: https://win-builder.r-project.org/uU16K3gP0ZAp/
 
 ### (3) R-release win-builder.r-project.org -- 1 NOTE
-Installation time in seconds: 120
-Check time in seconds: 419
+Installation time in seconds: 110
+Check time in seconds: 468
 Status: 1 NOTE
 R version 4.2.1 (2022-06-23 ucrt)
 
 * checking CRAN incoming feasibility ... NOTE
 Maintainer: 'Pantelis Karapanagiotis <pikappa.devel@gmail.com>'
+
+Days since last update: 4
 
 Found the following (possibly) invalid URLs:
   URL: https://doi.org/10.2307/1913181
@@ -104,8 +114,8 @@ Found the following (possibly) invalid DOIs:
     From: DESCRIPTION
     Status: Forbidden
     Message: 403
-	
-Results: https://win-builder.r-project.org/qoQOWwnA4kjG/
+		
+Results: https://win-builder.r-project.org/3yw4NO4LuiD4/
 
 ### (4) rhub windows-x86_64-devel -- Unavailable
 Platform was not available in rhub
@@ -123,8 +133,8 @@ Platform was not available in rhub
 Platform was not available in rhub
 
 ### (9) Local (Ubuntu 20.04.3 LTS in WSL2 under Windows 11) -- 1 NOTE
-── R CMD check results ──────────────────────────────────────────────────── markets 1.0.6 ────
-Duration: 1m 38.1s
+── R CMD check results ──────────────────────────────────────────────────────────────────────── markets 1.1.0 ────
+Duration: 1m 42.7s
 
 ❯ checking installed package size ... NOTE
     installed size is  6.2Mb
@@ -141,53 +151,65 @@ Platform was not available in rhub
 Platform was not available in rhub
 
 ## Solaris
-### (12) rhub solaris-x86-patched -- OK
-Build ID:	markets_1.0.6.tar.gz-691239b68a904937990fea86364c9d9e
+### (12) rhub solaris-x86-patched -- 1 ERROR
+Build ID:	markets_1.1.0.tar.gz-68c763833e0a4a3a8ecff95723705a66
 Platform:	Oracle Solaris 10, x86, 32 bit, R-release
-Submitted:	33 minutes 51.8 seconds ago
-Build time:	33 minutes 47.7 seconds
+Submitted:	39 minutes 28.4 seconds ago
+Build time:	39 minutes 19.9 seconds
 
-See the full build log: https://artifacts.r-hub.io/markets_1.0.6.tar.gz-691239b68a904937990fea86364c9d9e/markets.Rcheck/
+ERRORS:
+* checking package dependencies ... ERROR
+Package suggested but not available: ‘testthat’
+
+The suggested packages are required for a complete check.
+Checking can be attempted without them by setting the environment
+variable _R_CHECK_FORCE_SUGGESTS_ to a false value.
+
+See section ‘The DESCRIPTION file’ in the ‘Writing R Extensions’
+manual.
+
+See the full build log: https://artifacts.r-hub.io/markets_1.1.0.tar.gz-68c763833e0a4a3a8ecff95723705a66/
 
 ## Macos
 ### (13) rhub macos-highsierra-release-cran -- OK
-Build ID:	markets_1.0.6.tar.gz-18d29d4c410d4fffa087f59fd7c40afe
+Build ID:	markets_1.1.0.tar.gz-2778a254968642efb9c40cba646a6d04
 Platform:	macOS 10.13.6 High Sierra, R-release, CRAN's setup
-Submitted:	7 minutes 52.3 seconds ago
-Build time:	7 minutes 49 seconds
+Submitted:	9 minutes 25.4 seconds ago
+Build time:	9 minutes 20.9 seconds
 
 
-See the full build log: https://artifacts.r-hub.io/markets_1.0.6.tar.gz-18d29d4c410d4fffa087f59fd7c40afe/markets.Rcheck/
+See the full build log: https://artifacts.r-hub.io/markets_1.1.0.tar.gz-2778a254968642efb9c40cba646a6d04/
 
 ### (14) rhub macos-highsierra-release -- OK
-Build ID:	markets_1.0.6.tar.gz-47b05f1bdc5040eeb0cf468391b10b6a
+Build ID:	markets_1.1.0.tar.gz-4ee867e1d29e469b8b67ccde648f79fd
 Platform:	macOS 10.13.6 High Sierra, R-release, brew
-Submitted:	7 minutes 51.7 seconds ago
-Build time:	7 minutes 49.3 seconds
+Submitted:	9 minutes 19.5 seconds ago
+Build time:	9 minutes 4.4 seconds
 
-See the full build log: https://artifacts.r-hub.io/markets_1.0.6.tar.gz-47b05f1bdc5040eeb0cf468391b10b6a/markets.Rcheck/
+See the full build log: https://artifacts.r-hub.io/markets_1.1.0.tar.gz-4ee867e1d29e469b8b67ccde648f79fd/
 
 ### (15) Mac mini at https://mac.r-project.org/macbuilder/submit.html -- 1 NOTE
-Build system: r-devel-macosx-arm64|4.2.0|macosx|macOS 11.5.2 (20G95)|Mac mini|Apple M1||en_US.UTF-8
+Build system: r-release-macosx-arm64|4.2.1|macosx|macOS 11.5.2 (20G95)|Mac mini|Apple M1||en_US.UTF-8
 
 * checking installed package size ... NOTE
   installed size is  6.0Mb
   sub-directories of 1Mb or more:
     libs   3.8Mb
 	
-Results: https://mac.r-project.org/macbuilder/results/1657045898-c9f63db64cd04f3f/
+Results: https://mac.r-project.org/macbuilder/results/1657356134-f7de9250f32f3c72/
+
 ### (16) rhub macos-m1-bigsur-release  -- 1 WARNING
-Build ID:	markets_1.0.6.tar.gz-8844aeeeb6fe48bc9e2b4ca279d15be1
+Build ID:	markets_1.1.0.tar.gz-b2dff573ad2b461c8ae70136c57f1d81
 Platform:	Apple Silicon (M1), macOS 11.6 Big Sur, R-release
-Submitted:	3 minutes 2.5 seconds ago
-Build time:	2 minutes 56.9 seconds
+Submitted:	3 minutes 49.5 seconds ago
+Build time:	3 minutes 35.8 seconds
 
 WARNINGS:
 * checking re-building of vignette outputs ... WARNING
 Error(s) in re-building vignettes:
   ...
 --- re-building ‘basic_usage.Rmd’ using rmarkdown
-Quitting from lines 187-219 (basic_usage.Rmd) 
+Quitting from lines 186-218 (basic_usage.Rmd) 
 Error: processing vignette 'basic_usage.Rmd' failed with diagnostics:
 polygon edge not found
 --- failed re-building ‘basic_usage.Rmd’
@@ -207,4 +229,4 @@ SUMMARY: processing the following file failed:
 Error: Vignette re-building failed.
 Execution halted
 
-See the full build log: https://artifacts.r-hub.io/markets_1.0.6.tar.gz-8844aeeeb6fe48bc9e2b4ca279d15be1/markets.Rcheck/
+See the full build log: https://artifacts.r-hub.io/markets_1.1.0.tar.gz-b2dff573ad2b461c8ae70136c57f1d81/
