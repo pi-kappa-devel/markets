@@ -1,4 +1,4 @@
-AC_INIT([markets],[1.1.1])
+AC_INIT([markets],[1.1.2])
 
 # Find the compiler and compiler flags used by R.
 : ${R_HOME=`R RHOME`}

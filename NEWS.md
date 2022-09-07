@@ -1,3 +1,7 @@
+# markets 1.1.2
+
+* Corrected bug of ignoring custom title, or axis labels in market fit plots.
+
 # markets 1.1.1
 
 * Switched to `ginv` from `MASS` for the variance-covariance matrix calculation in `2SLS` estimations.

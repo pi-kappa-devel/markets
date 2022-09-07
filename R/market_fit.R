@@ -899,12 +899,18 @@ setMethod("plot", signature(x = "market_fit"), function(
   va_args <- list(...)
   if (is.null(va_args$xlab)) {
     xlab <- colnames(x@model@system@price_vector)[1]
+  } else {
+    xlab <- va_args$xlab
   }
   if (is.null(va_args$ylab)) {
     ylab <- quantity_variable(x@model@system@demand)
+  } else {
+    ylab <- va_args$ylab
   }
   if (is.null(va_args$main)) {
     main <- x@model@model_name
+  } else {
+    main <- va_args$main
   }
   x@model@system <- set_parameters(x@model@system, coef(x))
   indices <- x@model@data |>

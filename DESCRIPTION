@@ -1,7 +1,7 @@
 Package: markets
 Title: Estimation Methods for Markets in Equilibrium and Disequilibrium
-Version: 1.1.1
-Date: 2022-07-09
+Version: 1.1.2
+Date: 2022-09-07
 Authors@R: 
     person(given = "Pantelis",
            family = "Karapanagiotis",
@@ -26,7 +26,7 @@ Language: en-US
 URL: https://github.com/pi-kappa-devel/markets/, https://markets.pikappa.eu/
 BugReports: https://github.com/pi-kappa-devel/markets/issues
 Depends:
-    R (>= 3.5.0)
+    R (>= 4.1.0)
 Imports:
     dplyr (>= 0.7.6),
     Formula,
