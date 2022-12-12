@@ -39,11 +39,18 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      - name: Install dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck any::devtools
-          run: install.packages('devtools'); devtools::document();
-          shell: Rscript {0}
+          needs: roxygen2
+
+      - name: Document
+        run: devtools::document();
+        shell: Rscript {0}
+        
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2
