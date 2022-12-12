@@ -42,10 +42,10 @@ jobs:
       - name: Prepare documentation
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
-          
         run: |
           install.packages('devtools')
           devtools::document()
+        shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
