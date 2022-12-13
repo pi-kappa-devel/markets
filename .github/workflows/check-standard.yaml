@@ -49,10 +49,24 @@ jobs:
           use-public-rspm: true
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck any::roxygen2 any::RcppGSL any::tinytex
+          extra-packages: any::rcmdcheck any::roxygen2 any::RcppGSL any::rmarkdown any::tinytex
           needs: check
-      - run: Rscript -e 'roxygen2::roxygenise()'
-  
+      - run: |
+          devtools::document()
+          rmarkdown::render('README.Rmd', output_format = 'md_document')
+          pkgdown::build_site(lazy = FALSE)
+          rmarkdown::render('README.Rmd', output_format = 'github_document')
+          document <- paste(readLines('README.md'), collapse = "\n")
+          document <- gsub("<!-- badges: start -->", '<img src="man/figures/logo.png" align="right" height="48"/>\n<!-- badges: start -->', document)
+          document <- gsub('"\n.*?\n"', '', document)
+          document <- gsub('\n".*?gamma"', '', document)
+          document <- gsub('\n"\\(DA\\)"', '', document)
+          document <- gsub('\n"\\(DM\\)"', '', document)
+          document <- gsub("<iframe.+?iframe>", '<a style="display:block;margin:auto" href="https://www.youtube.com/watch?v=Kkjkny94dgU" target="_blank"><img src="http://img.youtube.com/vi/Kkjkny94dgU/0.jpg"  alt="Session Recording" width="560" height="315" border="10" /></a>', document)
+          writeLines(document, 'README.md')
+          devtools::document()
+        shell: Rscript {0}
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
