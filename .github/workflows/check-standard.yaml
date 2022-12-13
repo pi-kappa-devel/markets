@@ -49,7 +49,7 @@ jobs:
           use-public-rspm: true
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck any::roxygen2 any::RcppGSL any::rmarkdown any::tinytex
+          extra-packages: any::rcmdcheck any::devtools any::RcppGSL any::rmarkdown any::tinytex
           needs: check
       - run: |
           devtools::document()
