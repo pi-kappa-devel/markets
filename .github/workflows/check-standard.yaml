@@ -10,24 +10,6 @@ on:
 name: R-CMD-check
 
 jobs:
-  Install-GSL-on-Windows:
-    name: Install GSL on Windows
-    runs-on: windows-latest
-    steps:
-      - run: choco install gnuwin
-
-  Install-GSL-on-Ubuntu:
-    name: Install GSL on Ubuntu
-    runs-on: ubuntu-latest
-    steps:
-      - run: sudo apt-get install -y texlive libcurl4-openssl-dev
-
-  Install-GSL-on-MacOS:
-    name: Install GSL on MacOS
-    runs-on: ubuntu-latest
-    steps:
-      - run: brew install gsl
-      
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
 
@@ -49,6 +31,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Install GSL 
+        run:   |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get install -y texlive libcurl4-openssl-dev
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+            choco install gnuwin
+          else
+            brew install gsl
+           fi
+        shell: bash
       - uses: r-lib/actions/setup-pandoc@v2
       - uses: r-lib/actions/setup-r@v2
         with:
