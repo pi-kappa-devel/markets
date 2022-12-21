@@ -44,7 +44,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Sync files
-        uses: SamKirkland/FTP-Deploy-Action@4.0.0
+        uses: SamKirkland/FTP-Deploy-Action@4.3.3
         with:
           server: ${{ secrets.ftp_server }}
           username: ${{ secrets.ftp_username }}
