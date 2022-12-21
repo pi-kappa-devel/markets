@@ -1,6 +1,6 @@
 #' @include market_model.R
 
-#' @describeIn market_models Base class for disequilibrium models
+#' @rdname market_models
 setClass(
   "disequilibrium_model",
   contains = "market_model",

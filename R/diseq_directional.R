@@ -1,9 +1,9 @@
 #' @include disequilibrium_model.R
 
-#' @describeIn market_models Directional disequilibrium model with sample separation.
-#'
+#' @rdname market_models
 #' @description
-#' \subsection{\code{diseq_directional}}{
+#' \subsection{Directional disequilibrium model with sample separation
+#' (\code{diseq_directional})}{
 #' The directional disequilibrium model consists of three equations and a
 #' separation rule. The market is described by a linear demand, a linear supply
 #' equation and the short side rule. The separation rule splits the sample

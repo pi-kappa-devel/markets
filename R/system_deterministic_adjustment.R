@@ -1,7 +1,10 @@
 #' @include equation_deterministic_adjustment.R
 #' @include system_base.R
 
-#' @describeIn system_classes Deterministic adjustment model's system class
+#' @rdname system_classes
+#' @details
+#' \subsection{\code{system_deterministic_adjustment}}{
+#' Deterministic adjustment model's system class}
 #' @slot gamma Excess demand coefficient.
 #' @slot delta \deqn{\delta = \gamma + \alpha_{d} - \alpha_{s}}
 #' @slot mu_P \deqn{\mu_{P} = \mathrm{E}P}

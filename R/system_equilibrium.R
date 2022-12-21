@@ -1,7 +1,9 @@
 #' @include equation_basic.R
 #' @include system_base.R
 
-#' @describeIn system_classes Equilibrium model's system class
+#' @rdname system_classes
+#' @details
+#' \subsection{\code{system_equilibrium}}{Equilibrium model's system class}
 #' @slot mu_Q \deqn{\mu_{Q} = \mathrm{E}Q}
 #' @slot var_Q \deqn{V_{Q} = \mathrm{Var}Q}
 #' @slot sigma_Q \deqn{\sigma_{Q} = \sqrt{V_{Q}}}

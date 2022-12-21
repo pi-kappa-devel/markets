@@ -1,9 +1,8 @@
 #' @include market_model.R
 
-#' @describeIn market_models Equilibrium model
-#'
+#' @rdname market_models
 #' @description
-#' \subsection{\code{equilibrium_model}}{
+#' \subsection{Equilibrium model (\code{equilibrium_model})}{
 #' The equilibrium model consists of thee equations. The demand, the
 #' supply and the market clearing equations. The model can be estimated using both full
 #' information maximum likelihood and two-stage least squares.

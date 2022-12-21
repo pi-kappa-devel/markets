@@ -1,7 +1,9 @@
 #' @include equation_directional.R
 #' @include system_basic.R
 
-#' @describeIn system_classes Directional system class
+#' @rdname system_classes
+#' @details
+#' \subsection{\code{system_directional}}{Directional system class}
 setClass(
   "system_directional",
   contains = "system_basic",

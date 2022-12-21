@@ -1,10 +1,9 @@
 #' @include disequilibrium_model.R
 
-#' @describeIn market_models Basic disequilibrium model with unknown sample
-#' separation.
-#'
+#' @rdname market_models
 #' @description
-#' \subsection{\code{diseq_basic}}{
+#' \subsection{Basic disequilibrium model with unknown sample separation
+#' (\code{diseq_basic})}{
 #' The basic disequilibrium model consists of three equations. Two of them
 #' are the demand and supply equations. In addition, the model replaces the
 #' market clearing condition with the short side rule. The model is estimated

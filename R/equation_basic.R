@@ -1,7 +1,8 @@
 #' @include equation_base.R
 
-#' @describeIn equation_classes Basic disequilibrium model equation class
-#'
+#' @rdname equation_classes
+#' @details
+#' \subsection{\code{equation_basic}}{Basic disequilibrium model equation class}
 #' @slot h \deqn{h_{x} = \frac{x - \mathrm{E} x}{\sqrt{\mathrm{Var} x}}}
 #' @slot z \deqn{z_{xy} = \frac{h_{x} - \rho_{xy}h_{y}}{\sqrt{1 - \rho_{xy}^2}}}
 #' @slot psi \deqn{\psi_{x} = \phi(h_{x})}

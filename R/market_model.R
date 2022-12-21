@@ -23,9 +23,6 @@ utils::globalVariables("where")
 #' @slot system Model's system of equations.
 #' @name market_models
 #' @seealso \link{model_initialization}
-NULL
-
-#' @describeIn market_models Base class for market models
 setClass(
   "market_model",
   representation(

@@ -3,13 +3,12 @@
 setOldClass(c("Formula"))
 
 #' @title Equation classes
-#'
-#' @details Classes with data and functionality describing equations of model systems.
+#' @description
+#' Classes with data and functionality describing equations of model systems.
 #' @name equation_classes
 #' @keywords internal
-NULL
-
-#' @describeIn equation_classes Equation base class
+#' @details
+#' \subsection{\code{equation_base}}{Equation base class}
 #' @slot formula The equation formula using prefixed variables.
 #' @slot name The name of the equation.
 #' @slot variable_prefix A prefix string for the variables of the equation.

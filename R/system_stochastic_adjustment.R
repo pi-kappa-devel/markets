@@ -2,7 +2,10 @@
 #' @include system_base.R
 #' @importFrom stats terms
 
-#' @describeIn system_classes Stochastic adjustment model's system class
+#' @rdname system_classes
+#' @details
+#' \subsection{\code{system_stochastic_adjustment}}{
+#' Stochastic adjustment model's system class}
 #' @slot price_equation Price equation.
 #' @slot zeta \deqn{\zeta = \sqrt{1 - \rho_{DS}^2 - \rho_{DP}^2 - \rho_{SP}^2 +
 #' 2 \rho_DP \rho_DS \rho_SP}}

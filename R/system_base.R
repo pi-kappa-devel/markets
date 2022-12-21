@@ -1,13 +1,11 @@
 #' @include equation_base.R
 
 #' @title System classes
-#'
-#' @details Classes with data and functionality describing systems of models.
+#' @description Classes with data and functionality describing systems of models.
 #' @name system_classes
 #' @keywords internal
-NULL
-
-#' @describeIn system_classes System base class
+#' @details
+#' \subsection{\code{system_base}}{System base class}
 #' @slot demand Demand equation.
 #' @slot supply Supply equation.
 #' @slot correlated_shocks Boolean indicating whether the shock of the

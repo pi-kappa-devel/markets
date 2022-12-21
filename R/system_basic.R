@@ -2,7 +2,9 @@
 #' @include system_base.R
 #' @importFrom stats dnorm pnorm
 
-#' @describeIn system_classes Basic model's system class
+#' @rdname system_classes
+#' @details
+#' \subsection{\code{system_basic}}{Basic model's system class}
 #' @slot lh Likelihood values for each observation.
 setClass(
   "system_basic",

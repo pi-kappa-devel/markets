@@ -26,11 +26,7 @@
 #' # summary of results
 #' summary(fit)
 #' @name market_fits
-#' @seealso \code{\linkS4class{market_model}}
-NULL
-
-#' @describeIn market_fits Fit class for market models
-#'
+#' @seealso \code{\link{market_models}}
 #' @description
 #' This is the estimation output class for all market models of the package. It couples
 #' a market model object with estimation results. It provides a common user interface
@@ -39,7 +35,7 @@ NULL
 #' objects to methods such as \code{\link{plot}}, \code{\link{summary}}, and
 #' \code{\link{logLik}}.
 #' @details
-#' The \code{market_fit} class composes the \code{\linkS4class{market_model}}
+#' The \code{market_fit} class composes the \code{\link{market_models}}
 #' class with the estimation results obtained by \code{\link[stats]{optim}},
 #' \code{\link[stats]{lm}} or \code{GSL}. All the public functionality of the
 #' underlying market model is also directly accessible from the output class.

@@ -1,7 +1,9 @@
 #' @include equation_base.R
 
-#' @describeIn equation_classes Deterministic adjustment disequilibrium model equation
-#' class
+#' @rdname equation_classes
+#' @details
+#' \subsection{\code{equation_deterministic_adjustment}}{
+#' Deterministic adjustment disequilibrium model equation class}
 #' @slot mu_Q \deqn{\mu_{Q} = \mathrm{E}Q}
 #' @slot var_Q \deqn{V_{Q} = \mathrm{Var}Q}
 #' @slot sigma_Q \deqn{\sigma_{Q} = \sqrt{\mathrm{Var}Q}}

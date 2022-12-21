@@ -1,6 +1,9 @@
 #' @include equation_base.R
 
-#' @describeIn equation_classes Stochastic adjustment disequilibrium model equation class
+#' @rdname equation_classes
+#' @details
+#' \subsection{\code{equation_stochastic_adjustment}}{
+#' Stochastic adjustment disequilibrium model equation class}
 setClass(
   "equation_stochastic_adjustment",
   contains = "equation_base",

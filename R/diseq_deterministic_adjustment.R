@@ -1,9 +1,9 @@
 #' @include disequilibrium_model.R
 
-#' @describeIn market_models Disequilibrium model with deterministic price dynamics.
-#'
+#' @rdname market_models
 #' @description
-#' \subsection{\code{diseq_deterministic_adjustment}}{
+#' \subsection{Disequilibrium model with deterministic price dynamics
+#' (\code{diseq_deterministic_adjustment})}{
 #' The disequilibrium model with deterministic price adjustment consists
 #' of four equations. The two market equations, the short side rule and price
 #' evolution equation. The first two equations are stochastic. The price
