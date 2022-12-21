@@ -1,3 +1,11 @@
+# markets 1.1.2.9001
+
+* Updated GitHub actions dependencies' versions.
+
+# markets 1.1.2.9001
+
+* Switched from `@describein` to `@rdname` for documenting classes.
+
 # markets 1.1.2
 
 * Corrected bug of ignoring custom title, or axis labels in market fit plots.

@@ -25,7 +25,6 @@
 #'
 #' # summary of results
 #' summary(fit)
-#' @name market_fits
 #' @seealso \code{\link{market_models}}
 #' @description
 #' This is the estimation output class for all market models of the package. It couples
