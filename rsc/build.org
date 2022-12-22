@@ -5,7 +5,7 @@ rm configure && autoreconf && Rscript -e "devtools::clean_dll(); devtools::docum
 #+end_src
 
 ** Reduce software paper size
-#+begin_src R :dir .. :results output :async
+#+begin_src shell :dir .. :results output 
 tools::compactPDF("./vignettes/markets.pdf", gs_quality = "ebook")
 #+end_src
 
@@ -58,7 +58,8 @@ rhub::check(
 #+begin_src R :dir .. :async
 rhub::check(
   platform = c('solaris-x86-patched', 'solaris-x86-patched-ods'), 
-  env_vars=c(R_COMPILE_AND_INSTALL_PACKAGES = 'always'))
+  env_vars=c(R_COMPILE_AND_INSTALL_PACKAGES = 'always',
+             `_R_CHECK_FORCE_SUGGESTS_`='false'))
 #+end_src
 
 *** Mac platforms
@@ -69,8 +70,6 @@ rhub::check(
 # There is a testing service for the CRAN M1mac setup at
 # https://mac.r-project.org/macbuilder/submit.html
 #+end_src
-
-#+RESULTS:
 
 *** Platforms without long double
 #+begin_src R :dir .. :async
@@ -90,7 +89,7 @@ rhub::check(
     # Solaris platforms
     'solaris-x86-patched', 'solaris-x86-patched-ods',
     # Mac platforms
-    'macos-highsierra-release', 'macos-highsierra-release-cran', 'macos-m1-bigsur-release'
+    'macos-highsierra-release', 'macos-highsierra-release-cran'
   ), env_vars=c(R_COMPILE_AND_INSTALL_PACKAGES = 'always'))
 #+end_src
 

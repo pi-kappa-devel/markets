@@ -1,4 +1,8 @@
-# markets 1.1.2.9001
+# markets 1.1.3
+
+* Corrected `houses` dataset documentation. The data range starts in January instead of July 1958.
+
+# markets 1.1.2.9002
 
 * Updated GitHub actions dependencies' versions.
 
