@@ -1,3 +1,7 @@
+# markets 1.1.4
+
+* Upgraded system requirements to `C++17`.
+
 # markets 1.1.3
 
 * Corrected `houses` dataset documentation. The data range starts in January instead of July 1958.

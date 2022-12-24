@@ -69,6 +69,7 @@ rhub::check(
   env_vars=c(R_COMPILE_AND_INSTALL_PACKAGES = 'always'))
 # There is a testing service for the CRAN M1mac setup at
 # https://mac.r-project.org/macbuilder/submit.html
+devtools::check_mac_release()
 #+end_src
 
 *** Platforms without long double
