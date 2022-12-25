@@ -87,5 +87,3 @@ Collate:
 LinkingTo: 
     Rcpp,
     RcppGSL
-SystemRequirements:
-    C++17
