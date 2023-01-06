@@ -23,35 +23,32 @@ PKG_CPPFLAGS="${PKG_CPPFLAGS} -D_MARKETS_HAS_GSL_"
 GSL_LIBS=`"${R_HOME}/bin/Rscript" -e "RcppGSL::LdFlags()"`
 PKG_LIBS="${PKG_LIBS} ${GSL_LIBS}"
 
-EXECUTION_TEST_PROGRAM="
-#include <execution>
-int main(void) { const auto& ex = std::execution::par_unseq; return 0; }
-"
+if test "${CXX_STD}" = "CXX17"; then
+  AC_CHECK_HEADER([execution], [], [])
 
-AS_IF([test "${CXX_STD}" = "CXX17"], [
-  AC_MSG_CHECKING([whether execution policies are available])
-  CXXFLAGS="$CXXFLAGS -std=gnu++17"
-  dnl Is std=c++17 available?
-  AC_COMPILE_IFELSE(
-    [AC_LANG_SOURCE([${EXECUTION_TEST_PROGRAM}])],
-    [dnl Can we link when using execution policies?
+  if test "${ac_cv_header_execution}" = "yes"; then
+    AC_CHECK_LIB([tbb], [main], [HAS_TBB=yes], [])
+
+    if test "${ac_cv_lib_tbb_main}" = "yes"; then
+      AC_MSG_CHECKING([whether tbb can be linked against])
+      CXXFLAGS="${CXXFLAGS} -std=c++17"
+      LIBS="${LIBS} -ltbb"
       AC_LINK_IFELSE(
-      [AC_LANG_SOURCE([${EXECUTION_TEST_PROGRAM}])],
-      [PKG_CPPFLAGS="$PKG_CPPFLAGS -D_MARKETS_HAS_EXECUTION_POLICIES_"
-       AC_MSG_RESULT([yes])],
-      [dnl If not, do we need tbb for linking?
-       LIBS="$LIBS -ltbb"
-       AC_LINK_IFELSE(
-       [AC_LANG_SOURCE([${EXECUTION_TEST_PROGRAM}])],
-       [PKG_CPPFLAGS="$PKG_CPPFLAGS -D_MARKETS_HAS_EXECUTION_POLICIES_"
-        PKG_LIBS="$PKG_LIBS -ltbb"
-        AC_MSG_RESULT([yes])],
-       [AC_MSG_RESULT([no])])])],
-    [AC_MSG_RESULT([no])])
-])
+         [AC_LANG_PROGRAM([#include <execution>],
+          [std::execution::par_unseq])],
+         [PKG_CXXFLAGS="${PKG_CXXFLAGS} -std=c++17"
+          PKG_CPPFLAGS="${PKG_CPPFLAGS} -D_MARKETS_HAS_EXECUTION_POLICIES_"
+          PKG_LIBS="${PKG_LIBS} -ltbb"
+          AC_MSG_RESULT([yes])],
+         [AC_MSG_RESULT([no])])
+    fi
+  fi
+fi
+
 
 dnl Create the  src/Makevars file.
 AC_SUBST([CXX_STD], ["${CXX_STD}"])
+AC_SUBST([PKG_CXXFLAGS], ["${PKG_CXXFLAGS}"])
 AC_SUBST([PKG_CPPFLAGS], ["${PKG_CPPFLAGS}"])
 AC_SUBST([PKG_LIBS], ["${PKG_LIBS}"])
 AC_CONFIG_FILES([src/Makevars])
@@ -63,6 +60,7 @@ echo "
 
     cxx: ${CXX}
     cxx_std: ${CXX_STD}
+    cxxflags: ${PKG_CXXFLAGS}
     cppflags: ${PKG_CPPFLAGS}
     libs:     ${PKG_LIBS}
 
