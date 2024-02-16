@@ -17,7 +17,6 @@
 README*.html
 vignettes/*.html
 vignettes/*.pdf
-!vignettes/markets.pdf
 vignettes/*.R
 doc*
 docs

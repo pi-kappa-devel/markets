@@ -8,6 +8,6 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-<iframe src="markets.pdf" style="width:100%;height:80vmin;"/>
+<iframe src="https://doi.org/10.18637/jss.v108.i02" style="width:100%;height:80vmin;"/>
 
 

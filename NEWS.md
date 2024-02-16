@@ -1,3 +1,7 @@
+# markets 1.1.5
+
+* Added DOI and citation details for the JSS article.
+
 # markets 1.1.4
 
 * Upgraded system requirements to `C++17`.

@@ -4,11 +4,6 @@
 rm configure && autoreconf && Rscript -e "devtools::clean_dll(); devtools::document()"
 #+end_src
 
-** Reduce software paper size
-#+begin_src shell :dir .. :results output 
-tools::compactPDF("./vignettes/markets.pdf", gs_quality = "ebook")
-#+end_src
-
 ** Tests
 #+begin_src R :dir .. :results output :async
 devtools::test()
@@ -45,30 +40,22 @@ devtools::release_checks()
 devtools::check_win_oldrelease()
 devtools::check_win_devel()
 devtools::check_win_release()
+rhub::check(platform = c('windows-x86_64-devel'))
 #+end_src
 
 *** Platforms using clang
 #+begin_src R :dir .. :async
 rhub::check(
-  platform = c('debian-clang-devel', 'fedora-clang-devel'), 
-  env_vars=c(R_COMPILE_AND_INSTALL_PACKAGES = 'always'))
+  platform = c('debian-clang-devel', 'fedora-clang-devel'))
 #+end_src
 
-*** Solaris platforms
+*** Platforms with rchk
 #+begin_src R :dir .. :async
-rhub::check(
-  platform = c('solaris-x86-patched', 'solaris-x86-patched-ods'), 
-  env_vars=c(R_COMPILE_AND_INSTALL_PACKAGES = 'always',
-             `_R_CHECK_FORCE_SUGGESTS_`='false'))
+rhub::check(platform = c('ubuntu-rchk'))
 #+end_src
 
 *** Mac platforms
 #+begin_src R :dir .. :async
-rhub::check(
-  platform = c('macos-highsierra-release', 'macos-highsierra-release-cran'), 
-  env_vars=c(R_COMPILE_AND_INSTALL_PACKAGES = 'always'))
-# There is a testing service for the CRAN M1mac setup at
-# https://mac.r-project.org/macbuilder/submit.html
 devtools::check_mac_release()
 #+end_src
 
@@ -77,20 +64,25 @@ devtools::check_mac_release()
 rhub::check(platform = c('debian-gcc-devel-nold'))
 #+end_src
 
-*** All
+*** Platforms using gcc
+#+begin_src R :dir .. :async
+rhub::check(platform = c('ubuntu-gcc-release', 'debian-gcc-devel'))
+#+end_src
+
+
+*** All Rhub
 #+begin_src R :dir .. :results output :async
 rhub::check(
   platform = c(
     # Windows platforms
     'windows-x86_64-devel',
-    # Platforms using gcc
-    'ubuntu-gcc-release', 'debian-gcc-devel', 'debian-gcc-devel-nold', 'linux-x86_64-rocker-gcc-san',
     # Platforms using clang
     'debian-clang-devel', 'fedora-clang-devel',
-    # Solaris platforms
-    'solaris-x86-patched', 'solaris-x86-patched-ods',
-    # Mac platforms
-    'macos-highsierra-release', 'macos-highsierra-release-cran'
-  ), env_vars=c(R_COMPILE_AND_INSTALL_PACKAGES = 'always'))
+    # Platforms with rchk
+    'ubuntu-rchk',
+    # Platforms using gcc
+    'ubuntu-gcc-release', 'debian-gcc-devel', 
+    'debian-gcc-devel-nold',
+  ))
 #+end_src
 

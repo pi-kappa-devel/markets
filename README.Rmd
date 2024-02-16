@@ -21,7 +21,7 @@ bibliography: bibliography.bib
 ![](https://www.r-pkg.org/badges/last-release/markets)
 <!-- badges: end -->
 
-The *markets* package provides tools to estimate and analyze an equilibrium and four disequilibrium models. The equilibrium model can be estimated with either two-stage least squares or with full information maximum likelihood. The two methods are asymptotically equivalent. The disequilibrium models are estimated using full information maximum likelihood. The likelihoods can be estimated both with independent and correlated demand and supply shocks. The optimization of the likelihoods can be performed either using analytic expressions or numerical approximations of their gradients.
+The *markets* package provides tools to estimate and analyze an equilibrium and four disequilibrium models. The equilibrium model can be estimated with either two-stage least squares or with full information maximum likelihood. The two methods are asymptotically equivalent. The disequilibrium models are estimated using full information maximum likelihood. The likelihoods can be estimated both with independent and correlated demand and supply shocks. The optimization of the likelihoods can be performed either using analytic expressions or numerical approximations of their gradients. A detailed overview of the package's functionality, usage examples, and design traits is given in @karapanagiotis2024.
 
 # A quick model tour
 
@@ -29,7 +29,7 @@ The five models of the package are described by systems of simultaneous equation
 
 ## The equilibrium model
 
-The equilibrium model adds the market-clearing condition to the demand and supply equations of the system. For the system to be identifiable, at least one variable in the demand side must not be present on the supply side and vice versa. This model assumes that the market observations always represent equilibrium points in which the demanded and supplied quantities are equal. The model can be estimated using two-stage least squares [@theil1953] or full information maximum likelihood [@karapanagiotis2020invisible]. Asymptotically, these methods are equivalent [@balestra1987].
+The equilibrium model adds the market-clearing condition to the demand and supply equations of the system. For the system to be identifiable, at least one variable on the demand side must not be present on the supply side and vice versa. This model assumes that the market observations always represent equilibrium points in which the demanded and supplied quantities are equal. The model can be estimated using two-stage least squares [@theil1953] or full information maximum likelihood [@karapanagiotis2020invisible]. Asymptotically, these methods are equivalent [@balestra1987].
 
 $$
 \begin{align}
@@ -75,7 +75,7 @@ $$
 
 ## A disequilibrium model with deterministic price dynamics
 
-The separation rule of the directional model classifies observations on the demand or supply-side based in a binary fashion, which is not always flexible, as observations that correspond to large shortages/surpluses are treated the same with observations that correspond to small shortages/ surpluses. The deterministic adjustment model of the package replaces this binary separation rule with a quantitative one [@fair1972; @maddala1974]. The magnitude of the price movements is analogous to the magnitude of deviations from the market-clearing condition. This model offers a flexible estimation alternative, with one extra degree of freedom in the estimation of price dynamics, that accounts for market forces that are in alignment with standard economic reasoning. By letting $\gamma$ approach zero, the equilibrium model can be obtained as a limiting case of this model.
+The separation rule of the directional model classifies observations on the demand- or supply-side based in a binary fashion, which is not always flexible, as observations that correspond to large shortages/surpluses are treated the same as observations that correspond to small shortages/ surpluses. The deterministic adjustment model of the package replaces this binary separation rule with a quantitative one [@fair1972; @maddala1974]. The magnitude of the price movements is analogous to the magnitude of deviations from the market-clearing condition. This model offers a flexible estimation alternative, with one extra degree of freedom in the estimation of price dynamics, that accounts for market forces that are in alignment with standard economic reasoning. By letting $\gamma$ approach zero, the equilibrium model can be obtained as a limiting case of this model.
 
 $$
 \begin{align}
@@ -124,7 +124,7 @@ Online documentation is available for both the [released](https://www.markets.pi
 ```r
 ?? markets
 ```
-An overview of the package's functionality was presented in the session Trends, Markets, Models of the [useR!2021](https://user2021.r-project.org/) conference. The recording of the session, including the talk for this package, can be found in the video that follows. The presentation slides of the talk are also available [here](https://talks.pikappa.eu/useR!2021/).
+An older version of the package (see [diseq](https://CRAN.R-project.org/package=diseq)) was presented in the session Trends, Markets, Models of the [useR!2021](https://user2021.r-project.org/) conference. However, the presented user interface is deprecated and it is recommended to follow [@karapanagiotis2024] for the latest interface. The recording of the session can be found in the video that follows. The presentation slides of the talk are also available [here](https://talks.pikappa.eu/useR!2021/).
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/Kkjkny94dgU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
@@ -136,7 +136,7 @@ This is a basic example that illustrates how a model of the package can be estim
 library(markets)
 ```
 
-The example uses simulated data. The *markets* package offers a function to simulate data from data generating processes that correspond to the models that the package provides.
+The example uses simulated data. The *markets* package offers a function to simulate data from data-generating processes that correspond to the models that the package provides.
 ```{r simulation}
 model_tbl <- simulate_data(
   "diseq_basic", 10000, 5,
@@ -151,7 +151,7 @@ Models are initialized by a constructor. In this example, a basic disequilibrium
 
  * The models can be estimated both with panel and time series data. The constructor expects both a subject and a time identifier in order to perform the necessary initialization operations (these are respectively given by `id` and `date` in the simulated data of this example). The observation identification of the data is automatically generated by composing the subject and time identifiers. The resulting composite key is the combination of columns that uniquely identify a record of the dataset. 
  
- * The observable traded quantity variable (given by `Q` in this example's simulated data). The demanded and supplied quantities are not observable, and they are identified either based on the market clearing condition or the short side rule. 
+ * The observable traded quantity variable (given by `Q` in this example's simulated data). The demanded and supplied quantities are not observable, and they are identified either based on the market clearing condition or the short-side rule. 
 
  * The price variable, which is named after `P` in the simulated data. 
 
@@ -192,18 +192,18 @@ The equilibrium model can be estimated either using two-stage least squares or f
 
 * `equilibrium_model`.
 
-In total, there are four disequilibrium models, which are all estimated using full information maximum likelihood. By default, the estimations use analytically calculated gradient expressions, but the user has the ability to override this behavior. The classes that implement the four disequilibrium models are 
+In total, there are four disequilibrium models, which are all estimated using full information maximum likelihood. By default, the estimations use analytically calculated gradient expressions, but the user can override this behavior. The classes that implement the four disequilibrium models are 
 
 * `diseq_basic`, 
 * `diseq_directional`, 
 * `diseq_deterministic_adjustment`, and
 * `diseq_stochastic_adjustment`.
 
-The package organizes these classes in a simple object oriented hierarchy. 
+The package organizes these classes in a simple object-oriented hierarchy. 
 
 <img src='man/figures/design.png' align="center" style="max-width:100%"/>
 
-Concerning post estimation analysis, the package offers functionality to calculate
+Concerning post-estimation analysis, the package offers functionality to calculate
 
 * shortage probabilities,
 * marginal effects on shortage probabilities,
@@ -230,7 +230,7 @@ The package is planned to be expanded in the following ways:
 
 [Pantelis Karapanagiotis](https://www.pikappa.eu)
 
-Feel free to join, share, contribute, distribute.
+Feel free to join, share, contribute, and distribute.
 
 # License
 
