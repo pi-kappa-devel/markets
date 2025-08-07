@@ -13,7 +13,7 @@
 # Test Environments and Results
 ## Rhub
 ✔ Check started: macos-arm64, windows, clang19, clang20, gcc14, gcc15, nold, ubuntu-next, ubuntu-release
-  (nearby-ovenbird).
+  (censorious-viperfish).
   See <https://github.com/pi-kappa-devel/markets/actions> for live output!
 
 ### clang19, clang20 [Status: 1 NOTE]
