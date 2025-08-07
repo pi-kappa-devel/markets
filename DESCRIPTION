@@ -1,7 +1,7 @@
 Package: markets
 Title: Estimation Methods for Markets in Equilibrium and Disequilibrium
-Version: 1.1.5
-Date: 2024-02-17
+Version: 1.1.5.001
+Date: 2025-08-07
 Authors@R: 
     person(given = "Pantelis",
            family = "Karapanagiotis",
@@ -42,7 +42,7 @@ Imports:
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Suggests:
     ggplot2 (>= 3.0.0),
     knitr (>= 1.20),

@@ -182,7 +182,7 @@ mdt <- cbind(
 
 How is the sample separated post-estimation? The indices of the observations for which the estimated demand is greater than the estimated supply are easily obtained.
 
-```{r analysis.shortages}
+```{r, analysis.shortages, fig-alt="Shortages"}
 if (requireNamespace("ggplot2", quietly = TRUE)) {
   pdt <- data.frame(
     Shortage = c(mdt$normalized_shortages, mdt$relative_shortages),
@@ -231,7 +231,7 @@ summary(market)
 
 The package also offers basic aggregation functionality.
 
-```{r analysis.aggregation}
+```{r, analysis.aggregation, fig.alt="Aggregate estimated demand and supply"}
 aggregates <- aggregate_demand(fit) |>
   dplyr::left_join(aggregate_supply(fit), by = "date") |>
   dplyr::mutate(date = as.numeric(date)) |>

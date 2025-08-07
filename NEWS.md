@@ -1,3 +1,7 @@
+# markets 1.1.6
+
+* Documentation improvements.
+
 # markets 1.1.5
 
 * Added DOI and citation details for the JSS article.

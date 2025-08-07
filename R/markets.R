@@ -17,7 +17,8 @@
 #'
 #' \subsection{Usage}{
 #' The easiest way to get accustomed with the functionality of the package is to check
-#' the accompanying vignettes and the \href{../README.html}{README} file. These can be
+#' the accompanying vignettes and the
+#' \href{https://markets.pikappa.eu/}{README} file. These can be
 #' found in the following links:
 #'
 #' \describe{
@@ -32,8 +33,8 @@
 #' }
 #'
 #' \subsection{Market model classes}{
-#' The model hierarchy is described in the \href{../README.html}{README} file. See
-#' the documentation of the classes for initialization details.
+#' The model hierarchy is described in the \href{https://markets.pikappa.eu/}{README}
+#' file. See the documentation of the classes for initialization details.
 #'
 #' \strong{Equilibrium model classes:}
 #'     \describe{
@@ -56,7 +57,6 @@
 #'
 #' @docType package
 #' @name markets
-#' @keywords internal
 "_PACKAGE"
 
 ## usethis namespace: start

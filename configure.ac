@@ -1,4 +1,4 @@
-AC_INIT([markets],[1.1.4])
+AC_INIT([markets],[1.1.6])
 
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then

@@ -10,7 +10,7 @@ output:
   github_document:
     math_method: webtex
   md_document:
-    variant: markdown_github+tex_math_dollars
+    variant: gfm+tex_math_dollars
 bibliography: bibliography.bib
 ---
 
@@ -40,7 +40,7 @@ Q_{n t} &= D_{n t} = S_{n t}
 \end{aligned}\tag{EM}\label{equilibrium}
 \end{align}
 $$
-<img src='man/figures/equilibrium_model.png'/>
+<img src='man/figures/equilibrium_model.png' alt='Equilibrium model'/>
 
 ## The basic disequilibrium model
 
@@ -55,7 +55,7 @@ Q_{n t} &= \min\{D_{n t},S_{n t}\}
 \end{aligned} \tag{BM} \label{basic}
 \end{align}
 $$
-<img src='man/figures/diseq_basic.png'/>
+<img src='man/figures/diseq_basic.png' alt='Basic disequilibrium model'/>
 
 ## The directional disequilibrium model
 
@@ -71,7 +71,7 @@ Q_{n t} &= \min\{D_{n t},S_{n t}\} \\
 \end{aligned} \tag{DM} \label{directional}
 \end{align}
 $$
-<img src='man/figures/diseq_directional.png'/>
+<img src='man/figures/diseq_directional.png' alt='Directional disequilibrium model'/>
 
 ## A disequilibrium model with deterministic price dynamics
 
@@ -87,7 +87,7 @@ Q_{n t} &= \min\{D_{n t},S_{n t}\} \\
 \end{aligned} \tag{DA} \label{deterministic_adjustment}
 \end{align}
 $$
-<img src='man/figures/diseq_deterministic_adjustment.png'/>
+<img src='man/figures/diseq_deterministic_adjustment.png' alt='Deterministic adjustment disequilibrium model'/>
 
 ## A disequilibrium model with stochastic price dynamics
 
@@ -103,7 +103,7 @@ Q_{n t} &= \min\{D_{n t},S_{n t}\} \\
 \end{aligned} \tag{SA} \label{stochastic_adjustment}
 \end{align}
 $$
-<img src='man/figures/diseq_stochastic_adjustment.png'/>
+<img src='man/figures/diseq_stochastic_adjustment.png' alt='Stochastic adjustment disequilibrium model'/>
 
 # Installation and documentation
 
@@ -201,7 +201,7 @@ In total, there are four disequilibrium models, which are all estimated using fu
 
 The package organizes these classes in a simple object-oriented hierarchy. 
 
-<img src='man/figures/design.png' align="center" style="max-width:100%"/>
+<img src='man/figures/design.png' align="center" style="max-width:100%" alt='Design of the markets package'/>
 
 Concerning post-estimation analysis, the package offers functionality to calculate
 
