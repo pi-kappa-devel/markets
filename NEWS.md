@@ -1,6 +1,7 @@
 # markets 1.1.6
 
 * Documentation improvements.
+* Patched summary output for setups with customized output width.
 
 # markets 1.1.5
 
