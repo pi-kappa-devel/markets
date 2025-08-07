@@ -2,6 +2,7 @@ Models For Markets in Equilibrium and Disequilibrium
 ================
 
 <img src="man/figures/logo.png" align="right" height="48"/>
+
 <!-- badges: start -->
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
@@ -43,19 +44,19 @@ two-stage least squares (Theil 1953) or full information maximum
 likelihood (Karapanagiotis, n.d.). Asymptotically, these methods are
 equivalent (Balestra and Varadharajan-Krishnakumar 1987).
 
-![\begin{align}
+![\left.
 \begin{aligned}
 D\_{n t} &= X\_{d, n t}'\beta\_{d} + P\_{n t}\alpha\_{d} + u\_{d, n t} \\
 S\_{n t} &= X\_{s, n t}'\beta\_{s} + P\_{n t}\alpha\_{s} + u\_{s, n t} \\
 Q\_{n t} &= D\_{n t} = S\_{n t}
-\end{aligned}\tag{EM}\label{equilibrium}
-\end{align}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cbegin%7Balign%7D%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20D_%7Bn%20t%7D%20%3D%20S_%7Bn%20t%7D%0A%5Cend%7Baligned%7D%5Ctag%7BEM%7D%5Clabel%7Bequilibrium%7D%0A%5Cend%7Balign%7D "\begin{align}
+\end{aligned}
+\right. \qquad\text{(EM)}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cleft.%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20D_%7Bn%20t%7D%20%3D%20S_%7Bn%20t%7D%0A%5Cend%7Baligned%7D%0A%5Cright.%20%5Cqquad%5Ctext%7B%28EM%29%7D "\left.
 \begin{aligned}
 D_{n t} &= X_{d, n t}'\beta_{d} + P_{n t}\alpha_{d} + u_{d, n t} \\
 S_{n t} &= X_{s, n t}'\beta_{s} + P_{n t}\alpha_{s} + u_{s, n t} \\
 Q_{n t} &= D_{n t} = S_{n t}
-\end{aligned}\tag{EM}\label{equilibrium}
-\end{align}")
+\end{aligned}
+\right. \qquad\text{(EM)}")
 
 <img src='man/figures/equilibrium_model.png' alt='Equilibrium model'/>
 
@@ -72,19 +73,19 @@ to the demand or the supply side since the estimation of the model will
 allocate the observations on the demand or supply side so that the
 likelihood is maximized.
 
-![\begin{align}
+![\left.
 \begin{aligned}
 D\_{n t} &= X\_{d, n t}'\beta\_{d} + u\_{d, n t} \\
 S\_{n t} &= X\_{s, n t}'\beta\_{s} + u\_{s, n t} \\
 Q\_{n t} &= \min\\D\_{n t},S\_{n t}\\
-\end{aligned} \tag{BM} \label{basic}
-\end{align}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cbegin%7Balign%7D%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%0A%5Cend%7Baligned%7D%20%5Ctag%7BBM%7D%20%5Clabel%7Bbasic%7D%0A%5Cend%7Balign%7D "\begin{align}
+\end{aligned}
+\right. \qquad\text{(BM)}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cleft.%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%0A%5Cend%7Baligned%7D%0A%5Cright.%20%5Cqquad%5Ctext%7B%28BM%29%7D "\left.
 \begin{aligned}
 D_{n t} &= X_{d, n t}'\beta_{d} + u_{d, n t} \\
 S_{n t} &= X_{s, n t}'\beta_{s} + u_{s, n t} \\
 Q_{n t} &= \min\{D_{n t},S_{n t}\}
-\end{aligned} \tag{BM} \label{basic}
-\end{align}")
+\end{aligned}
+\right. \qquad\text{(BM)}")
 
 <img src='man/figures/diseq_basic.png' alt='Basic disequilibrium model'/>
 
@@ -103,21 +104,21 @@ also, when inaccurate, intensifies misspecification problems. Therefore,
 the additional structure of the directional model does not guarantee
 better estimates in comparison with the basic model.
 
-![\begin{align}
+![\left.
 \begin{aligned}
 D\_{n t} &= X\_{d, n t}'\beta\_{d} + u\_{d, n t} \\
 S\_{n t} &= X\_{s, n t}'\beta\_{s} + u\_{s, n t} \\
 Q\_{n t} &= \min\\D\_{n t},S\_{n t}\\ \\
 \Delta P\_{n t} &\ge 0 \implies D\_{n t} \ge S\_{n t}
-\end{aligned} \tag{DM} \label{directional}
-\end{align}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cbegin%7Balign%7D%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%20%5C%5C%0A%5CDelta%20P_%7Bn%20t%7D%20%26%5Cge%200%20%5Cimplies%20D_%7Bn%20t%7D%20%5Cge%20S_%7Bn%20t%7D%0A%5Cend%7Baligned%7D%20%5Ctag%7BDM%7D%20%5Clabel%7Bdirectional%7D%0A%5Cend%7Balign%7D "\begin{align}
+\end{aligned}
+\right. \qquad\text{(DM)}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cleft.%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%20%5C%5C%0A%5CDelta%20P_%7Bn%20t%7D%20%26%5Cge%200%20%5Cimplies%20D_%7Bn%20t%7D%20%5Cge%20S_%7Bn%20t%7D%0A%5Cend%7Baligned%7D%0A%5Cright.%20%5Cqquad%5Ctext%7B%28DM%29%7D "\left.
 \begin{aligned}
 D_{n t} &= X_{d, n t}'\beta_{d} + u_{d, n t} \\
 S_{n t} &= X_{s, n t}'\beta_{s} + u_{s, n t} \\
 Q_{n t} &= \min\{D_{n t},S_{n t}\} \\
 \Delta P_{n t} &\ge 0 \implies D_{n t} \ge S_{n t}
-\end{aligned} \tag{DM} \label{directional}
-\end{align}")
+\end{aligned}
+\right. \qquad\text{(DM)}")
 
 <img src='man/figures/diseq_directional.png' alt='Directional disequilibrium model'/>
 
@@ -139,21 +140,21 @@ standard economic reasoning. By letting
 approach zero, the equilibrium model can be obtained as a limiting case
 of this model.
 
-![\begin{align}
+![\left.
 \begin{aligned}
 D\_{n t} &= X\_{d, n t}'\beta\_{d} + P\_{n t}\alpha\_{d} + u\_{d, n t} \\
 S\_{n t} &= X\_{s, n t}'\beta\_{s} + P\_{n t}\alpha\_{s} + u\_{s, n t} \\
 Q\_{n t} &= \min\\D\_{n t},S\_{n t}\\ \\
 \Delta P\_{n t} &= \frac{1}{\gamma} \left( D\_{n t} - S\_{n t} \right)
-\end{aligned} \tag{DA} \label{deterministic_adjustment}
-\end{align}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cbegin%7Balign%7D%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%20%5C%5C%0A%5CDelta%20P_%7Bn%20t%7D%20%26%3D%20%5Cfrac%7B1%7D%7B%5Cgamma%7D%20%5Cleft%28%20D_%7Bn%20t%7D%20-%20S_%7Bn%20t%7D%20%5Cright%29%0A%5Cend%7Baligned%7D%20%5Ctag%7BDA%7D%20%5Clabel%7Bdeterministic_adjustment%7D%0A%5Cend%7Balign%7D "\begin{align}
+\end{aligned}
+\right. \qquad\text{(DA)}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cleft.%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%20%5C%5C%0A%5CDelta%20P_%7Bn%20t%7D%20%26%3D%20%5Cfrac%7B1%7D%7B%5Cgamma%7D%20%5Cleft%28%20D_%7Bn%20t%7D%20-%20S_%7Bn%20t%7D%20%5Cright%29%0A%5Cend%7Baligned%7D%0A%5Cright.%20%5Cqquad%5Ctext%7B%28DA%29%7D "\left.
 \begin{aligned}
 D_{n t} &= X_{d, n t}'\beta_{d} + P_{n t}\alpha_{d} + u_{d, n t} \\
 S_{n t} &= X_{s, n t}'\beta_{s} + P_{n t}\alpha_{s} + u_{s, n t} \\
 Q_{n t} &= \min\{D_{n t},S_{n t}\} \\
 \Delta P_{n t} &= \frac{1}{\gamma} \left( D_{n t} - S_{n t} \right)
-\end{aligned} \tag{DA} \label{deterministic_adjustment}
-\end{align}")
+\end{aligned}
+\right. \qquad\text{(DA)}")
 
 <img src='man/figures/diseq_deterministic_adjustment.png' alt='Deterministic adjustment disequilibrium model'/>
 
@@ -173,21 +174,21 @@ offers the highest degree of freedom, accompanied, however, by a
 significant increase in estimation complexity, which can hinder the
 stability of the procedure and the numerical accuracy of the outcomes.
 
-![\begin{align}
+![\left.
 \begin{aligned}
 D\_{n t} &= X\_{d, n t}'\beta\_{d} + P\_{n t}\alpha\_{d} + u\_{d, n t} \\
 S\_{n t} &= X\_{s, n t}'\beta\_{s} + P\_{n t}\alpha\_{s} + u\_{s, n t} \\
 Q\_{n t} &= \min\\D\_{n t},S\_{n t}\\ \\
 \Delta P\_{n t} &= \frac{1}{\gamma} \left( D\_{n t} - S\_{n t} \right) +  X\_{p, n t}'\beta\_{p} + u\_{p, n t}
-\end{aligned} \tag{SA} \label{stochastic_adjustment}
-\end{align}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cbegin%7Balign%7D%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%20%5C%5C%0A%5CDelta%20P_%7Bn%20t%7D%20%26%3D%20%5Cfrac%7B1%7D%7B%5Cgamma%7D%20%5Cleft%28%20D_%7Bn%20t%7D%20-%20S_%7Bn%20t%7D%20%5Cright%29%20%2B%20%20X_%7Bp%2C%20n%20t%7D%27%5Cbeta_%7Bp%7D%20%2B%20u_%7Bp%2C%20n%20t%7D%0A%5Cend%7Baligned%7D%20%5Ctag%7BSA%7D%20%5Clabel%7Bstochastic_adjustment%7D%0A%5Cend%7Balign%7D "\begin{align}
+\end{aligned}
+\right. \qquad\text{(SA)}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cleft.%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%20%5C%5C%0A%5CDelta%20P_%7Bn%20t%7D%20%26%3D%20%5Cfrac%7B1%7D%7B%5Cgamma%7D%20%5Cleft%28%20D_%7Bn%20t%7D%20-%20S_%7Bn%20t%7D%20%5Cright%29%20%2B%20%20X_%7Bp%2C%20n%20t%7D%27%5Cbeta_%7Bp%7D%20%2B%20u_%7Bp%2C%20n%20t%7D%0A%5Cend%7Baligned%7D%0A%5Cright.%20%5Cqquad%5Ctext%7B%28SA%29%7D "\left.
 \begin{aligned}
 D_{n t} &= X_{d, n t}'\beta_{d} + P_{n t}\alpha_{d} + u_{d, n t} \\
 S_{n t} &= X_{s, n t}'\beta_{s} + P_{n t}\alpha_{s} + u_{s, n t} \\
 Q_{n t} &= \min\{D_{n t},S_{n t}\} \\
 \Delta P_{n t} &= \frac{1}{\gamma} \left( D_{n t} - S_{n t} \right) +  X_{p, n t}'\beta_{p} + u_{p, n t}
-\end{aligned} \tag{SA} \label{stochastic_adjustment}
-\end{align}")
+\end{aligned}
+\right. \qquad\text{(SA)}")
 
 <img src='man/figures/diseq_stochastic_adjustment.png' alt='Stochastic adjustment disequilibrium model'/>
 
@@ -335,10 +336,10 @@ summary(fit)
     ##   Method              : BFGS
     ##   Convergence Status  : success
     ##   Starting Values     :
-    ##        D_P    D_CONST      D_Xd1      D_Xd2       D_X1       D_X2        S_P    S_CONST      S_Xs1       S_X1 
-    ##     1.2430    32.8102     0.6986    -0.2362     1.9377     4.8826     1.2390    32.8104     0.4500     1.9376 
-    ##       S_X2 D_VARIANCE S_VARIANCE        RHO 
-    ##     4.8819     3.8528     4.2008     0.0000 
+    ##        D_P    D_CONST      D_Xd1      D_Xd2       D_X1       D_X2        S_P 
+    ##     1.2430    32.8102     0.6986    -0.2362     1.9377     4.8826     1.2390 
+    ##    S_CONST      S_Xs1       S_X1       S_X2 D_VARIANCE S_VARIANCE        RHO 
+    ##    32.8104     0.4500     1.9376     4.8819     3.8528     4.2008     0.0000 
     ## 
     ## Coefficients:
     ##                Estimate  Std. Error      z value  Pr(>|z|) 

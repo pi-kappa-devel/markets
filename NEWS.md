@@ -2,6 +2,7 @@
 
 * Documentation improvements.
 * Patched summary output for setups with customized output width.
+* Replaced custom github workflows with rhub-provided workflows.
 
 # markets 1.1.5
 

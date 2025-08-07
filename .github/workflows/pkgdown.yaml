@@ -28,20 +28,8 @@ jobs:
         run: R CMD INSTALL .
       - name: Build and deploy pkgdown site
         run: |
-          devtools::document()
-          rmarkdown::render('README.Rmd', output_format = 'md_document')
-          pkgdown::build_site(lazy = FALSE)
-          rmarkdown::render('README.Rmd', output_format = 'github_document')
-          document <- paste(readLines('README.md'), collapse = "\n")
-          document <- gsub("<!-- badges: start -->", '<img src="man/figures/logo.png" align="right" height="48"/>\n<!-- badges: start -->', document)
-          document <- gsub('"\n.*?\n"', '', document)
-          document <- gsub('\n".*?gamma"', '', document)
-          document <- gsub('\n"\\(DA\\)"', '', document)
-          document <- gsub('\n"\\(DM\\)"', '', document)
-          document <- gsub("<iframe.+?iframe>", '<a style="display:block;margin:auto" href="https://www.youtube.com/watch?v=Kkjkny94dgU" target="_blank"><img src="http://img.youtube.com/vi/Kkjkny94dgU/0.jpg"  alt="Session Recording" width="560" height="315" border="10" /></a>', document)
-          writeLines(document, 'README.md')
-          devtools::document()
-        shell: Rscript {0}
+          make web_docs
+        shell: bash
 
       - name: Sync files
         uses: SamKirkland/FTP-Deploy-Action@4.3.3

@@ -9,9 +9,10 @@
 .Rproj.user/
 
 # Temporary files
-.clangd/*
-\#*\#
 *~
+.clangd/*
+Rplots.pdf
+\#*\#
 
 # Documentation files
 README*.html

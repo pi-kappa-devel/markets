@@ -1,9 +1,14 @@
-## Changes in version 1.1.5
+## Changes in version 1.1.6
 
-* No functionality changes. Only changes in documentation and description.
-* Added DOI and citation details.
-* The DOI in the CITATION is for a new JSS publication that will be registered after publication on CRAN.
-* Added references to JSS publication in documentation.
+* Addressing documentation issues before 2025-08-25:
+  - Removed relative links to README file from `markets.R` documentation.
+  - Removed internal keyword from overview page.
+* Further documentation improvements:
+  - Added alt text for vignette figures and images.
+* Unit test changes:
+  - Patched summary output tests for setups with customized output width.
+* Continuous integration Changes
+  - Replaced custom github workflows with rhub-provided workflows.
 
 # Test Environments and Results
 ## Windows
