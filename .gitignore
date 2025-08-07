@@ -22,7 +22,6 @@ doc*
 docs
 pkgdown/*
 !pkgdown/extra.css
-man/*.Rd
 
 # Development files
 Meta
