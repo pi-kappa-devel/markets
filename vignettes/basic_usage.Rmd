@@ -182,7 +182,7 @@ mdt <- cbind(
 
 How is the sample separated post-estimation? The indices of the observations for which the estimated demand is greater than the estimated supply are easily obtained.
 
-```{r, analysis.shortages, fig-alt="Shortages"}
+```{r, analysis.shortages, fig.alt="Shortages"}
 if (requireNamespace("ggplot2", quietly = TRUE)) {
   pdt <- data.frame(
     Shortage = c(mdt$normalized_shortages, mdt$relative_shortages),

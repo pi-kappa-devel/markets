@@ -5,9 +5,9 @@ Models For Markets in Equilibrium and Disequilibrium
 <!-- badges: start -->
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-![](https://cranlogs.r-pkg.org/badges/last-month/markets)
-![](https://www.r-pkg.org/badges/version/markets)
-![](https://www.r-pkg.org/badges/last-release/markets)
+![Downloads](https://cranlogs.r-pkg.org/badges/last-month/markets)
+![Version](https://www.r-pkg.org/badges/version/markets) ![Release
+Date](https://www.r-pkg.org/badges/last-release/markets)
 <!-- badges: end -->
 
 The *markets* package provides tools to estimate and analyze an
