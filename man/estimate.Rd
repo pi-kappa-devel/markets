@@ -92,7 +92,7 @@ optimization step (\code{step}), the objective's optimization tolerance
 (\code{gradient_tolerance}, and the maximum allowed number of iterations (\code{maxit}).
 If the \code{GSL} library is not available in the calling machine, the function
 returns a trivial result list with convergence status set equal to -1. If the
-\href{https://en.cppreference.com/w/cpp/algorithm/execution_policy_tag_t}{C++17 execution policies}
+\href{https://en.cppreference.com/w/cpp/algorithm/execution_policy_tag_t.html}{C++17 execution policies}
 are available, the implementation of the optimization is parallelized.
 }
 \section{Functions}{

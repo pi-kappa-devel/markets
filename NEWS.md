@@ -2,7 +2,8 @@
 
 * Documentation improvements.
 * Patched summary output for setups with customized output width.
-* Replaced custom github workflows with rhub-provided workflows.
+* Replaced custom GitHub workflows with `rhub`-provided workflows.
+* Updated moved `cppreference.com` URLs.
 
 # markets 1.1.5
 

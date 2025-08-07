@@ -42,6 +42,10 @@ release: web_docs
 	Rscript -e "devtools::spell_check()"
 	Rscript -e "devtools::check_man()"
 	Rscript -e "devtools::release_checks()"
+	@echo "Building package for release..."
+	Rscript -e "devtools::build()"
+	@echo "Checking built package..."
+	cd .. && R CMD check markets_$(shell grep -oP '(?<=Version: )([0-9\.]+)' DESCRIPTION).tar.gz --as-cran
 
 help:
 	@echo "make configure: Configure the package"
