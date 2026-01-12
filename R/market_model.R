@@ -5,7 +5,7 @@
 #' @importFrom rlang :=
 #' @importFrom stats cor formula lm logLik model.matrix model.frame na.omit median optim qnorm sd var
 
-utils::globalVariables("where")
+utils::globalVariables(c("where", "id"))
 
 #' @title Market model classes
 #'
