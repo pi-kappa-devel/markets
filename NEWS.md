@@ -1,3 +1,7 @@
+# markets 1.1.6.9004
+
+* Using .data to access id instead of global.
+
 # markets 1.1.6.9003
 
 * Removed video with deprecated calling interface from README.

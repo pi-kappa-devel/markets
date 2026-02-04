@@ -229,7 +229,7 @@ setMethod(
       dplyr::mutate(S = supplied_quantities) |>
       dplyr::mutate(P = prices) |>
       dplyr::mutate(Q = pmin(.data$D, .data$S)) |>
-      dplyr::group_by(id) |>
+      dplyr::group_by(.data$id) |>
       dplyr::mutate(LP = dplyr::lag(.data$P, order_by = date)) |>
       dplyr::ungroup()
     object@simulation_data[is.na(object@simulation_data$LP), "LP"] <- starting_prices
