@@ -1,3 +1,7 @@
+# markets 1.1.6.9001
+
+* Updated README generation to modern GitHub math rendering.
+
 # markets 1.1.6
 
 * Documentation improvements.

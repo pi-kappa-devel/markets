@@ -1,4 +1,7 @@
 PACKAGE_DIR = .
+VERSION := $(shell grep '^Version:' DESCRIPTION | awk '{print $$2}')
+PKG_NAME := $(shell grep '^Package:' DESCRIPTION | awk '{print $$2}')
+TARBALL := $(PKG_NAME)_$(VERSION).tar.gz
 
 configure: configure.ac
 	@echo "Configuring package..."
@@ -15,27 +18,17 @@ test_examples: configure
 
 test: test_units test_examples
 
-github_readme: configure
-	@echo "Generating GitHub README from R Markdown..."
+readme: configure
+	@echo "Generating README from R Markdown..."
 	Rscript -e "rmarkdown::render('README.Rmd', output_format = 'github_document')"
 
-_web_docs_pre: configure
-	@echo "Preparing web documentation..."
-	Rscript -e "devtools::document()"
-	Rscript -e "rmarkdown::render('README.Rmd', output_format = 'md_document')"
-
-_web_docs_post: github_readme
-	@echo "Post-processing web documentation..."
-
-web_docs_fast: _web_docs_pre
+web_docs_fast: readme
 	@echo "Building web documentation (fast mode)..."
 	Rscript -e "pkgdown::build_site(lazy = TRUE)"
-	$(MAKE) _web_docs_post
 
-web_docs: _web_docs_pre
+web_docs: readme
 	@echo "Building web documentation (full mode)..."
 	Rscript -e "pkgdown::build_site(lazy = FALSE)"
-	$(MAKE) _web_docs_post
 
 release: web_docs
 	@echo "Running release checks..."
@@ -43,9 +36,9 @@ release: web_docs
 	Rscript -e "devtools::check_man()"
 	Rscript -e "devtools::release_checks()"
 	@echo "Building package for release..."
-	Rscript -e "devtools::build()"
+	R CMD build $(PACKAGE_DIR)
 	@echo "Checking built package..."
-	cd .. && R CMD check markets_$(shell grep -oP '(?<=Version: )([0-9\.]+)' DESCRIPTION).tar.gz --as-cran
+	cd .. && R CMD check $(TARBALL) --as-cran
 
 help:
 	@echo "make configure: Configure the package"

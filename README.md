@@ -1,7 +1,7 @@
 Models For Markets in Equilibrium and Disequilibrium
 ================
 
-<img src="man/figures/logo.png" align="right" height="48"/>
+<img id="github-logo" src="man/figures/logo.png" align="right" height="48" alt="logo"/>
 
 <!-- badges: start -->
 
@@ -44,20 +44,15 @@ two-stage least squares (Theil 1953) or full information maximum
 likelihood (Karapanagiotis, n.d.). Asymptotically, these methods are
 equivalent (Balestra and Varadharajan-Krishnakumar 1987).
 
-![\left.
-\begin{aligned}
-D\_{n t} &= X\_{d, n t}'\beta\_{d} + P\_{n t}\alpha\_{d} + u\_{d, n t} \\
-S\_{n t} &= X\_{s, n t}'\beta\_{s} + P\_{n t}\alpha\_{s} + u\_{s, n t} \\
-Q\_{n t} &= D\_{n t} = S\_{n t}
-\end{aligned}
-\right. \qquad\text{(EM)}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cleft.%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20D_%7Bn%20t%7D%20%3D%20S_%7Bn%20t%7D%0A%5Cend%7Baligned%7D%0A%5Cright.%20%5Cqquad%5Ctext%7B%28EM%29%7D "\left.
+$$
+\left.
 \begin{aligned}
 D_{n t} &= X_{d, n t}'\beta_{d} + P_{n t}\alpha_{d} + u_{d, n t} \\
 S_{n t} &= X_{s, n t}'\beta_{s} + P_{n t}\alpha_{s} + u_{s, n t} \\
 Q_{n t} &= D_{n t} = S_{n t}
 \end{aligned}
-\right. \qquad\text{(EM)}")
-
+\right. \qquad\text{(EM)}
+$$
 <img src='man/figures/equilibrium_model.png' alt='Equilibrium model'/>
 
 ## The basic disequilibrium model
@@ -73,20 +68,15 @@ to the demand or the supply side since the estimation of the model will
 allocate the observations on the demand or supply side so that the
 likelihood is maximized.
 
-![\left.
-\begin{aligned}
-D\_{n t} &= X\_{d, n t}'\beta\_{d} + u\_{d, n t} \\
-S\_{n t} &= X\_{s, n t}'\beta\_{s} + u\_{s, n t} \\
-Q\_{n t} &= \min\\D\_{n t},S\_{n t}\\
-\end{aligned}
-\right. \qquad\text{(BM)}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cleft.%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%0A%5Cend%7Baligned%7D%0A%5Cright.%20%5Cqquad%5Ctext%7B%28BM%29%7D "\left.
+$$
+\left.
 \begin{aligned}
 D_{n t} &= X_{d, n t}'\beta_{d} + u_{d, n t} \\
 S_{n t} &= X_{s, n t}'\beta_{s} + u_{s, n t} \\
 Q_{n t} &= \min\{D_{n t},S_{n t}\}
 \end{aligned}
-\right. \qquad\text{(BM)}")
-
+\right. \qquad\text{(BM)}
+$$
 <img src='man/figures/diseq_basic.png' alt='Basic disequilibrium model'/>
 
 ## The directional disequilibrium model
@@ -104,22 +94,16 @@ also, when inaccurate, intensifies misspecification problems. Therefore,
 the additional structure of the directional model does not guarantee
 better estimates in comparison with the basic model.
 
-![\left.
-\begin{aligned}
-D\_{n t} &= X\_{d, n t}'\beta\_{d} + u\_{d, n t} \\
-S\_{n t} &= X\_{s, n t}'\beta\_{s} + u\_{s, n t} \\
-Q\_{n t} &= \min\\D\_{n t},S\_{n t}\\ \\
-\Delta P\_{n t} &\ge 0 \implies D\_{n t} \ge S\_{n t}
-\end{aligned}
-\right. \qquad\text{(DM)}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cleft.%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%20%5C%5C%0A%5CDelta%20P_%7Bn%20t%7D%20%26%5Cge%200%20%5Cimplies%20D_%7Bn%20t%7D%20%5Cge%20S_%7Bn%20t%7D%0A%5Cend%7Baligned%7D%0A%5Cright.%20%5Cqquad%5Ctext%7B%28DM%29%7D "\left.
+$$
+\left.
 \begin{aligned}
 D_{n t} &= X_{d, n t}'\beta_{d} + u_{d, n t} \\
 S_{n t} &= X_{s, n t}'\beta_{s} + u_{s, n t} \\
 Q_{n t} &= \min\{D_{n t},S_{n t}\} \\
 \Delta P_{n t} &\ge 0 \implies D_{n t} \ge S_{n t}
 \end{aligned}
-\right. \qquad\text{(DM)}")
-
+\right. \qquad\text{(DM)}
+$$
 <img src='man/figures/diseq_directional.png' alt='Directional disequilibrium model'/>
 
 ## A disequilibrium model with deterministic price dynamics
@@ -135,27 +119,19 @@ price movements is analogous to the magnitude of deviations from the
 market-clearing condition. This model offers a flexible estimation
 alternative, with one extra degree of freedom in the estimation of price
 dynamics, that accounts for market forces that are in alignment with
-standard economic reasoning. By letting
-![\gamma](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cgamma "\gamma")
-approach zero, the equilibrium model can be obtained as a limiting case
-of this model.
+standard economic reasoning. By letting $\gamma$ approach zero, the
+equilibrium model can be obtained as a limiting case of this model.
 
-![\left.
-\begin{aligned}
-D\_{n t} &= X\_{d, n t}'\beta\_{d} + P\_{n t}\alpha\_{d} + u\_{d, n t} \\
-S\_{n t} &= X\_{s, n t}'\beta\_{s} + P\_{n t}\alpha\_{s} + u\_{s, n t} \\
-Q\_{n t} &= \min\\D\_{n t},S\_{n t}\\ \\
-\Delta P\_{n t} &= \frac{1}{\gamma} \left( D\_{n t} - S\_{n t} \right)
-\end{aligned}
-\right. \qquad\text{(DA)}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cleft.%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%20%5C%5C%0A%5CDelta%20P_%7Bn%20t%7D%20%26%3D%20%5Cfrac%7B1%7D%7B%5Cgamma%7D%20%5Cleft%28%20D_%7Bn%20t%7D%20-%20S_%7Bn%20t%7D%20%5Cright%29%0A%5Cend%7Baligned%7D%0A%5Cright.%20%5Cqquad%5Ctext%7B%28DA%29%7D "\left.
+$$
+\left.
 \begin{aligned}
 D_{n t} &= X_{d, n t}'\beta_{d} + P_{n t}\alpha_{d} + u_{d, n t} \\
 S_{n t} &= X_{s, n t}'\beta_{s} + P_{n t}\alpha_{s} + u_{s, n t} \\
 Q_{n t} &= \min\{D_{n t},S_{n t}\} \\
 \Delta P_{n t} &= \frac{1}{\gamma} \left( D_{n t} - S_{n t} \right)
 \end{aligned}
-\right. \qquad\text{(DA)}")
-
+\right. \qquad\text{(DA)}
+$$
 <img src='man/figures/diseq_deterministic_adjustment.png' alt='Deterministic adjustment disequilibrium model'/>
 
 ## A disequilibrium model with stochastic price dynamics
@@ -164,32 +140,23 @@ The last model of the package extends the price dynamics of the
 deterministic adjustment model by adding additional explanatory
 variables and a stochastic term. The latter term, in particular, makes
 the price adjustment mechanism stochastic and, deviating from the
-structural assumptions of models
-![(DA)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%28DA%29 "(DA)")
-and
-![(DM)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%28DM%29 "(DM)"),
-abstains from imposing any separation assumption on the sample (Maddala
-and Nelson 1974; Quandt and Ramsey 1978). The estimation of this model
-offers the highest degree of freedom, accompanied, however, by a
-significant increase in estimation complexity, which can hinder the
-stability of the procedure and the numerical accuracy of the outcomes.
+structural assumptions of models $(DA)$ and $(DM)$, abstains from
+imposing any separation assumption on the sample (Maddala and Nelson
+1974; Quandt and Ramsey 1978). The estimation of this model offers the
+highest degree of freedom, accompanied, however, by a significant
+increase in estimation complexity, which can hinder the stability of the
+procedure and the numerical accuracy of the outcomes.
 
-![\left.
-\begin{aligned}
-D\_{n t} &= X\_{d, n t}'\beta\_{d} + P\_{n t}\alpha\_{d} + u\_{d, n t} \\
-S\_{n t} &= X\_{s, n t}'\beta\_{s} + P\_{n t}\alpha\_{s} + u\_{s, n t} \\
-Q\_{n t} &= \min\\D\_{n t},S\_{n t}\\ \\
-\Delta P\_{n t} &= \frac{1}{\gamma} \left( D\_{n t} - S\_{n t} \right) +  X\_{p, n t}'\beta\_{p} + u\_{p, n t}
-\end{aligned}
-\right. \qquad\text{(SA)}](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cleft.%0A%5Cbegin%7Baligned%7D%0AD_%7Bn%20t%7D%20%26%3D%20X_%7Bd%2C%20n%20t%7D%27%5Cbeta_%7Bd%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bd%7D%20%2B%20u_%7Bd%2C%20n%20t%7D%20%5C%5C%0AS_%7Bn%20t%7D%20%26%3D%20X_%7Bs%2C%20n%20t%7D%27%5Cbeta_%7Bs%7D%20%2B%20P_%7Bn%20t%7D%5Calpha_%7Bs%7D%20%2B%20u_%7Bs%2C%20n%20t%7D%20%5C%5C%0AQ_%7Bn%20t%7D%20%26%3D%20%5Cmin%5C%7BD_%7Bn%20t%7D%2CS_%7Bn%20t%7D%5C%7D%20%5C%5C%0A%5CDelta%20P_%7Bn%20t%7D%20%26%3D%20%5Cfrac%7B1%7D%7B%5Cgamma%7D%20%5Cleft%28%20D_%7Bn%20t%7D%20-%20S_%7Bn%20t%7D%20%5Cright%29%20%2B%20%20X_%7Bp%2C%20n%20t%7D%27%5Cbeta_%7Bp%7D%20%2B%20u_%7Bp%2C%20n%20t%7D%0A%5Cend%7Baligned%7D%0A%5Cright.%20%5Cqquad%5Ctext%7B%28SA%29%7D "\left.
+$$
+\left.
 \begin{aligned}
 D_{n t} &= X_{d, n t}'\beta_{d} + P_{n t}\alpha_{d} + u_{d, n t} \\
 S_{n t} &= X_{s, n t}'\beta_{s} + P_{n t}\alpha_{s} + u_{s, n t} \\
 Q_{n t} &= \min\{D_{n t},S_{n t}\} \\
 \Delta P_{n t} &= \frac{1}{\gamma} \left( D_{n t} - S_{n t} \right) +  X_{p, n t}'\beta_{p} + u_{p, n t}
 \end{aligned}
-\right. \qquad\text{(SA)}")
-
+\right. \qquad\text{(SA)}
+$$
 <img src='man/figures/diseq_stochastic_adjustment.png' alt='Stochastic adjustment disequilibrium model'/>
 
 # Installation and documentation
@@ -231,7 +198,9 @@ session can be found in the video that follows. The presentation slides
 of the talk are also available
 [here](https://talks.pikappa.eu/useR!2021/).
 
-<a style="display:block;margin:auto" href="https://www.youtube.com/watch?v=Kkjkny94dgU" target="_blank"><img src="http://img.youtube.com/vi/Kkjkny94dgU/0.jpg"  alt="Session Recording" width="560" height="315" border="10" /></a>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Kkjkny94dgU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+
+</iframe>
 
 # A practical example
 

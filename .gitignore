@@ -25,11 +25,13 @@ pkgdown/*
 !pkgdown/extra.css
 
 # Development files
+CRAN-RELEASE
+CRAN-SUBMISSION
 Meta
+markets.Rcheck/
+markets_*.tar.gz
 tests/testthat/*.rda
 tests/testthat/devel-environment
-CRAN-SUBMISSION
-CRAN-RELEASE
 
 # Compilation files
 src/compile_commands.json
