@@ -37,7 +37,7 @@ jobs:
           VERSION=$(grep '^Version:' DESCRIPTION | awk '{print $2}')
           PART_COUNT=$(echo "$VERSION" | tr '.' '\n' | wc -l)
           if [ "$PART_COUNT" -eq 4 ]; then
-            echo "target_dir=${{ secrets.ftp_server_dir }}/dev" >> $GITHUB_OUTPUT
+            echo "target_dir=${{ secrets.ftp_server_dir }}dev/" >> $GITHUB_OUTPUT
             echo "Deploying development version $VERSION to dev subdirectory"
           else
             echo "target_dir=${{ secrets.ftp_server_dir }}" >> $GITHUB_OUTPUT
