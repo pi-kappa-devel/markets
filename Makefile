@@ -38,7 +38,7 @@ release: web_docs
 	@echo "Building package for release..."
 	R CMD build $(PACKAGE_DIR)
 	@echo "Checking built package..."
-	cd .. && R CMD check $(TARBALL) --as-cran
+	R CMD check $(TARBALL) --as-cran
 
 clean:
 	@echo "Cleaning up..."
