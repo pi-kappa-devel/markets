@@ -188,20 +188,6 @@ package. The documentation files can also be accessed in `R` by typing
 ?? markets
 ```
 
-An older version of the package (see
-[diseq](https://CRAN.R-project.org/package=diseq)) was presented in the
-session Trends, Markets, Models of the
-[useR!2021](https://user2021.r-project.org/) conference. However, the
-presented user interface is deprecated and it is recommended to follow
-(Karapanagiotis 2024) for the latest interface. The recording of the
-session can be found in the video that follows. The presentation slides
-of the talk are also available
-[here](https://talks.pikappa.eu/useR!2021/).
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Kkjkny94dgU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-
-</iframe>
-
 # A practical example
 
 This is a basic example that illustrates how a model of the package can

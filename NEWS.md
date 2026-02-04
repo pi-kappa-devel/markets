@@ -1,6 +1,10 @@
+# markets 1.1.6.9003
+
+* Removed video with deprecated calling interface from README.
+
 # markets 1.1.6.9002
 
-* Updated logo to hexagon using use `hexSticker`.
+* Updated logo to hexagon using `hexSticker`.
 
 # markets 1.1.6.9001
 

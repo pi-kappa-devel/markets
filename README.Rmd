@@ -126,15 +126,6 @@ Online documentation is available for both the [released](https://www.markets.pi
 ```r
 ?? markets
 ```
-An older version of the package (see [diseq](https://CRAN.R-project.org/package=diseq)) was presented in the session Trends, Markets, Models of the [useR!2021](https://user2021.r-project.org/) conference. However, the presented user interface is deprecated and it is recommended to follow [@karapanagiotis2024] for the latest interface. The recording of the session can be found in the video that follows. The presentation slides of the talk are also available [here](https://talks.pikappa.eu/useR!2021/).
-
-```{r maybe-iframe, echo=FALSE, results='asis'}
-if (knitr::opts_knit$get("rmarkdown.pandoc.to") == "gfm-yaml_metadata_block") {
-  cat('<a style="display:block;margin:auto" href="https://www.youtube.com/watch?v=Kkjkny94dgU" target="_blank"><img src="http://img.youtube.com/vi/Kkjkny94dgU/0.jpg"  alt="Session Recording" width="560" height="315" border="10" /></a>')
-} else {
-  cat('<iframe width="560" height="315" src="https://www.youtube.com/embed/Kkjkny94dgU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
-}
-```
 
 # A practical example
 
