@@ -21,8 +21,6 @@ vignettes/*.pdf
 vignettes/*.R
 doc*
 docs
-pkgdown/*
-!pkgdown/extra.css
 
 # Development files
 CRAN-RELEASE

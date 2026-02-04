@@ -40,13 +40,24 @@ release: web_docs
 	@echo "Checking built package..."
 	cd .. && R CMD check $(TARBALL) --as-cran
 
+clean:
+	@echo "Cleaning up..."
+	rm -f src/*.o src/*.so src/*.dll src/symbols.rds
+	rm -rf *.Rcheck/
+	rm -f *.tar.gz
+	rm -f README.knit.md README.utf8.md
+	rm -f configure
+	rm -rf docs/*
+	rm -rf man/*.Rd
+
 help:
+	@echo "make clean: Clean up generated files"
 	@echo "make configure: Configure the package"
-	@echo "make test_units: Run unit tests"
-	@echo "make test_examples: Run examples"
-	@echo "make test: Run unit tests and examples"
 	@echo "make github_readme: Generate GitHub README from R Markdown"
-	@echo "make web_docs_fast: Build web documentation with existing vignettes"
-	@echo "make web_docs: Build web documentation"
-	@echo "make release: Run prepare for release and run release checks"
 	@echo "make help: Show this help message"
+	@echo "make release: Run prepare for release and run release checks"
+	@echo "make test: Run unit tests and examples"
+	@echo "make test_examples: Run examples"
+	@echo "make test_units: Run unit tests"
+	@echo "make web_docs: Build web documentation"
+	@echo "make web_docs_fast: Build web documentation with existing vignettes"

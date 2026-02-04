@@ -9,3 +9,4 @@ template:
   bootstrap: 5
   bootswatch: flatly
   theme: zenburn
+  light-switch: true

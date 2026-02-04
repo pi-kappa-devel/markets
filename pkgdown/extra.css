@@ -1,6 +1,7 @@
 #github-logo { display:none; }
 .sourceLine { text-decoration: none!important; }
 body { text-align:justify; margin:25px auto 0px auto; }
+h1 { text-align: left; }
 iframe { max-width:100%; display:block; margin:auto; }
 img { max-width:100%; }
 img:not(.logo) { margin: auto; max-width: 100%; }
