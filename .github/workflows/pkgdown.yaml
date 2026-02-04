@@ -31,6 +31,20 @@ jobs:
           make web_docs
         shell: bash
 
+      - name: Determine deployment directory
+        id: deploy-dir
+        run: |
+          VERSION=$(grep '^Version:' DESCRIPTION | awk '{print $2}')
+          PART_COUNT=$(echo "$VERSION" | tr '.' '\n' | wc -l)
+          if [ "$PART_COUNT" -eq 4 ]; then
+            echo "target_dir=${{ secrets.ftp_server_dir }}/dev" >> $GITHUB_OUTPUT
+            echo "Deploying development version $VERSION to dev subdirectory"
+          else
+            echo "target_dir=${{ secrets.ftp_server_dir }}" >> $GITHUB_OUTPUT
+            echo "Deploying release version $VERSION to root directory"
+          fi
+        shell: bash
+
       - name: Sync files
         uses: SamKirkland/FTP-Deploy-Action@4.3.3
         with:
@@ -38,5 +52,5 @@ jobs:
           username: ${{ secrets.ftp_username }}
           password: ${{ secrets.ftp_password }}
           local-dir: docs/
-          server-dir: ${{ secrets.ftp_server_dir }}
+          server-dir: ${{ steps.deploy-dir.outputs.target_dir }}
           protocol: ftps
